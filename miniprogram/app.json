@@ -1,0 +1,12 @@
+{
+  "pages": ["pages/hub/hub", "pages/tower/tower", "pages/battle/battle"],
+  "window": {
+    "navigationBarBackgroundColor": "#07090f",
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "AI PM 题库游戏",
+    "backgroundColor": "#07090f",
+    "backgroundTextStyle": "dark"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

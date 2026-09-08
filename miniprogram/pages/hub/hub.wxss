@@ -1,0 +1,32 @@
+.wrap { padding: 50rpx 24rpx 60rpx; }
+.top { text-align: center; margin-bottom: 34rpx; }
+.kicker { font-size: 20rpx; letter-spacing: 4rpx; color: #8b9bb4; }
+.bigtitle { font-size: 52rpx; font-weight: 800; margin: 16rpx 0 6rpx; }
+.hl { color: #22d3ee; text-shadow: 0 0 30rpx rgba(34,211,238,.5); }
+.sub { font-size: 20rpx; letter-spacing: 4rpx; color: #8b9bb4; }
+.rankline { font-size: 22rpx; color: #a78bfa; margin-top: 14rpx; }
+.game {
+  background: linear-gradient(160deg, #0e131d, #0b0f1a);
+  border-radius: 26rpx;
+  padding: 34rpx 32rpx 30rpx;
+  margin-bottom: 26rpx;
+}
+.game.g1 { border: 1rpx solid rgba(34,211,238,.5); }
+.game.g2 { border: 1rpx solid rgba(139,155,180,.35); opacity: .8; }
+.tag { font-size: 20rpx; letter-spacing: 3rpx; }
+.g1 .tag { color: #22d3ee; }
+.g2 .tag { color: #8b9bb4; }
+.gname { font-size: 40rpx; font-weight: 800; margin: 10rpx 0 12rpx; }
+.gdesc { font-size: 25rpx; color: #dbe4f0; line-height: 1.8; }
+.chips { display: flex; flex-wrap: wrap; gap: 10rpx; margin: 20rpx 0 8rpx; }
+.chip {
+  font-size: 20rpx; color: #8b9bb4; border: 1rpx solid #1e2836;
+  background: #121926; border-radius: 8rpx; padding: 4rpx 14rpx;
+}
+.play {
+  margin-top: 18rpx; text-align: center; font-size: 28rpx; font-weight: 700; letter-spacing: 3rpx;
+  border-radius: 16rpx; padding: 22rpx 0;
+}
+.g1 .play { background: linear-gradient(90deg, #22d3ee, #a78bfa); color: #05070c; }
+.g2 .play { border: 1rpx dashed rgba(139,155,180,.5); color: #8b9bb4; }
+.note { font-size: 22rpx; text-align: center; margin-top: 30rpx; line-height: 1.8; }

@@ -1,0 +1,24 @@
+.wrap { padding: 40rpx 24rpx 60rpx; }
+.head { margin-bottom: 24rpx; }
+.t1 { font-size: 20rpx; letter-spacing: 4rpx; color: #22d3ee; }
+.t2 { font-size: 40rpx; font-weight: 800; margin-top: 8rpx; }
+.weak {
+  margin-top: 20rpx; font-size: 24rpx; color: #fbbf24;
+  border: 1rpx dashed rgba(251,191,36,.5); background: rgba(251,191,36,.05);
+  border-radius: 14rpx; padding: 16rpx 22rpx;
+}
+.tgrid { display: flex; flex-wrap: wrap; gap: 18rpx; }
+.tower {
+  width: calc(50% - 9rpx);
+  background: #121926; border: 1rpx solid #1e2836; border-radius: 18rpx;
+  padding: 26rpx 24rpx; box-sizing: border-box;
+}
+.tower:active { border-color: #22d3ee; }
+.tn { font-size: 29rpx; font-weight: 700; }
+.td { font-size: 20rpx; color: #8b9bb4; margin-top: 6rpx; line-height: 1.6; }
+.best { font-size: 20rpx; color: #fbbf24; margin-top: 10rpx; }
+
+/* 分区与付费锁 */
+.g-head{font-size:11px;letter-spacing:2px;color:#22d3ee;margin:14px 0 8px}
+.tower.locked{border-style:dashed;opacity:.85}
+.lock{margin-top:6px;font-size:11px;color:#fbbf24;border:1px solid rgba(251,191,36,.5);border-radius:5px;padding:2px 8px;display:inline-block;background:rgba(251,191,36,.07)}

@@ -1,0 +1,32 @@
+<view class="wrap">
+  <view class="top">
+    <view class="kicker mono">NOVA·AI GAMES // AI PM 备考学习工具</view>
+    <view class="bigtitle">AI 产品经理<text class="hl">题库游戏</text></view>
+    <view class="sub mono">TWO GAMES · ONE OFFER</view>
+    <view class="rankline mono" wx:if="{{rank}}">段位 · {{rank}}</view>
+  </view>
+
+  <view class="game g1" bindtap="goTower">
+    <view class="tag mono">GAME 1 · 知识覆盖与记忆</view>
+    <view class="gname">概念试炼塔</view>
+    <view class="gdesc">153 道真题级概念题 · 15 层 roguelite 爬塔。答错的题化为"暗影"回塔复仇，连对两次才净化——间隔重复，游戏化。</view>
+    <view class="chips">
+      <text class="chip mono">153 题</text><text class="chip mono">11 座专项塔</text><text class="chip mono">暗影复仇</text><text class="chip mono">≈10 分钟/局</text>
+    </view>
+    <view class="play mono">▶ 开始爬塔</view>
+  </view>
+
+  <view class="game g2">
+    <view class="tag mono">GAME 2 · 判断力训练</view>
+    <view class="gname">AI PRODUCT RPG</view>
+    <view class="gdesc">剧情化职业模拟：入职 NOVA·AI，10 周经历增长指标迷局、AI 幻觉事故、凌晨两点的 P0，直到通过 CEO 复盘会。</view>
+    <view class="chips">
+      <text class="chip mono">10 个剧情 Case</text><text class="chip mono">17 个技能</text>
+    </view>
+    <view class="play lock mono">小程序版开发中 · 先玩网页版</view>
+  </view>
+
+  <view class="note dim">
+    本工具定位为「AI 产品经理求职备考学习工具」，题目与剧情均为教学用途的原创模拟题。
+  </view>
+</view>

@@ -1,0 +1,14 @@
+.DS_Store
+*.log
+node_modules/
+__pycache__/
+
+# 可售兑换码，绝不入公开仓库
+codes/
+
+# 本地店主管理页（永不上传）
+tools/admin.html
+paid-deck/
+
+# 商业化运营文档（本地保留，不上仓库）
+marketing/monetization/

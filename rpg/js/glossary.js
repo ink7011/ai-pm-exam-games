@@ -1,0 +1,115 @@
+/* ============================================================
+   AI PRODUCT RPG — 术语词典（悬浮词典数据）
+   定位：一句人话 + 一个小例子。新手点词即懂，熟手无感。
+   m 字段 = 试炼塔对应专项塔 id（术语表里"去试炼塔练习"跳转用）
+   ============================================================ */
+window.GLOSSARY = {
+  // id 会作为 data-g 属性，保持简短
+  entries: [
+    /* ---- 产品/指标 ---- */
+    { id: 'ns', keys: ['北极星指标'], t: '北极星指标', en: 'North Star Metric', m: 'prod', d: '全团队唯一认定的最重要指标，像北极星一样指方向。例：外卖 App 的北极星可能是「每周下单用户数」，其他指标都为它服务。' },
+    { id: 'vanity', keys: ['虚荣指标', '虚荣数据'], t: '虚荣指标', en: 'Vanity Metric', m: 'prod', d: '看起来漂亮但不反映真实价值的数字。例：累计注册 100 万很唬人，但如果大家注册完就走，它什么也说明不了。' },
+    { id: 'dau', keys: ['DAU'], t: 'DAU', en: 'Daily Active Users', m: 'prod', d: '每天有多少独立用户来用产品。注意「来了」不等于「用成了」——所以还要看任务完成和留存。' },
+    { id: 'retention', keys: ['次周留存', '7 日留存', '留存'], t: '留存', en: 'Retention', m: 'prod', d: '用户过了一段时间还会不会回来。次周留存 9% = 每 100 个本周新用户，下周只有 9 个还来。留存是产品真价值的照妖镜。' },
+    { id: 'activation', keys: ['激活'], t: '激活', en: 'Activation', m: 'prod', d: '用户第一次真正「用成」产品的时刻。例：写作工具的激活不是注册，而是写完第一篇可用的稿子。激活做不好，后面全白搭。' },
+    { id: 'aha', keys: ['Aha 时刻', 'Aha时刻'], t: 'Aha 时刻', en: 'Aha Moment', m: 'prod', d: '用户第一次感受到产品价值的瞬间（"原来这么好用！"）。产品设计的核心任务之一就是让这个时刻尽量早地发生。' },
+    { id: 'funnel', keys: ['漏斗', '行为漏斗'], t: '漏斗', en: 'Funnel', m: 'prod', d: '把用户路径拆成一串步骤，看每步流失多少。例：曝光→点击→下单→复购，哪一步人数骤减，问题就在哪一步。' },
+    { id: 'conv', keys: ['转化率', '转化'], t: '转化率', en: 'Conversion Rate', m: 'prod', d: '走到下一步的人占上一层的比例。例：100 人看到活动页、30 人下单，转化率 30%。' },
+    { id: 'gmv', keys: ['GMV'], t: 'GMV', en: 'Gross Merchandise Volume', m: 'prod', d: '成交总额，电商平台最常报的数字。注意 GMV 高不代表赚钱——还要看补贴、退款和毛利。' },
+    { id: 'nps', keys: ['NPS'], t: 'NPS', en: 'Net Promoter Score', m: 'prod', d: '净推荐值：问用户「你愿意把产品推荐给朋友吗（0-10 分）」，推荐者减去贬损者。衡量口碑的老牌指标。' },
+    { id: 'unit-econ', keys: ['单位经济'], t: '单位经济', en: 'Unit Economics', m: 'biz', d: '算清「每做一单生意赚还是亏」。例：一单外卖收 6 元、骑手成本 8 元，单位经济为负，单量越大亏得越多。' },
+    { id: 'margin', keys: ['毛利'], t: '毛利', en: 'Gross Margin', m: 'biz', d: '收入减去直接成本（比如 AI 产品的推理算力费）剩下的部分。毛利为负的产品，规模越大死得越快。' },
+
+    /* ---- ML 基础 ---- */
+    { id: 'acc', keys: ['准确率'], t: '准确率', en: 'Accuracy', m: 'ml', d: '模型判断对的比例。陷阱：100 个样本里 99 个是正常、1 个是欺诈，模型全答「正常」也有 99% 准确率——却一个欺诈都没抓到。' },
+    { id: 'cm', keys: ['混淆矩阵'], t: '混淆矩阵', en: 'Confusion Matrix', m: 'ml', d: '一张四格表：模型答对/答错 × 真实是/否，把对错拆开看。光看总准确率会被平均掉的问题，拆开就现形。' },
+    { id: 'recall', keys: ['召回', 'Recall', '查全率'], t: '召回率 Recall', en: 'Recall', m: 'ml', d: '真的有问题的事件里，被你抓到了多少。例：100 条真投诉，模型抓到 87 条，召回 87%。漏掉代价高（疾病筛查、舆情）就先保它。' },
+    { id: 'precision', keys: ['精确率', 'Precision', '查准率'], t: '精确率 Precision', en: 'Precision', m: 'ml', d: '你报出来的问题里，有多少是真的。误报代价高（冤枉好用户）就先保它。和召回是一对跷跷板。' },
+    { id: 'f1', keys: ['F1'], t: 'F1', en: 'F1 Score', m: 'ml', d: '精确率和召回率的调和平均——一个数同时照顾两者。两类指标打架时，常用 F1 当主指标。' },
+    { id: 'prauc', keys: ['PR-AUC', 'AUC'], t: 'PR-AUC / AUC', en: 'Area Under Curve', m: 'ml', d: '衡量模型「排序能力」的指标：随机拿一个正例一个负例，模型给正例打分更高的概率。不依赖阈值，样本不均衡时比准确率诚实。' },
+    { id: 'imbalance', keys: ['类别不均衡', '样本不均衡', '正负样本'], t: '类别不均衡', en: 'Class Imbalance', m: 'ml', d: '两类样本数量悬殊（如 1:99）。此时准确率会骗人，要用 F1/PR-AUC，并配合 Focal Loss、重采样等手段。' },
+    { id: 'focal', keys: ['Focal Loss'], t: 'Focal Loss', en: 'Focal Loss', m: 'ml', d: '一种专门对付类别不均衡的损失函数：让模型少关注已经学得很好的多数类，多盯住学不好的少数类。' },
+    { id: 'resample', keys: ['重采样'], t: '重采样', en: 'Resampling', m: 'ml', d: '通过复制少数样本/削减多数样本，把失衡的数据比例拉回来。处理不均衡的基本功之一。' },
+    { id: 'threshold', keys: ['阈值'], t: '阈值', en: 'Threshold', m: 'ml', d: '判定「算不算命中」的分数线。分数线调低→抓得多也误伤多（召回↑）；调高→精准但漏得多。按「哪种错更贵」来定。' },
+    { id: 'metric-cal', keys: ['口径'], t: '口径', en: 'Metric Definition', m: 'eval', d: '指标的统计规则（算谁、不算谁、怎么算）。口径不一致是数据吵架的第一大来源——先对齐口径再吵架。' },
+    { id: 'overfit', keys: ['过拟合'], t: '过拟合', en: 'Overfitting', m: 'ml', d: '模型把训练题「背」下来了，遇到新题就露馅（训练 99 分、考试 62 分）。药方：正则化、Dropout、更多数据。' },
+    { id: 'reg', keys: ['正则化'], t: '正则化', en: 'Regularization', m: 'ml', d: '给模型加「约束/惩罚」，不让它死记硬背，逼它学规律。治过拟合的常用药。' },
+    { id: 'aug', keys: ['数据增强'], t: '数据增强', en: 'Data Augmentation', m: 'ml', d: '把现有样本变着花样扩充：图片旋转加噪、文本改写、视频加运动模糊。模型没见过的场景，就造给它见。' },
+    { id: 'drift', keys: ['分布漂移', '数据漂移'], t: '分布漂移', en: 'Distribution Shift', m: 'ml', d: '模型没变，但世界变了：新用户、新热点、新季节让线上数据和训练数据长得不一样，效果悄悄下滑。要靠监控发现。' },
+    { id: 'leak', keys: ['数据泄漏', '特征穿越', '泄漏'], t: '数据泄漏', en: 'Data Leakage', m: 'ml', d: '训练时不小心用了「未来才知道的信息」（比如用结果反推特征）。离线分数虚高，一上线就现形。' },
+    { id: 'benchmark', keys: ['Benchmark', '榜单'], t: 'Benchmark', en: 'Benchmark', m: 'eval', d: '公开的统一考卷（如 MMLU），用来横向比较不同模型。考卷分数高≠你的业务好用，还可能被「背题」（数据污染）。' },
+    { id: 'pollute', keys: ['污染', '数据污染'], t: '数据污染', en: 'Benchmark Contamination', m: 'eval', d: '考题混进了训练材料，模型是「背过答案」而不是「会做题」。所以高分要结合自建评测集来看。' },
+
+    /* ---- 评估与发布 ---- */
+    { id: 'offline', keys: ['离线评估', '离线评测', '离线'], t: '离线评估', en: 'Offline Eval', m: 'eval', d: '上线前在本地测试集上打分。缺点：测试环境和真实世界有差距，分数好≠用户买账。' },
+    { id: 'ab', keys: ['AB 实验', 'A/B 实验', 'AB测试', 'A/B测试'], t: 'A/B 实验', en: 'A/B Test', m: 'eval', d: '把用户随机分成两组，一组用新版一组用旧版，比真实数据。产品决策的黄金标准——猜不算数。' },
+    { id: 'gray', keys: ['灰度'], t: '灰度发布', en: 'Gradual Rollout', m: 'eval', d: '新版先放给 5% 的用户试水，没问题再逐步放大。爆炸半径小，出事好回收。' },
+    { id: 'fullroll', keys: ['全量'], t: '全量', en: 'Full Rollout', m: 'eval', d: '把新版本放开给 100% 用户。灰度验证通过后才敢做的事。' },
+    { id: 'rollback', keys: ['回滚'], t: '回滚', en: 'Rollback', m: 'eval', d: '出问题时一键退回上一个正常版本。生产事故的第一反应永远是先回滚止血，而不是继续改。' },
+    { id: 'regression', keys: ['回归评测集', '回归集', '回归测试', '回归用例'], t: '回归评测集', en: 'Regression Suite', m: 'eval', d: '一组「以前修好的问题」的题库，每次更新都重跑一遍，防止「修了新 bug、弄坏老功能」。' },
+    { id: 'goldset', keys: ['金标准', '评测集'], t: '金标准评测集', en: 'Golden Set', m: 'eval', d: '用真实业务场景人工标注的标准答案集，是模型自己的「模拟考卷」，比公开榜单更贴近你的用户。' },
+    { id: 'judge', keys: ['LLM-as-Judge', 'LLM 评审', 'LLM评审'], t: 'LLM-as-Judge', en: 'LLM 评审', m: 'eval', d: '让一个大模型当裁判给回答打分。便宜、能大规模跑；但有偏差（偏爱长回答、偏爱第一个选项），要定期用人工抽查校准。' },
+    { id: 'calibrate', keys: ['校准'], t: '校准', en: 'Calibration', m: 'eval', d: '让模型给出的「置信度」和真实正确率对上（说 80% 把握的事，就该有八成是对的）。' },
+    { id: 'badcase', keys: ['Badcase', 'bad case'], t: 'Badcase', en: 'Bad Case', m: 'eval', d: '具体的失败案例。把 badcase 分类归因（幻觉/格式/拒绝/漏答…），是最实用的优化起点。' },
+    { id: 'sample', keys: ['抽样'], t: '抽样', en: 'Sampling', m: 'eval', d: '从全量数据里挑一部分来看。省人力，但可能错过长尾问题——抽多细要看风险有多大。' },
+
+    /* ---- LLM / RAG / 推理 ---- */
+    { id: 'llm', keys: ['大模型', 'LLM'], t: '大模型 LLM', en: 'Large Language Model', m: 'llm', d: '读遍了互联网文本、学会接话的超级大脑。会聊天、写作、总结，但知识有截止日、还会一本正经胡说。' },
+    { id: 'hallu', keys: ['幻觉', '一本正经胡说八道'], t: '幻觉', en: 'Hallucination', m: 'llm', d: '模型编造不存在的事实（ fake 引用、假政策）。根源：它本质在「猜下一个词」而不是「查资料」。克星是 RAG 和事实验证。' },
+    { id: 'rag', keys: ['RAG'], t: 'RAG', en: 'Retrieval-Augmented Generation', m: 'rag', d: '让 AI 先查资料再回答——开卷考试。知识库更新就更新答案，还能标注出处。企业知识问答的标配。' },
+    { id: 'kb', keys: ['知识库'], t: '知识库', en: 'Knowledge Base', m: 'rag', d: '存放企业文档/政策/FAQ 的仓库，供检索。RAG 的弹药库——库不对，答案必错。' },
+    { id: 'index', keys: ['索引'], t: '索引', en: 'Index', m: 'rag', d: '把文档加工成能被快速检索的数据结构。文档更新了但索引没更新，AI 查到的就是旧知识。' },
+    { id: 'chunk', keys: ['分块', 'Chunking'], t: '分块 Chunking', en: 'Chunking', m: 'rag', d: '把长文档切成小段再检索。切太大→检索不准；切太小→语义断掉。RAG 调优第一站。' },
+    { id: 'embed', keys: ['Embedding'], t: 'Embedding', en: 'Embedding', m: 'rag', d: '把文字变成一串数字（向量），语义相近的向量也相近。是「用意思搜文档」而不是「用关键词搜」的基础。' },
+    { id: 'rerank', keys: ['Rerank', '重排', 'Reranker', '精排'], t: 'Rerank 重排', en: 'Reranking', m: 'rag', d: '检索先粗略捞回一批（求快），再用更精细的模型重新排序（求准）。粗排+精排是检索系统标配架构。' },
+    { id: 'bm25', keys: ['BM25'], t: 'BM25', en: 'BM25', m: 'rag', d: '经典关键词检索算法：精确匹配术语、型号、错误码特别强，但不懂同义改写。常和向量检索混合使用。' },
+    { id: 'hybrid', keys: ['Hybrid', '混合检索'], t: 'Hybrid 混合检索', en: 'Hybrid Search', m: 'rag', d: '关键词检索 + 语义向量检索一起上、结果合并。精确词和模糊语义两头都占，生产环境标配。' },
+    { id: 'qrewrite', keys: ['Query 改写', 'Query Rewrite'], t: 'Query 改写', en: 'Query Rewrite', m: 'rag', d: '先把用户的口语问题改写成更适合检索的查询（补全指代、换术语）。用户说「那第二个方案呢」，得先补全成完整问题才能搜。' },
+    { id: 'ground', keys: ['忠实度', 'Groundedness'], t: '忠实度', en: 'Groundedness', m: 'rag', d: '回答是否严格基于检索到的资料，而不是自由发挥。RAG 系统防幻觉的核心指标。' },
+    { id: 'trace', keys: ['溯源', '引用溯源'], t: '引用溯源', en: 'Citation', m: 'rag', d: '回答时标明「这句话来自哪份文档」。用户可验证，信任感大增；出了错也好定位。' },
+    { id: 'fresh', keys: ['知识新鲜度'], t: '知识新鲜度', en: 'Knowledge Freshness', m: 'rag', d: '检索源是否最新。政策周三改了、索引还停在周一，AI 就会自信地答错。' },
+    { id: 'sft', keys: ['SFT', '微调', '风格 SFT'], t: '微调 SFT', en: 'Supervised Fine-Tuning', m: 'llm', d: '拿一批「问题-标准回答」的示范题继续训练模型，教会它按你的格式、风格、规矩办事。改的是模型的「行为」。' },
+    { id: 'pretrain', keys: ['预训练'], t: '预训练', en: 'Pre-training', m: 'llm', d: '模型上学的阶段：海量阅读学会语言和世界知识。极贵。之后才有微调（上岗培训）和对齐（学规矩）。' },
+    { id: 'rlhf', keys: ['RLHF'], t: 'RLHF', en: 'RL from Human Feedback', m: 'llm', d: '让人类对模型的多个回答排序投票，训练一个「奖励模型」当裁判，再用强化学习让模型讨好裁判。教模型「哪个回答更好」。' },
+    { id: 'dpo', keys: ['DPO'], t: 'DPO', en: 'Direct Preference Optimization', m: 'llm', d: 'RLHF 的简化版：跳过奖励模型和强化学习，直接从「人类更喜欢哪个」的数据里学。更稳更省，效果相当。' },
+    { id: 'align', keys: ['对齐'], t: '对齐', en: 'Alignment', m: 'llm', d: '把模型调教得符合人类意图和价值观：听指令、不有害、风格得当。SFT/RLHF/DPO 都是对齐手段。' },
+    { id: 'forget', keys: ['灾难性遗忘'], t: '灾难性遗忘', en: 'Catastrophic Forgetting', m: 'llm', d: '模型学新东西把旧本事挤掉了——专项微调后通用问答变笨。药方：混着旧数据练、小学习率、用 LoRA。' },
+    { id: 'lora', keys: ['LoRA'], t: 'LoRA', en: 'Low-Rank Adaptation', m: 'llm', d: '只训练一小块「外挂插件」而不动模型本体，省钱省卡还不容易遗忘。业务微调的默认选择。' },
+    { id: 'distill', keys: ['蒸馏'], t: '蒸馏', en: 'Distillation', m: 'infer', d: '让大模型当老师带出一个小学生模型：便宜很多、能力保留七八成。推理降本三板斧之一。' },
+    { id: 'quant', keys: ['量化', 'INT8', 'FP16'], t: '量化', en: 'Quantization', m: 'infer', d: '把模型参数从高精度数字压成低精度（如 FP16→INT8），几乎不掉点但更省显存更快。降本三板斧之一。' },
+    { id: 'route', keys: ['路由', '分级路由', '小模型路由'], t: '模型路由', en: 'Model Routing', m: 'infer', d: '简单问题交给小模型、难题才上大模型，按需花钱。像医院分诊台，不是所有人都挂专家号。' },
+    { id: 'ttft', keys: ['TTFT', '首字延迟', '首 token'], t: 'TTFT 首字延迟', en: 'Time To First Token', m: 'infer', d: '用户按下回车到看见第一个字的时间。体感快慢主要看它，而不是总生成时长——所以流式输出才如此有效。' },
+    { id: 'stream', keys: ['流式输出', '流式'], t: '流式输出', en: 'Streaming', m: 'infer', d: '像打字机一样边生成边显示。总时长没变，但用户 1 秒就能开始读——感知体验质变。' },
+    { id: 'p75', keys: ['P75', 'P95', 'P99', '分位'], t: 'P75/P95 分位数', en: 'Percentile', m: 'infer', d: '把所有请求的延迟排序，P95 = 95% 的请求都比它快。看分位而不是平均值，才不会漏掉「最慢的那批用户的痛苦」。' },
+    { id: 'token', keys: ['token', 'Token'], t: 'Token', en: 'Token', m: 'infer', d: '模型处理文字的最小单位（约 0.5-1.5 个汉字）。计费按 token 算：输入+输出都要钱，长 system prompt 是隐形账单。' },
+    { id: 'sysprompt', keys: ['system prompt', '系统提示词'], t: 'System Prompt', en: 'System Prompt', m: 'infer', d: '写在每次对话最前面的「岗位说明书」：角色、规则、口径。内容固定且重复——所以能被缓存加速。' },
+    { id: 'prefix', keys: ['Prefix Cache', '前缀缓存'], t: 'Prefix Cache', en: 'Prefix Caching', m: 'infer', d: '相同开头的 prompt（如固定的 system prompt）算过一次就存起来复用，后来的请求直接跳过这段计算。省钱又提速。' },
+    { id: 'throughput', keys: ['吞吐'], t: '吞吐', en: 'Throughput', m: 'infer', d: '服务器单位时间能处理多少请求。GPU 利用率低 = 吞吐有富余，动态拼批（continuous batching）能把它吃满。' },
+    { id: 'gpu', keys: ['GPU', '算力'], t: 'GPU', en: 'Graphics Processing Unit', m: 'infra', d: '训练和运行 AI 用的芯片，按卡计费、供不应求。AI 公司的「水电煤」，成本管理的大头。' },
+    { id: 'inference', keys: ['推理成本', '推理'], t: '推理成本', en: 'Inference Cost', m: 'infer', d: '模型每次回答消耗的算力钱。与模型大小、token 数成正比——直接决定产品毛利，是 AI 产品经理的必修账。' },
+
+    /* ---- 结构化/Agent/工程 ---- */
+    { id: 'json', keys: ['JSON'], t: 'JSON', en: 'JavaScript Object Notation', m: 'agent', d: '机器之间传数据的标准格式（{"key":"value"}）。系统对接要求严格合法的 JSON，模型随手加个解释文字就会让对方解析崩溃。' },
+    { id: 'structout', keys: ['结构化输出', 'JSON mode', '解码层约束'], t: '结构化输出', en: 'Structured Output', m: 'agent', d: '在技术上强制模型只能吐出合法格式的答案（硬约束），而不是在 prompt 里求它（软约束）。接口稳定性的保命手段。' },
+    { id: 'parse', keys: ['解析'], t: '解析', en: 'Parsing', m: 'agent', d: '把收到的文本按格式拆读成程序能用的数据。格式稍微不合法，解析就报错——下游系统随之崩溃。' },
+    { id: 'hotfix', keys: ['hotfix', '热修复'], t: 'Hotfix', en: 'Hotfix', m: 'agent', d: '线上出问题时紧急打的小补丁。因为「急」，常常跳过完整测试——也是事故的高发源头。' },
+    { id: 'agent', keys: ['Agent'], t: 'Agent', en: 'AI Agent', m: 'agent', d: '让模型自己决定步骤、调用工具去完成任务的 AI（查资料、点按钮、发邮件）。灵活但不可控，和固定流程的 Workflow 相对。' },
+    { id: 'workflow', keys: ['Workflow', '工作流'], t: 'Workflow', en: 'Workflow', m: 'agent', d: '把步骤写死的自动化流程（先 A 后 B 再 C）。稳定便宜可预测；路径不明的开放任务才交给 Agent。' },
+    { id: 'loop', keys: ['死循环'], t: '死循环', en: 'Infinite Loop', m: 'agent', d: 'Agent 卡在「反复调同一个工具」里出不来。要加反思机制和最大步数熔断。' },
+    { id: 'reflect', keys: ['反思', 'Reflection'], t: '反思 Reflection', en: 'Reflection', m: 'agent', d: '让 Agent 中途停下来检查自己：「我现在做的对吗？有没有更好的路？」是打破死循环、提高成功率的有效手段。' },
+    { id: 'schema', keys: ['schema'], t: 'Schema', en: 'Schema', m: 'agent', d: '对数据格式的说明书（字段名、类型、示例）。写清楚 schema，模型调用工具才不会传错参数。' },
+    { id: 'mcp', keys: ['MCP'], t: 'MCP', en: 'Model Context Protocol', m: 'agent', d: '模型连接外部工具/数据的通用插口标准，像 AI 界的 USB-C：工具做一次适配，所有模型都能用。' },
+    { id: 'memory', keys: ['长期记忆'], t: '长期记忆', en: 'Long-term Memory', m: 'agent', d: '把重要信息存到外部库里跨会话使用。上下文窗口是「短期记忆」，关掉就忘；长期记忆靠专门存储。' },
+    { id: 'hitl', keys: ['人工审批', 'HITL'], t: '人工审批 HITL', en: 'Human-in-the-Loop', m: 'agent', d: '高危操作（转账、删库）前强制暂停等真人确认。宁可慢一点，不可错一发。' },
+
+    /* ---- 事故/流程 ---- */
+    { id: 'p0', keys: ['P0', 'P0 事故'], t: 'P0 事故', en: 'P0 Incident', m: 'boss', d: '最高优先级的线上故障：核心功能挂了、客户在流血。全员放下手头事，先止血。' },
+    { id: 'root', keys: ['根因'], t: '根因', en: 'Root Cause', m: 'boss', d: '问题的真正原因（连问几个为什么挖到的那个）。修根因才叫解决，只修表象叫应付。' },
+    { id: 'mttr', keys: ['MTTR'], t: 'MTTR', en: 'Mean Time To Recovery', m: 'boss', d: '平均恢复时间：从故障发生到服务恢复多久。比「故障率」更能体现团队的应急能力。' },
+    { id: 'sla', keys: ['SLA'], t: 'SLA', en: 'Service Level Agreement', m: 'boss', d: '和白纸黑字承诺的服务标准（可用性 99.9%、响应 <2 秒）。达不到要赔钱——所以故障每一分钟都在烧钱。' },
+    { id: 'sop', keys: ['SOP'], t: 'SOP', en: 'Standard Operating Procedure', m: 'boss', d: '标准作业流程：把「怎么做对」写成人人可执行的步骤。降低对个人经验的依赖。' },
+    { id: 'gate', keys: ['门禁'], t: '发布门禁', en: 'Release Gate', m: 'eval', d: '上线前必须通过的检查（回归全绿、指标不降）。没门禁，一次手滑就能直达用户。' },
+    { id: 'monitor', keys: ['监控', '告警', '可观测性'], t: '监控告警', en: 'Monitoring', m: 'boss', d: '盯着系统的体检仪：指标越界自动报警。没有监控，故障要等客户来骂才发现。' },
+    { id: 'postmortem', keys: ['复盘'], t: '复盘', en: 'Postmortem', m: 'boss', d: '事故后的结构化总结：时间线、根因、改进项。对事不对人——目的是让体系下次拦得住。' }
+  ]
+};

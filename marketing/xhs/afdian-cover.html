@@ -1,0 +1,57 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1440px;height:400px;background:#07090f;font-family:-apple-system,'PingFang SC',sans-serif;position:relative;overflow:hidden}
+body::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.014) 0 1px,transparent 1px 3px)}
+.glow{position:absolute;width:640px;height:640px;border-radius:50%;filter:blur(130px);opacity:.2}
+.g1{background:#22d3ee;top:-330px;left:-180px}
+.g2{background:#a78bfa;bottom:-360px;right:60px}
+/* 安全区：上下各留 50px、左右各留 90px 出血，内容全部收在其中 */
+.wrap{position:absolute;left:90px;right:90px;top:50px;bottom:50px;display:flex;align-items:center;gap:36px}
+.left{flex:1;min-width:0}
+.k{font-family:ui-monospace,Menlo,monospace;font-size:17px;letter-spacing:7px;color:#22d3ee;margin-bottom:10px}
+h1{font-size:46px;font-weight:900;color:#dbe4f0;line-height:1.3;margin-bottom:12px}
+h1 b{color:#fbbf24}
+.sub{font-size:19px;color:#8b9bb4;line-height:1.65}
+.sub em{font-style:normal;color:#22d3ee}
+.chips{display:flex;gap:10px;margin-top:18px}
+.chip{font-family:ui-monospace,Menlo,monospace;font-size:15px;color:#dbe4f0;border:1px solid #26324a;border-radius:8px;padding:7px 15px;background:#0e131d;white-space:nowrap}
+.chip.hl{border-color:rgba(251,191,36,.5);color:#fbbf24}
+.right{flex:none;display:flex;gap:14px;align-items:center}
+.tower{width:120px;height:100%;max-height:240px;display:flex;flex-direction:column;justify-content:flex-end;gap:6px;padding:10px;border:1.5px solid #26324a;border-radius:12px;background:#0e131d}
+.f{height:26px;border-radius:5px;background:linear-gradient(90deg,#132033,#0f1929);border:1px solid #1d2a40;position:relative}
+.f b{position:absolute;left:7px;top:4px;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#22d3ee;font-weight:400}
+.f.boss{height:34px;background:linear-gradient(90deg,#2a1a1a,#1f1414);border-color:rgba(239,68,68,.5)}
+.f.boss b{color:#ef4444}
+.tlabel{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#8b9bb4;text-align:center;letter-spacing:2px}
+.rpg{width:190px;height:100%;max-height:240px;border:1.5px solid #26324a;border-radius:12px;background:#0e131d;padding:12px;display:flex;flex-direction:column;gap:8px}
+.msg{border-left:2px solid #a78bfa;padding:1px 0 1px 8px;font-size:11px;color:#8b9bb4;line-height:1.45}
+.msg b{color:#dbe4f0;font-size:10.5px;display:block}
+.bar{margin-top:auto;height:7px;border-radius:4px;background:#1a2230;overflow:hidden}
+.bar i{display:block;height:100%;width:62%;background:linear-gradient(90deg,#22d3ee,#fbbf24)}
+</style></head><body>
+<div class="glow g1"></div><div class="glow g2"></div>
+<div class="wrap">
+  <div class="left">
+    <div class="k">NOVA · AI GAMES</div>
+    <h1>把 AI 产品经理备考<br>做成<b>免费开源</b>的游戏</h1>
+    <div class="sub">十周试用期剧情 RPG + <em>245 题全解析</em>爬塔题库 · 随秋招持续更新</div>
+    <div class="chips"><span class="chip">🎮 RPG 剧情塔</span><span class="chip">🗼 245题·全解析</span><span class="chip">🎴 每日挑战</span><span class="chip hl">🆓 免费开源</span></div>
+  </div>
+  <div class="right">
+    <div class="rpg">
+      <div class="msg"><b>林博士 · mentor</b>指标涨了，但北极星动了吗？</div>
+      <div class="msg"><b>你</b>先查留存分群，再谈上线。</div>
+      <div class="msg"><b>系统</b>👑 天选之人结局</div>
+      <div class="bar"><i></i></div>
+    </div>
+    <div class="tower">
+      <div class="f boss"><b>BOSS</b></div>
+      <div class="f"><b>15F</b></div>
+      <div class="f"><b>10F</b></div>
+      <div class="f"><b>5F</b></div>
+      <div class="f"><b>1F</b></div>
+      <div class="tlabel">CONCEPT TOWER</div>
+    </div>
+  </div>
+</div>
+</body></html>

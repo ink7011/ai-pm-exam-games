@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07090f">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<title>AI 产品经理秋招笔试题库游戏 · AI PM Exam Prep Games</title>
+<style>
+:root{
+  --bg:#07090f; --panel:#0e131d; --panel2:#121926; --line:#1e2836;
+  --cyan:#22d3ee; --green:#34d399; --red:#f87171; --amber:#fbbf24;
+  --violet:#a78bfa; --ink:#dbe4f0; --dim:#8b9bb4;
+  --mono:ui-monospace,'SF Mono','Cascadia Code',Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);color:var(--ink);min-height:100vh;
+  font:14px/1.7 -apple-system,BlinkMacSystemFont,'PingFang SC','Segoe UI','Microsoft YaHei',sans-serif;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:30;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.015) 0 1px,transparent 1px 3px);
+}
+body::after{
+  content:'';position:fixed;inset:-20%;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(38% 32% at 18% 12%,rgba(34,211,238,.07),transparent 70%),
+    radial-gradient(34% 30% at 84% 82%,rgba(167,139,250,.065),transparent 70%);
+}
+/* 交互粒子画布 */
+#fx{position:fixed;inset:0;z-index:1;pointer-events:none}
+.wrap{max-width:1020px;margin:0 auto;padding:40px 22px 70px;position:relative;z-index:2}
+
+/* ===== 入场编排 ===== */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.top .kicker{animation:fadeUp .5s .05s both}
+.top h1{animation:fadeUp .55s .15s both}
+.top .sub{animation:fadeUp .55s .25s both}
+.top .sub2{animation:fadeUp .55s .33s both}
+.top .langnote{animation:fadeUp .55s .42s both}
+.games{animation:fadeUp .6s .5s both}
+section.block{animation:fadeUp .6s .68s both}
+
+.top{text-align:center;margin-bottom:14px}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:3px;color:var(--dim)}
+h1{font-size:30px;margin:10px 0 4px;letter-spacing:1px}
+h1 b{color:var(--cyan);text-shadow:0 0 30px rgba(34,211,238,.55);animation:glowPulse 3.2s ease-in-out 2}
+@keyframes glowPulse{0%,100%{text-shadow:0 0 22px rgba(34,211,238,.4)}50%{text-shadow:0 0 40px rgba(34,211,238,.75)}}
+.sub{color:var(--cyan);font-family:var(--mono);font-size:13px;letter-spacing:2px;min-height:22px}
+.sub .cursor{display:inline-block;width:8px;background:var(--cyan);animation:blink 1s steps(2) infinite;margin-left:2px}
+@keyframes blink{50%{opacity:0}}
+.sub2{color:var(--dim);font-size:13px;margin-top:10px}
+.langnote{display:inline-block;margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--amber);border:1px dashed rgba(251,191,36,.5);border-radius:6px;padding:3px 10px}
+.hook{margin:22px auto 0;max-width:640px;color:var(--ink);font-size:14.5px;line-height:2}
+.hook b{color:var(--cyan)}
+.hook .en{display:block;color:var(--dim);font-size:12px;margin-top:4px}
+
+/* ===== 游戏卡片 ===== */
+.worlds{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:stretch;margin-top:26px;animation:fadeUp .6s .48s both}
+.w{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px 16px;transition:.2s}
+.w:hover{transform:translateY(-2px)}
+.w.wt{border-color:rgba(251,191,36,.4)} .w.wt:hover{border-color:rgba(251,191,36,.75)}
+.w.wr{border-color:rgba(34,211,238,.4)} .w.wr:hover{border-color:rgba(34,211,238,.75)}
+.wi{font-size:22px}
+.wt-t{font-weight:700;margin-top:5px}
+.w.wt .wt-t{color:var(--amber)} .w.wr .wt-t{color:var(--cyan)}
+.wd{color:var(--dim);font-size:11.5px;margin-top:4px;line-height:1.6}
+.w-link{display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--dim);font-family:var(--mono);font-size:10.5px;letter-spacing:1px;padding:0 2px;white-space:nowrap}
+@media(max-width:760px){.worlds{grid-template-columns:1fr}.w-link{flex-direction:row;gap:8px}}
+.cov-line{color:var(--dim);font-size:12px;line-height:2;font-family:var(--mono)}
+.games{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:30px}
+@media(max-width:760px){.games{grid-template-columns:1fr}}
+.game{
+  background:linear-gradient(160deg,var(--panel),#0b0f1a);border:1px solid #26324a;border-radius:16px;
+  padding:22px 22px 20px;position:relative;overflow:hidden;
+  transition:transform .25s cubic-bezier(.2,.8,.3,1.1),border-color .25s,box-shadow .25s;
+}
+.game::after{content:'';position:absolute;inset:0;border-radius:16px;pointer-events:none;box-shadow:inset 0 0 40px rgba(34,211,238,.04);transition:box-shadow .3s}
+.game::before{
+  content:'';position:absolute;top:0;left:8%;right:8%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:0;transition:opacity .3s;
+}
+.game:hover{transform:translateY(-5px)}
+.game.g1:hover{border-color:rgba(34,211,238,.8);box-shadow:0 14px 40px rgba(34,211,238,.13)}
+.game.g2:hover{border-color:rgba(251,191,36,.8);box-shadow:0 14px 40px rgba(251,191,36,.12)}
+.game:hover::before{opacity:1}
+.game:hover::after{box-shadow:inset 0 0 56px rgba(34,211,238,.07)}
+.game .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:2px}
+.game.g1{border-color:rgba(34,211,238,.45)} .game.g1 .tag{color:var(--cyan)}
+.game.g2{border-color:rgba(251,191,36,.45)} .game.g2 .tag{color:var(--amber)}
+.game h2{font-size:20px;margin:6px 0 2px}
+.game .en{color:var(--dim);font-size:12px;font-family:var(--mono)}
+.game .desc{font-size:13px;color:var(--ink);margin:12px 0 4px;line-height:1.8}
+.game .desc .en{display:block;margin-top:6px;font-family:inherit;font-size:12px;line-height:1.7}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 16px}
+.chip{
+  font-family:var(--mono);font-size:10.5px;border:1px solid var(--line);border-radius:5px;padding:2px 8px;
+  color:var(--dim);background:var(--panel2);transition:.18s;animation:chipIn .35s both;
+}
+.chip:nth-child(1){animation-delay:.6s}.chip:nth-child(2){animation-delay:.64s}.chip:nth-child(3){animation-delay:.68s}
+.chip:nth-child(4){animation-delay:.72s}.chip:nth-child(5){animation-delay:.76s}.chip:nth-child(6){animation-delay:.8s}
+.chip:nth-child(7){animation-delay:.84s}.chip:nth-child(8){animation-delay:.88s}.chip:nth-child(n+9){animation-delay:.92s}
+@keyframes chipIn{from{opacity:0;transform:scale(.86)}to{opacity:1;transform:none}}
+.chip:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-1px)}
+.play{
+  display:block;text-align:center;font:700 14px var(--mono);letter-spacing:2px;text-decoration:none;
+  border-radius:9px;padding:12px 0;transition:.2s;position:relative;overflow:hidden;
+}
+.play::after{
+  content:'';position:absolute;top:0;left:-70%;width:45%;height:100%;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.35),transparent);
+  transform:skewX(-20deg);transition:left .5s ease;
+}
+.play:hover::after{left:125%}
+.game.g1 .play{background:linear-gradient(90deg,var(--cyan),var(--violet));color:#05070c}
+.game.g2 .play{background:linear-gradient(90deg,var(--amber),#fb7185);color:#05070c}
+.play:hover{filter:brightness(1.15);transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,0,0,.35)}
+.play:active{transform:translateY(0) scale(.985)}
+
+/* ===== 画廊 ===== */
+.shots{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.shot-col{display:flex;flex-direction:column;gap:12px}
+@media(max-width:640px){.shots{grid-template-columns:1fr}}
+.shots a{display:block;border:1px solid var(--line);border-radius:10px;overflow:hidden;position:relative;transition:.22s;background:var(--panel)}
+.shots a:hover{border-color:var(--cyan);transform:translateY(-3px);box-shadow:0 10px 28px rgba(34,211,238,.12)}
+.shots img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top;opacity:.88;transition:.25s}
+.shots a:hover img{opacity:1;transform:scale(1.045)}
+.shots .cap{
+  position:absolute;left:0;right:0;bottom:0;padding:16px 10px 7px;font-family:var(--mono);font-size:10.5px;
+  color:var(--ink);background:linear-gradient(180deg,transparent,rgba(5,8,14,.88));letter-spacing:1px;
+}
+
+/* ===== 通用横滑区（故事线 / 角色图鉴） ===== */
+section.block{margin-top:44px}
+.block-h{display:flex;align-items:baseline;gap:12px;margin-bottom:4px}
+.block-h h3{font-family:var(--mono);font-size:13px;letter-spacing:3px;color:var(--ink)}
+.block-h .bh-en{font-family:var(--mono);font-size:10.5px;color:var(--dim);letter-spacing:2px}
+.block-sub{color:var(--dim);font-size:12.5px;margin-bottom:14px}
+.strip-wrap{position:relative}
+.hstrip{
+  display:flex;gap:12px;overflow-x:auto;padding:6px 2px 14px;
+  scroll-snap-type:x proximity;scroll-behavior:smooth;cursor:grab;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;
+}
+.hstrip::-webkit-scrollbar{display:none}
+.hstrip.dragging{cursor:grabbing;scroll-snap-type:none;scroll-behavior:auto}
+.hstrip.dragging *{pointer-events:none}
+.arr{
+  position:absolute;top:38%;z-index:3;width:34px;height:34px;border-radius:50%;
+  background:rgba(13,20,32,.9);border:1px solid var(--line);color:var(--cyan);font:16px var(--mono);
+  cursor:pointer;transition:.18s;display:flex;align-items:center;justify-content:center;
+}
+.arr:hover{border-color:var(--cyan);box-shadow:0 0 14px rgba(34,211,238,.3)}
+.arr.l{left:-12px}.arr.r{right:-12px}
+
+/* 十周故事线卡 */
+.tcard{
+  flex:0 0 172px;scroll-snap-align:start;background:var(--panel2);border:1px solid var(--line);
+  border-radius:12px;padding:13px 14px;transition:.2s;user-select:none;position:relative;overflow:hidden;
+}
+.tcard:hover{border-color:var(--cyan);transform:translateY(-3px)}
+.tcard .wk{font-family:var(--mono);font-size:10px;color:var(--cyan);letter-spacing:2px}
+.tcard .ic{font-size:20px;margin:6px 0 4px}
+.tcard .tt{font-size:13px;font-weight:700;line-height:1.5;min-height:40px}
+.tcard .ds{color:var(--dim);font-size:11px;margin-top:5px;line-height:1.6}
+.tcard.now{border-color:rgba(34,211,238,.6);background:linear-gradient(160deg,rgba(34,211,238,.08),var(--panel2))}
+.tcard.bossc{
+  flex:0 0 232px;border-color:rgba(248,113,113,.55);
+  background:linear-gradient(160deg,rgba(248,113,113,.1),#140a0c);
+}
+.tcard.bossc:hover{border-color:var(--red);box-shadow:0 10px 30px rgba(248,113,113,.18)}
+.tcard.bossc .wk{color:var(--red)}
+.tcard.bossc .tt{color:var(--ink);font-size:14px}
+.tcard.bossc .boss-art-mini{margin-top:8px;border-radius:8px;overflow:hidden;border:1px solid rgba(248,113,113,.4)}
+.tcard.bossc .boss-art-mini svg{display:block;width:100%;height:auto}
+
+/* 角色图鉴卡 */
+.ccard{
+  flex:0 0 150px;scroll-snap-align:start;background:var(--panel2);border:1px solid var(--line);
+  border-radius:12px;padding:12px;transition:.22s;user-select:none;position:relative;
+}
+.ccard:hover{transform:translateY(-4px)}
+.ccard .cav{width:96px;height:96px;margin:0 auto;display:block;transition:.25s}
+.ccard:hover .cav{transform:scale(1.06)}
+.ccard .cav svg{width:100%;height:100%;border-radius:16px}
+.ccard .cn{text-align:center;font-weight:700;font-size:14px;margin-top:8px}
+.ccard .cr{text-align:center;font-size:10.5px;color:var(--dim);font-family:var(--mono);margin-top:2px;min-height:30px;line-height:1.5}
+.ccard .cq{
+  margin-top:8px;padding:8px 9px;border-radius:8px;background:rgba(255,255,255,.03);
+  font-size:11px;color:var(--ink);line-height:1.7;opacity:0;max-height:0;overflow:hidden;
+  transition:.28s;border-left:2px solid var(--violet);
+}
+.ccard:hover .cq{opacity:1;max-height:110px}
+.ccard.you{border-color:rgba(125,216,232,.5)}
+.ccard.bosscc{flex:0 0 210px;border-color:rgba(248,113,113,.5)}
+.ccard.bosscc .cav-boss{border-radius:12px;overflow:hidden;border:1px solid rgba(248,113,113,.4)}
+.ccard.bosscc .cav-boss svg{display:block;width:100%;height:auto}
+
+.pos{margin-top:44px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.pos table{width:100%;border-collapse:collapse;font-size:13px}
+.pos th{font-family:var(--mono);font-size:11px;letter-spacing:1px;color:var(--dim);text-align:left;padding:10px 14px;background:var(--panel);border-bottom:1px solid var(--line)}
+.pos td{padding:11px 14px;border-bottom:1px solid #151d2c;vertical-align:top;transition:background .2s}
+.pos tr:hover td{background:rgba(34,211,238,.025)}
+.pos tr:last-child td{border-bottom:none}
+.pos td:first-child{white-space:nowrap;font-weight:700}
+.pos .c{color:var(--cyan)} .pos .a{color:var(--amber)}
+.coverage{margin-top:44px}
+.coverage h3{font-family:var(--mono);font-size:12px;letter-spacing:2px;color:var(--dim);margin-bottom:10px}
+.mods{display:flex;flex-wrap:wrap;gap:7px}
+.mods span{font-family:var(--mono);font-size:11px;border:1px solid #2a3550;border-radius:6px;padding:3px 10px;background:var(--panel2);color:var(--ink);transition:.18s;cursor:default}
+.mods span:hover{border-color:var(--violet);color:var(--violet);transform:translateY(-1px)}
+.how{margin-top:44px;font-size:12.5px;color:var(--dim);line-height:2}
+.how b{color:var(--ink)}
+.starcta{margin-top:48px;border:1px solid rgba(251,191,36,.3);border-radius:18px;padding:26px 20px;text-align:center;background:rgba(251,191,36,.04)}
+.starcta .sc-t{font-size:20px;font-weight:800;color:#fbbf24;letter-spacing:2px;margin-bottom:10px}
+.starcta .sc-p{font-size:13px;color:#8b9bb4;line-height:1.9;margin:0 auto 16px;max-width:480px}
+.starcta .sc-btn{display:inline-block;font-family:var(--mono);font-size:14px;color:#fde68a;border:1.5px solid rgba(251,191,36,.5);border-radius:10px;padding:11px 22px;text-decoration:none;transition:all .15s}
+.starcta .sc-btn:hover{background:rgba(251,191,36,.12);text-shadow:0 0 12px rgba(251,191,36,.5);transform:translateY(-2px)}
+.footer{margin-top:44px;text-align:center;color:var(--dim);font-size:11.5px;font-family:var(--mono);line-height:2}
+.footer a{color:var(--cyan);text-decoration:none}
+.footer a:hover{text-shadow:0 0 12px rgba(34,211,238,.6)}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important}
+  .hstrip{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+<div class="wrap">
+  <div class="top">
+    <div class="kicker">NOVA·AI GAMES // FOR EVERY AI PM CANDIDATE</div>
+    <h1>AI 产品经理秋招笔试<b>题库游戏</b></h1>
+    <div class="sub"><span id="typeTxt"></span><span class="cursor">&nbsp;</span></div>
+    <div class="sub2">把笔试知识变成两款能玩的网页游戏——不限校招社招，不限背景。</div>
+    <div class="langnote">🎮 中文版 · 可安装 PWA 离线玩 · 键盘可通关（A–D / Enter）/ Chinese · installable PWA · keyboard-first</div>
+    <div class="hook">
+      故事线：你入职虚拟 AI 公司 <b>NOVA·AI</b>——十周里，虚荣指标、99% 的谎言、胡说八道的 AI、凌晨两点的 P0 接连砸向你；十周之后，<b>季终复盘会 · THE REVIEW</b> 有请。
+    </div>
+  </div>
+
+  <div class="worlds">
+    <div class="w wt"><div class="wi">🗼</div><div class="wt-t">试炼塔 · 大世界观</div><div class="wd">NOVA 学院 · 暗影法则：答错喂养暗影，连对两次净化为星光</div></div>
+    <div class="w-link">术语之桥<br>⇅<br>界间护照</div>
+    <div class="w wr"><div class="wi">🧭</div><div class="wt-t">RPG · 平行世界</div><div class="wd">沙盘 S1 · NOVA·AI 公司，十周试用期，真实的后果</div></div>
+  </div>
+
+  <div class="games">
+    <div class="game g1">
+      <div class="tag">GAME 1 · 判断力训练 / DECISION TRAINING</div>
+      <h2>AI PRODUCT RPG</h2>
+      <div class="en">Build. Break. Fix. Ship. — Learn AI by running an AI company.</div>
+      <div class="desc">剧情化职业模拟：调查线索 → 做决策 → 承担真实后果 → 复盘。每一次判断都写进公司指标和季终评级。</div>
+      <div class="chips"><span class="chip">10 个剧情 Case</span><span class="chip">👑 分档结局</span><span class="chip">📖 94 词词典</span><span class="chip">🌱 伴学植物</span><span class="chip">💾 存档码</span></div>
+      <a class="play" href="rpg/">▶ 开始职业生涯 / START CAREER</a>
+    </div>
+    <div class="game g2">
+      <div class="tag">GAME 2 · 知识覆盖与记忆 / KNOWLEDGE & RETENTION</div>
+      <h2>概念试炼塔 · Concept Tower</h2>
+      <div class="en">293 questions · company-mode towers (Meituan / Tencent / DiDi) · every answer explained.</div>
+      <div class="desc">245 题爬塔 roguelite：上排基础塔免费打地基，下排六厂黑话塔按需解锁——每题带解析与压轴 Boss，错题化为暗影复仇；🎴 每日挑战全世界同塔。</div>
+      <div class="chips"><span class="chip">245 道题</span><span class="chip">🏢 六厂黑话塔</span><span class="chip">👁 暗影复仇</span><span class="chip">🗼 17 座塔</span><span class="chip">🎴 每日挑战</span><span class="chip">🏆 成就墙</span><span class="chip">🎵 BGM</span><span class="chip">🔥 贡献榜</span><span class="chip">≈10 分钟/局</span></div>
+      <a class="play" href="tower/">▶ 开始爬塔 / ENTER TOWER</a>
+    </div>
+  </div>
+
+  <div class="shots">
+    <div class="shot-col">
+      <a href="rpg/"><img src="docs/images/rpg-gameplay.png" alt="RPG 剧情决策"><div class="cap">RPG · 剧情决策</div></a>
+      <a href="rpg/"><img src="docs/images/rpg-ending-legend.png" alt="天选之人结算"><div class="cap">RPG · 👑 天选之人结算</div></a>
+    </div>
+    <div class="shot-col">
+      <a href="tower/"><img src="docs/images/tower-battle.png" alt="试炼塔战斗"><div class="cap">试炼塔 · 战斗</div></a>
+      <a href="tower/"><img src="docs/images/tower-expl.png" alt="每题解析"><div class="cap">试炼塔 · 📖 每题解析</div></a>
+    </div>
+  </div>
+
+  <section class="block">
+    <div class="block-h"><h3>▸ 故事线 · 十周试用期</h3><span class="bh-en">SEASON 1 // YOUR FIRST 10 WEEKS</span></div>
+    <div class="block-sub">每一周都是一道真实的大厂笔试场景题 → 左右滑动看完整旅程 / drag or scroll sideways</div>
+    <div class="strip-wrap">
+      <button class="arr l" data-strip="tl" aria-label="左移">‹</button>
+      <div class="hstrip" id="tl">
+        <div class="tcard now"><div class="wk">WEEK 01</div><div class="ic">📈</div><div class="tt">DAU 涨了，CEO 却皱眉</div><div class="ds">激活与北极星 · 别被虚荣指标骗了</div></div>
+        <div class="tcard"><div class="wk">WEEK 02</div><div class="ic">🎭</div><div class="tt">99% 准确率的谎言</div><div class="ds">类别不均衡 · accuracy 的陷阱</div></div>
+        <div class="tcard"><div class="wk">WEEK 03</div><div class="ic">🚦</div><div class="tt">离线满分，上线翻车</div><div class="ds">灰度 · AB 实验 · 一键回滚</div></div>
+        <div class="tcard"><div class="wk">WEEK 04</div><div class="ic">🌀</div><div class="tt">AI 一本正经胡说八道</div><div class="ds">RAG · 知识新鲜度与索引同步</div></div>
+        <div class="tcard"><div class="wk">WEEK 05</div><div class="ic">⚡</div><div class="tt">用户嫌它太慢</div><div class="ds">流式输出 · TTFT 与体验</div></div>
+        <div class="tcard"><div class="wk">WEEK 06</div><div class="ic">🏔️</div><div class="tt">更强 = 更大？</div><div class="ds">能力 / 成本 / 延迟三角</div></div>
+        <div class="tcard"><div class="wk">WEEK 07</div><div class="ic">🧠</div><div class="tt">它记住了旧对话？</div><div class="ds">上下文 · KV Cache · 记忆边界</div></div>
+        <div class="tcard"><div class="wk">WEEK 08</div><div class="ic">🔌</div><div class="tt">客户的解析器炸了</div><div class="ds">输出格式 · JSON 约束 · 门禁</div></div>
+        <div class="tcard"><div class="wk">WEEK 09</div><div class="ic">🌊</div><div class="tt">流量突袭，画风变了</div><div class="ds">分布漂移 · 输入监控告警</div></div>
+        <div class="tcard"><div class="wk">WEEK 10</div><div class="ic">🚨</div><div class="tt">凌晨两点的 P0</div><div class="ds">事故响应 · 止血 · 根因复盘</div></div>
+        <div class="tcard bossc"><div class="wk">BOSS FIGHT</div><div class="ic">⚖️</div><div class="tt">季终复盘会 · THE REVIEW</div><div class="ds">十周欠账，一并清算。100% 首答命中 = 👑 天选之人</div><div class="boss-art-mini" id="bossMini"></div></div>
+      </div>
+      <button class="arr r" data-strip="tl" aria-label="右移">›</button>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="block-h"><h3>▸ 角色图鉴 · NOVA·AI</h3><span class="bh-en">CAST // WHO YOU'LL WORK WITH</span></div>
+    <div class="block-sub">悬停角色看台词 · 每个人都会在十周里教你一课 / hover for their line</div>
+    <div class="strip-wrap">
+      <button class="arr l" data-strip="cl" aria-label="左移">‹</button>
+      <div class="hstrip" id="cl"></div>
+      <button class="arr r" data-strip="cl" aria-label="右移">›</button>
+    </div>
+  </section>
+
+  <div class="coverage">
+    <h3>▸ 知识覆盖 · 16 模块</h3>
+    <div class="cov-line">ML 基础 → Deep Learning / NLP / CV → LLM 训练（SFT·RLHF·DPO）· LLM 推理（KV Cache·量化）→ RAG · Agent · 多模态 → AI 评估 · Infra → 产品 / 运营 / 商业 → 业务场景诊断</div>
+  </div>
+
+  <div class="how">
+    <b>零安装 · 离线可玩 · 进度自动保存</b>——点上方卡片直接开始。适合准备 AI 产品 / 运营 / Growth 笔试面试的所有人。微信小程序开发中。
+  </div>
+
+  <section class="starcta">
+    <div class="sc-t">⭐ 给它一颗星</div>
+    <p class="sc-p">两款游戏全部免费开源，由一个人为爱发电。如果它帮到了你的秋招——<br>去 GitHub 点一颗 ⭐，让更多准备 AI 产品岗的同学看到它。</p>
+    <a class="sc-btn" href="https://github.com/ink7011/ai-pm-exam-games" target="_blank" rel="noopener">☆ Star on GitHub · ink7011/ai-pm-exam-games</a>
+  </section>
+
+  <div class="footer">
+    AI PM EXAM PREP GAMES · MIT License · <a href="https://github.com/ink7011/ai-pm-exam-games">GitHub</a><br>
+    Build. Break. Fix. Ship. · 判断力 × 记忆力，双修。
+  </div>
+</div>
+
+<script src="rpg/js/cast.js?v=2"></script>
+<script>
+(function () {
+  'use strict';
+  var REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ============ 交互粒子网络 ============ */
+  var cv = document.getElementById('fx'), ctx = cv.getContext('2d');
+  var W = 0, H = 0, DPR = 1, P = [], RIPS = [];
+  var mouse = { x: -9e3, y: -9e3 };
+  var COLORS = ['#22d3ee', '#a78bfa', '#34d399', '#fbbf24'];
+  var GLYPHS = ['▸', '✦', '·', '0', '1'];
+
+  function resize() {
+    DPR = Math.min(2, window.devicePixelRatio || 1);
+    W = window.innerWidth; H = window.innerHeight;
+    cv.width = W * DPR; cv.height = H * DPR;
+    cv.style.width = W + 'px'; cv.style.height = H + 'px';
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+  function mk() {
+    return {
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - .5) * .22, vy: (Math.random() - .5) * .22,
+      glyph: Math.random() < .3, ch: GLYPHS[(Math.random() * GLYPHS.length) | 0],
+      r: .8 + Math.random() * 1.7, a: .25 + Math.random() * .4,
+      c: COLORS[(Math.random() * COLORS.length) | 0]
+    };
+  }
+  function initFx() {
+    resize();
+    P = [];
+    var n = Math.min(80, Math.max(36, (W * H) / 26000 | 0));
+    for (var i = 0; i < n; i++) P.push(mk());
+  }
+  window.addEventListener('resize', initFx);
+  window.addEventListener('pointermove', function (e) { mouse.x = e.clientX; mouse.y = e.clientY; }, { passive: true });
+  window.addEventListener('pointerleave', function () { mouse.x = -9e3; mouse.y = -9e3; });
+  window.addEventListener('pointerdown', function (e) {
+    if (REDUCED) return;
+    RIPS.push({ x: e.clientX, y: e.clientY, r: 4, a: .5 });
+  }, { passive: true });
+
+  function step() {
+    ctx.clearRect(0, 0, W, H);
+    var i, j, p, q, dx, dy, d2;
+    for (i = 0; i < P.length; i++) {
+      p = P[i];
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < -20) p.x = W + 20; if (p.x > W + 20) p.x = -20;
+      if (p.y < -20) p.y = H + 20; if (p.y > H + 20) p.y = -20;
+      dx = p.x - mouse.x; dy = p.y - mouse.y; d2 = dx * dx + dy * dy;
+      if (d2 < 16900 && d2 > 1) { var f = 22 / Math.sqrt(d2); p.x += dx * f * .08; p.y += dy * f * .08; }
+    }
+    // 邻近连线（仅在鼠标附近才有，保持克制）
+    ctx.lineWidth = 1;
+    for (i = 0; i < P.length; i++) {
+      p = P[i];
+      var mdx = p.x - mouse.x, mdy = p.y - mouse.y;
+      var nearMouse = mdx * mdx + mdy * mdy < 32400;
+      for (j = i + 1; j < P.length; j++) {
+        q = P[j];
+        dx = p.x - q.x; dy = p.y - q.y; d2 = dx * dx + dy * dy;
+        if (d2 < 5625) {
+          var base = (1 - Math.sqrt(d2) / 75) * .12;
+          var boost = (nearMouse ? .22 : 0);
+          ctx.strokeStyle = 'rgba(34,211,238,' + (base + boost).toFixed(3) + ')';
+          ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
+        }
+      }
+    }
+    // 粒子本体
+    for (i = 0; i < P.length; i++) {
+      p = P[i];
+      ctx.globalAlpha = p.a;
+      if (p.glyph) {
+        ctx.fillStyle = p.c;
+        ctx.font = (8 + p.r * 3).toFixed(0) + 'px ui-monospace,Menlo,monospace';
+        ctx.fillText(p.ch, p.x, p.y);
+      } else {
+        ctx.fillStyle = p.c;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
+      }
+    }
+    ctx.globalAlpha = 1;
+    // 点击涟漪
+    for (i = RIPS.length - 1; i >= 0; i--) {
+      var rp = RIPS[i];
+      rp.r += 2.6; rp.a *= .94;
+      if (rp.a < .02) { RIPS.splice(i, 1); continue; }
+      ctx.strokeStyle = 'rgba(34,211,238,' + rp.a.toFixed(3) + ')';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(rp.x, rp.y, rp.r, 0, 6.283); ctx.stroke();
+    }
+  }
+  var running = false;
+  function loop() { if (!running) return; step(); requestAnimationFrame(loop); }
+  initFx();
+  if (REDUCED) { step(); } else {
+    running = true; loop();
+    document.addEventListener('visibilitychange', function () {
+      running = !document.hidden;
+      if (running) loop();
+    });
+  }
+
+  /* ============ 打字机 ============ */
+  var PHRASES = ['BUILD. BREAK. FIX. SHIP.', 'LEARN AI BY RUNNING AN AI COMPANY.', 'TWO GAMES, ONE OFFER.'];
+  var tEl = document.getElementById('typeTxt');
+  if (REDUCED) { tEl.textContent = PHRASES[0]; }
+  else (function () {
+    var pi = 0, ci = 0, del = false;
+    function tick() {
+      var s = PHRASES[pi];
+      tEl.textContent = s.slice(0, ci);
+      if (!del) {
+        ci++;
+        if (ci > s.length) { del = true; setTimeout(tick, 2100); return; }
+        setTimeout(tick, 55 + Math.random() * 60);
+      } else {
+        ci--;
+        if (ci === 0) { del = false; pi = (pi + 1) % PHRASES.length; setTimeout(tick, 420); return; }
+        setTimeout(tick, 24);
+      }
+    }
+    setTimeout(tick, 600);
+  })();
+
+  /* ============ 角色图鉴 ============ */
+  var cl = document.getElementById('cl');
+  if (window.CAST && cl) {
+    var order = ['you', 'victor', 'lin', 'kai', 'maya', 'raj', 'dana', 'sys'];
+    var html = '';
+    order.forEach(function (k) {
+      var m = window.CAST.meta[k];
+      html += '<div class="ccard' + (k === 'you' ? ' you' : '') + '">' +
+        '<div class="cav">' + window.CAST.avatar(k) + '</div>' +
+        '<div class="cn">' + m.name + '</div><div class="cr">' + m.role + '</div>' +
+        '<div class="cq">' + m.quote + '</div></div>';
+    });
+    html += '<div class="ccard bosscc"><div class="cav-boss">' + window.CAST.boss + '</div>' +
+      '<div class="cn" style="color:var(--red)">季终复盘会</div><div class="cr">THE REVIEW · Season 1 FINAL BOSS</div>' +
+      '<div class="cq" style="border-left-color:var(--red)">“十周欠账，一并清算。”</div></div>';
+    cl.innerHTML = html;
+  }
+  var bm = document.getElementById('bossMini');
+  if (window.CAST && bm) bm.innerHTML = window.CAST.boss;
+
+  /* ============ 横滑区：箭头 + 拖拽 ============ */
+  document.querySelectorAll('.arr').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var s = document.getElementById(b.dataset.strip);
+      if (s) s.scrollBy({ left: (b.classList.contains('l') ? -1 : 1) * Math.min(560, s.clientWidth * .8), behavior: 'smooth' });
+    });
+  });
+  document.querySelectorAll('.hstrip').forEach(function (s) {
+    var down = false, sx = 0, sl = 0, moved = 0;
+    s.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'touch') return;
+      down = true; moved = 0; sx = e.clientX; sl = s.scrollLeft;
+      s.classList.add('dragging');
+    });
+    window.addEventListener('pointermove', function (e) {
+      if (!down) return;
+      var dx = e.clientX - sx; moved = Math.abs(dx);
+      if (moved > 4) s.scrollLeft = sl - dx;
+    });
+    window.addEventListener('pointerup', function () {
+      if (!down) return;
+      down = false;
+      setTimeout(function () { s.classList.remove('dragging'); }, 0);
+    });
+  });
+})();
+</script>
+<script>
+/* PWA：仅 https / localhost 下注册 Service Worker（file:// 与 http 内网不注册） */
+if ('serviceWorker' in navigator &&
+    (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+/* NOVA 终端风主题（小程序版） */
+page {
+  background: #07090f;
+  color: #dbe4f0;
+  font-size: 14px;
+  line-height: 1.7;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+}
+.mono { font-family: Menlo, Consolas, monospace; }
+.dim { color: #8b9bb4; }
+.cyan { color: #22d3ee; }
+.amber { color: #fbbf24; }
+.green { color: #34d399; }
+.red { color: #f87171; }
+.violet { color: #a78bfa; }
+.panel {
+  background: #0e131d;
+  border: 1px solid #1e2836;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  margin: 20rpx 24rpx;
+}
+.h3 {
+  font-family: Menlo, Consolas, monospace;
+  font-size: 22rpx;
+  color: #8b9bb4;
+  letter-spacing: 4rpx;
+  margin-bottom: 16rpx;
+}
+.btn-main {
+  background: linear-gradient(90deg, #22d3ee, #a78bfa);
+  color: #05070c;
+  font-weight: 700;
+  font-family: Menlo, Consolas, monospace;
+  border-radius: 14rpx;
+  border: none;
+  margin-top: 24rpx;
+}
+.btn-main::after { border: none; }
+.btn-ghost {
+  background: transparent;
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.55);
+  border-radius: 14rpx;
+  font-size: 24rpx;
+  margin-top: 24rpx;
+}
+.btn-ghost::after { border: none; }
