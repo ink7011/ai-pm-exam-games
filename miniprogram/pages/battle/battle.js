@@ -219,7 +219,7 @@ Page({
     if (!it || this.R.coins < it.cost) return;
     this.R.coins -= it.cost;
     this.R.items[id] = (this.R.items[id] || 0) + 1;
-    wx.showToast({ title: '购入 ' + it.name, icon: 'none' });
+    wx.showToast({ title: '兑换 ' + it.name, icon: 'none' });
     this.refreshStatus();
     this.setData({ shopItems: core.ITEMS.map(x => ({ ...x, afford: this.R.coins >= x.cost })) });
   },

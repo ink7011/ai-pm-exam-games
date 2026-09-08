@@ -28,7 +28,7 @@ Page({
     const that = this;
     wx.showModal({
       title: '🏢 ' + t.name,
-      content: t.desc + ' · ' + core.poolOf(t).length + ' 题（含压轴 Boss）\n解锁价 ¥' + t.price + ' · 一次解锁永久有效\n\n（原创模拟题 · 非官方真题）\n\n请输入兑换码（NOVA-XXXXXX）：',
+      content: t.desc + ' · ' + core.poolOf(t).length + '题（含压轴复盘）\n\n（原创模拟题 · 非官方真题）\n\n请输入兑换码（NOVA-XXXXXX），输入后永久解锁：',
       editable: true,
       placeholderText: 'NOVA-XXXXXX',
       confirmText: '解锁',
@@ -50,6 +50,6 @@ Page({
     });
   },
   onShareAppMessage() {
-    return { title: 'AI 产品经理秋招题库游戏 · 爬塔背题，暗影复仇', path: '/pages/hub/hub' };
+    return { title: 'AI 产品经理秋招题库 · 闯关刷题，错题重练', path: '/pages/hub/hub' };
   }
 });

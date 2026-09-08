@@ -12,7 +12,7 @@
         <view class="tn">{{item.name}}</view>
         <view class="td mono">{{item.desc}} · {{item.n}} 题</view>
         <view class="best mono" wx:if="{{item.best}}">最佳 {{item.best}} 分</view>
-        <view class="lock mono" wx:if="{{item.locked}}">🔒 解锁 ¥{{item.price}}</view>
+        <view class="lock mono" wx:if="{{item.locked}}">🔒 兑换码解锁</view>
       </view>
     </view>
   </block>
