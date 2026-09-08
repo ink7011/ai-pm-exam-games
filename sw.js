@@ -7,7 +7,7 @@
    版本号缓存：nova-v1（改静态资源时递增版本号即可整体换血）
    ============================================================ */
 /* eslint-env serviceworker */
-var CACHE = 'nova-v15';
+var CACHE = 'nova-v16';
 
 /* 离线可玩清单：三个入口页 + 全部游戏 JS + PWA 资产
    （docs/ 截图与 miniprogram/ 不属于 Web 游戏运行资源，刻意不入缓存） */

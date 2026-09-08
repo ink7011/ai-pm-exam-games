@@ -162,14 +162,14 @@
   }
   /* 店主配置：爱发电/面包多商品页链接（留空=仅扫码人工发码）
      BUY_URLS 按塔填各自商品页；没填的塔回退到 BUY_URL */
-  const BUY_URL = '';
+  const BUY_URL = 'https://afdian.com/a/nova-games';
   const BUY_URLS = {
-    // meituan: 'https://...',
-    // didi: 'https://...',
-    // xiaohongshu: 'https://...',
-    // tencent: 'https://...',
-    // alibaba: 'https://...',
-    // bytedance: 'https://...'
+    meituan: 'https://afdian.com/item/12d884feab6b11f1a21c5254001e7c00',
+    didi: 'https://afdian.com/item/324b8a20ab6b11f1b01052540025c377',
+    xiaohongshu: 'https://afdian.com/item/407155a8ab6b11f1b1b952540025c377',
+    tencent: 'https://afdian.com/item/4e0fee4aab6b11f19ba852540025c377',
+    alibaba: 'https://afdian.com/item/5b50b5daab6b11f1944f52540025c377',
+    bytedance: 'https://afdian.com/item/6846b3caab6b11f184555254001e7c00'
   };
 
   /* ---------------- 付费解锁（兑换码制 · 零后端） ---------------- */

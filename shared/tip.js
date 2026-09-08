@@ -8,7 +8,7 @@
 (function () {
   'use strict';
   var QR = { wx: '../docs/images/pay-wechat.jpg', ali: '../docs/images/pay-alipay.jpg' };
-  var TIP_URL = '';
+  var TIP_URL = 'https://afdian.com/a/nova-games';
   var CAP = 10000;
   var LUCK_KEY = 'novaAcademy.luck';
   var YB_KEY = 'novaAcademy.yearbook';
