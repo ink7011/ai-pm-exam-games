@@ -1,4 +1,4 @@
-# AI 产品经理笔试题库游戏 · AI PM Exam Prep Games
+# AI 产品经理笔试题库游戏 · Nova学院
 
 > **两款可以直接玩的网页游戏，把 AI 产品 / 运营 / 增长方向的求职笔试知识变成游戏——校招、社招、转行都适用。**
 > **耍中找学，学中来耍。耍学结合，以耍为主。Play to learn, learn to play. Learn through play, with play first.**
