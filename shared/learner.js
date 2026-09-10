@@ -67,7 +67,18 @@
 
   /* ---------- 存取 ---------- */
   function load() {
-    try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && s.v === 1 && s.goal) return s; } catch (e) {}
+    try {
+      var s = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (s && s.v === 1 && s.goal) {
+        var b = blank();                       // 半损坏存档补默认结构，防 recordAnswer/track 炸主流程
+        b.skills = b.skills || {};
+        ['questHistory', 'events', 'focus'].forEach(function (k) { if (!Array.isArray(s[k])) s[k] = b[k]; });
+        if (!s.skills || typeof s.skills !== 'object') s.skills = b.skills;
+        SKILLS.forEach(function (sk) { if (typeof s.skills[sk.id] !== 'number' || !isFinite(s.skills[sk.id])) s.skills[sk.id] = 0; });
+        if (!s.quest || typeof s.quest !== 'object') s.quest = null;
+        return s;
+      }
+    } catch (e) {}
     return null;
   }
   function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
@@ -163,6 +174,7 @@
     if (!S) return null;
     var tpl = QUESTS.filter(function (q) { return q.id === qid; })[0];
     if (!tpl) return null;
+    if (S.questHistory.some(function (h) { return h.id === qid; })) { if (S.quest && S.quest.id === qid) S.quest = null; return tpl; }  // 已完成过：只清 current，不重复发放
     if (S.quest && S.quest.id === qid) S.quest = null;
     S.questHistory.push({ id: qid, t: Date.now() });
     var gains = tpl.gains || {};
@@ -184,12 +196,10 @@
     try {
       var now = Date.now();
       Object.keys((towerP && towerP.wrong) || {}).forEach(function (qid) {
-        var w = towerP.wrong[qid];
-        var item = towerP.__itemMap && towerP.__itemMap[qid];
-        var mod = item ? item.mod : (w && w.mod);
+        var w = towerP.wrong[qid] || {};
+        var mod = w.mod;                        // 生产形状：finalizeWrong 写入 {miss, streak, mod, t}
         if (!mod) return;
-        var ageDays = w && w.t ? (now - w.t) / 86400000 : 99;
-        if (w && w.cleared) return;
+        var ageDays = w.t ? (now - w.t) / 86400000 : 99;
         if (ageDays > 7) return;
         var sk = skillOf(mod);
         wrongBySkill[sk] = (wrongBySkill[sk] || 0) + 1;
@@ -200,7 +210,8 @@
     if (bestWrong && n >= 3) {
       return { skill: bestWrong, reason: 'You missed ' + n + ' ' + (SKILL_NAME[bestWrong] || {}).name + ' questions this week.', kind: 'wrong' };
     }
-    var g = growthAreas();
+    var hasMods = {}; Object.keys(MOD2SKILL).forEach(function (m) { hasMods[MOD2SKILL[m]] = true; });
+    var g = growthAreas().filter(function (x) { return hasMods[x.id]; });  // judgment 等无题库映射的技能不参与 daily 聚焦
     if (g.length) return { skill: g[0].id, reason: (SKILL_NAME[g[0].id] || {}).name + ' is one of your current growth areas.', kind: 'gap' };
     return null;
   }
@@ -219,13 +230,14 @@
       var v = S.skills[s.id] || 0;
       if (v >= 40) steps.push({ t: null, title: s.name + ' ≥ 40', zh: s.zh + ' 觉醒', desc: s.name + ' reached ' + v });
     });
-    if (rpgSave && rpgSave.endingRank) steps.push({ t: null, title: 'NOVA RPG Cleared', zh: 'RPG 通关', desc: 'Season 1 complete' });
+    var rpgDone = !!(rpgSave && (rpgSave.finished || rpgSave.finalGrade));
+    if (rpgDone) steps.push({ t: null, title: 'NOVA RPG Cleared', zh: 'RPG 通关', desc: 'Season 1 complete' + (rpgSave.finalGrade ? ' · Grade ' + rpgSave.finalGrade : '') });
     var core = ['productSense', 'aiFundamentals', 'technicalDepth', 'aiEvaluation'];
     var sum = 0; core.forEach(function (k) { sum += (S.skills[k] || 0); });
-    if (sum / core.length >= 70 && rpgSave && rpgSave.endingRank) {
+    if (sum / core.length >= 70 && rpgDone) {
       steps.push({ t: null, title: 'AI PM READY', zh: 'AI PM 就绪', desc: 'Core skills ≥ 70 · RPG cleared', final: true });
     } else {
-      steps.push({ t: null, title: 'Next: AI PM Ready', zh: '下一站：AI PM Ready', desc: 'Core skills avg ' + Math.round(sum / core.length) + ' / 70 · RPG ' + (rpgSave && rpgSave.endingRank ? '✓' : '—'), pending: true });
+      steps.push({ t: null, title: 'Next: AI PM Ready', zh: '下一站：AI PM Ready', desc: 'Core skills avg ' + Math.round(sum / core.length) + ' / 70 · RPG ' + (rpgDone ? '✓' : '—'), pending: true });
     }
     return steps.sort(function (a, b) { return (a.t || 9e15) - (b.t || 9e15); });
   }
@@ -259,8 +271,8 @@
     var ms = towerP.modStats || {};
     Object.keys(ms).forEach(function (mod) {
       var st = ms[mod] || {};
-      var seen = (st.seen || 0), ok = (st.ok || 0);
-      if (seen > 0) { var sk = skillOf(mod); seeds[sk] = (seeds[sk] || 0) + ok * 2; }
+      var right = (st.right || 0);              // 生产形状：bumpMod 写 {right, wrong}
+      if (right > 0) { var sk = skillOf(mod); seeds[sk] = (seeds[sk] || 0) + right * 2; }
     });
     Object.keys(seeds).forEach(function (k) { S.skills[k] = cap(seeds[k]); });
     save(S); track('profileMigrated', { seeded: Object.keys(seeds).length });

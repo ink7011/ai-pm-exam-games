@@ -264,7 +264,9 @@
       const fmods = Object.keys(window.LE.MOD2SKILL).filter(m => window.LE.MOD2SKILL[m] === focus.skill);
       const hot = normals.filter(x => fmods.includes(x.mod));
       const cold = normals.filter(x => !fmods.includes(x.mod));
-      pick = seededShuffle(hot, rng).slice(0, 5).concat(seededShuffle(cold, rng).slice(0, 4));
+      pick = hot.length >= 3
+        ? seededShuffle(hot, rng).slice(0, Math.min(5, hot.length)).concat(seededShuffle(cold, rng).slice(0, 9 - Math.min(5, hot.length)))
+        : seededShuffle(normals, rng).slice(0, 9);   // 焦点题不足 3 道：回落全量，防每日缩水
     } else {
       pick = seededShuffle(normals, rng).slice(0, 9);
     }
@@ -440,7 +442,7 @@
     box.innerHTML +=
       '<div style="margin-top:14px;border:1px dashed var(--violet);border-radius:10px;padding:10px 14px;text-align:left">' +
       '<div style="font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--violet);margin-bottom:6px">🎴 DAILY CHALLENGE · 每日挑战</div>' +
-      '<div style="font-size:12.5px;color:var(--dim);line-height:1.8">混合池固定 10 层 · 1 颗心 · 无补给站。全世界玩家今天爬的是同一座塔。<br>' +
+      '<div style="font-size:12.5px;color:var(--dim);line-height:1.8">混合池 10 层 · 1 颗心 · 无补给站。有成长档案时，今天的塔会围绕你的成长区与本周错题聚焦。<br>' +
       (dInfo
         ? '今日最佳 <b style="color:var(--amber)">' + (dInfo.best || 0) + '</b> 分 · 连胜 <b style="color:var(--cyan)">' + (dInfo.streak || 0) + '</b> 天' + (dInfo.done ? '（成绩已计入，再刷为练习）' : '')
         : '今天还没开打 · 每天<b style="color:var(--green)">首次登顶</b>计入成绩，连胜不断则有惊喜') + '</div>' +
@@ -704,6 +706,8 @@
     if (!P.wrong[it.id]) P.wrong[it.id] = { miss: 0, streak: 0 };
     P.wrong[it.id].miss++;
     P.wrong[it.id].streak = 0;
+    P.wrong[it.id].mod = it.mod;                 // V0.5：错题归属模块（learner dailyFocus 依赖）
+    P.wrong[it.id].t = Date.now();               // V0.5：最近答错时间（"本周错题"判定）
     R.pendingShadow.push({ id: it.id, at: R.pos + 1 + 3 });
     R.pendingShadow.sort((a, b) => a.at - b.at);
     verdict('bad', tag + '（生命 ' + R.hp + '/' + (R.maxHp || MAX_HP) + '）',
@@ -748,7 +752,7 @@
   }
   function nextLabel() {
     if (cur.kind === 'boss') return '登顶结算 ▸';
-    const isShop = !R.daily && (R.pos + 1 === ELITE_FLOORS[0] || R.pos + 1 === ELITE_FLOORS[1]) && cur.kind !== 'shadow';
+    const isShop = !R.daily && !R.questId && (R.pos + 1 === ELITE_FLOORS[0] || R.pos + 1 === ELITE_FLOORS[1]) && cur.kind !== 'shadow';
     if (cur.kind === 'shadow') return '继续爬塔 ▸';
     return isShop ? '前往补给站 ▸' : '下一层 ▸';
   }
@@ -869,7 +873,7 @@
       '<button class="retrybtn" id="reviewWrong">复盘错题</button></div>';
     wrap.appendChild(rep);
     $('screen').innerHTML = ''; $('screen').appendChild(wrap);
-    $('againBtn').onclick = () => R.daily ? startDaily() : startRun(R.towerId);
+    $('againBtn').onclick = () => R.daily ? startDaily() : (R.questId ? startQuestRun(R.questId) : startRun(R.towerId));
     $('backSel').onclick = () => renderSelect();
     $('reviewWrong').onclick = () => modalWrong();
   }

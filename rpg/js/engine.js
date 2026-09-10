@@ -43,6 +43,7 @@
     if (!s.ach) s.ach = {};                                  // P2-1 成就 {id: 时间戳}
     if (typeof s.cleanStreak !== 'number') s.cleanStreak = 0; // P2-1 连续零失误章节
     if (typeof s.finalGrade !== 'string') s.finalGrade = '';  // P2-1 通关评级（跨游戏成就用）
+    if (typeof s.learnerFini !== 'boolean') s.learnerFini = !!s.finished;  // V0.5：老通关档视为已发过（防重开页刷 XP）
     if (!s.bossVariants) s.bossVariants = [];
     if (typeof s.clock !== 'number') s.clock = 9 * 60;
     return s;
@@ -651,7 +652,7 @@
     const grade = tier.grade;
     S.finalGrade = grade;                                     // P2-1：跨游戏成就读取
     ach('rpg_finish');
-    if (window.LE) window.LE.recordRpgEvent('finished');     // V0.5：通关 → 判断力大幅成长
+    if (!S.learnerFini) { S.learnerFini = true; if (window.LE) window.LE.recordRpgEvent('finished'); }  // V0.5：通关 XP 仅首发一次（boot 重放 chapterEnd 不重发）
     if (grade === 'S' && tier.name === '天选之人') ach('rpg_chosen');
     if (S.errors.length > 0 && unresolvedErrors().length === 0) ach('rpg_lantern');
     achCrossDual(grade);

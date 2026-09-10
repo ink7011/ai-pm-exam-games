@@ -14,7 +14,6 @@ C. 选项三　D. 选项四
 ```
 
 - 放到 `bank/` 目录（新建），或直接提 Issue 附上题目
-- 合入后运行 `python3 tools/build-deck.py bank/你的题库.md -o tower/js/deck-data.js --mp` 重新生成两端题库
 - 要求：**原创或改写**，不要直接粘贴任何公司的真实试卷（版权风险）
 
 ## 🧩 贡献剧情 / Season

@@ -515,25 +515,51 @@ async function main() {
     ok('completeQuest 发放收益并写历史', LE.profile().questHistory.length === 1 && !LE.profile().quest);
     const rec2 = LE.recommendQuest();
     ok('完成后推荐换下一个', !!rec2 && rec2.id !== q1.id, rec2 && rec2.id);
-    // dailyFocus：本周错题驱动
+    // dailyFocus：本周错题驱动（生产形状：finalizeWrong 写 {miss, streak, mod, t}）
     const LEf = LE;
-    const tp = { wrong: { q1: { miss: 2, t: Date.now() - 86400000 }, q2: { miss: 1, t: Date.now() }, q3: { miss: 1, t: Date.now() }, q4: { miss: 1, t: Date.now() } }, __itemMap: { q1: { mod: 'rag' }, q2: { mod: 'rag' }, q3: { mod: 'rag' }, q4: { mod: 'rag' } } };
+    const tp = { wrong: { q1: { miss: 2, streak: 0, mod: 'rag', t: Date.now() - 86400000 }, q2: { miss: 1, streak: 0, mod: 'rag', t: Date.now() }, q3: { miss: 1, streak: 0, mod: 'rag', t: Date.now() }, q4: { miss: 1, streak: 0, mod: 'rag', t: Date.now() } } };
     const f1 = LEf.dailyFocus(tp);
-    ok('dailyFocus 优先本周错题最多的技能', f1 && f1.skill === 'technicalDepth' && f1.kind === 'wrong' && /missed 4/.test(f1.reason), JSON.stringify(f1));
+    ok('dailyFocus 优先本周错题最多的技能（生产形状）', f1 && f1.skill === 'technicalDepth' && f1.kind === 'wrong' && /missed 4/.test(f1.reason), JSON.stringify(f1));
+    const f1b = LEf.dailyFocus({ wrong: { q9: { miss: 9, streak: 0 } } });   // 旧形状（无 mod/t）不得炸、不得误报
+    ok('旧形状错题（无 mod/t）安全回落', !f1b || f1b.kind === 'gap', JSON.stringify(f1b));
     const f2 = LEf.dailyFocus({ wrong: {} });
     ok('无错题时回落到成长区', f2 && f2.kind === 'gap');
+    ok('回落排除无题库映射的技能（judgment 不做 daily 焦点）', f2 && f2.skill !== 'judgment', JSON.stringify(f2));
     // 迁移：老塔友
     const gm = sandbox({ autoCreate: true });
     loadIn(gm, 'shared/learner.js');
     const LEm = gm.window.LE;
-    LEm.migrateExisting({ modStats: { eval: { seen: 10, ok: 9 }, llm: { seen: 5, ok: 2 } }, codex: { a: 1, b: 2, c: 3, d: 4 } });
+    LEm.migrateExisting({ modStats: { eval: { right: 9, wrong: 1 }, llm: { right: 2, wrong: 3 } }, codex: { a: 1, b: 2, c: 3, d: 4 } });
     const Sm = LEm.profile();
-    ok('老用户迁移：默认 AI PM 目标 + 技能种子', Sm.migrated === true && Sm.goal === 'ai-pm' && Sm.skills.aiEvaluation === 18 && Sm.skills.technicalDepth === 4, JSON.stringify(Sm.skills));
+    ok('老用户迁移：默认 AI PM 目标 + 技能种子（生产形状 right×2）', Sm.migrated === true && Sm.goal === 'ai-pm' && Sm.skills.aiEvaluation === 18 && Sm.skills.technicalDepth === 4, JSON.stringify(Sm.skills));
     // journey
-    const steps = LEm.journey({ endingRank: 'S' });
+    const steps = LEm.journey({ finished: true, finalGrade: 'S' });
+    ok('journey 读生产字段（finished/finalGrade）识别通关', steps.some(x => x.title === 'NOVA RPG Cleared'));
     ok('journey 含开始/迁移节点', steps.some(x => x.title === 'Started') && steps.some(x => x.title === 'Legacy merged'));
     // 事件环
     ok('事件环形缓冲 ≤200', LEm.profile().events.length <= 200);
+    // 回归：completeQuest 一生一次（重复完成不重复发放）
+    const LEq = LE;
+    const qA = LEq.recommendQuest();
+    LEq.startQuest(qA.id);
+    LEq.completeQuest(qA.id);
+    const xp1 = LEq.profile().skills[qA.skill] || 0;
+    LEq.startQuest(qA.id); LEq.completeQuest(qA.id);
+    const xp2 = LEq.profile().skills[qA.skill] || 0;
+    ok('Quest 收益一生一次（重复完成不重发）', LEq.profile().questHistory.filter(h => h.id === qA.id).length === 1 && xp1 === xp2);
+    // 回归：半损坏档案不击穿主流程
+    const gh = sandbox({ autoCreate: true });
+    gh.localStorage.setItem('nova.learner.v1', JSON.stringify({ v: 1, goal: 'ai-pm' }));
+    let loadBroken = null;
+    try { loadIn(gh, 'shared/learner.js'); gh.window.LE.recordAnswer('eval', true, true); loadBroken = 'ok'; } catch (e) { loadBroken = e.message; }
+    ok('半损坏档案补默认结构后可用', loadBroken === 'ok', loadBroken);
+    // 回归：源码守卫（A1/A3/A5 修复在场）
+    const gsrc = fs.readFileSync(path.join(ROOT, 'tower/js/game.js'), 'utf8');
+    const esrc = fs.readFileSync(path.join(ROOT, 'rpg/js/engine.js'), 'utf8');
+    ok('A1: 再爬一次有 quest 分支', gsrc.includes('R.questId ? startQuestRun'));
+    ok('A3: 每日焦点题不足回落全量', gsrc.includes('hot.length >= 3'));
+    ok('A5: RPG 通关 XP 幂等守卫', esrc.includes('learnerFini'));
+    ok('错题入册写 mod+t（dailyFocus 数据源）', gsrc.includes('P.wrong[it.id].mod = it.mod'));
   } catch (e) { ok('learner 节执行', false, e.message); }
 
     /* ========== 12. 贡献榜 + 塔 BGM ========== */

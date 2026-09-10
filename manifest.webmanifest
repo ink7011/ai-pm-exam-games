@@ -1,7 +1,7 @@
 {
-  "name": "AI 产品经理秋招笔试题库游戏",
-  "short_name": "NOVA 题库游戏",
-  "description": "AI PRODUCT RPG + NOVA 概念试炼塔：把 AI 产品经理秋招真题变成剧情与爬塔。纯本地运行，进度自动保存。",
+  "name": "Nova 学院 · AI Career Learning RPG",
+  "short_name": "Nova 学院",
+  "description": "AI PRODUCT RPG + NOVA 概念试炼塔：把 AI 产品方向的求职备考（原创模拟题，非真题）变成剧情与爬塔，学习路径随你的目标与技能演化。纯本地运行。",
   "lang": "zh-CN",
   "dir": "ltr",
   "start_url": "./",

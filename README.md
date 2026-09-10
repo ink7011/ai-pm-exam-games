@@ -9,7 +9,7 @@
 [![Play Online](https://img.shields.io/badge/▶_在线玩_Play_Online-22d3ee?style=for-the-badge)](https://ink7011.github.io/ai-pm-exam-games/)
 [![Questions](https://img.shields.io/badge/题库-335_题-fbbf24.svg)](tower/js/deck-data.js)
 [![Status](https://img.shields.io/badge/status-early--stage_prototype-fbbf24.svg)](docs/CHANGELOG.md)
-[![Tests](https://img.shields.io/badge/smoke-160+_断言-34d399.svg)](tools/smoke.js)
+[![Tests](https://img.shields.io/badge/smoke-186_断言-34d399.svg)](tools/smoke.js)
 [![License: MIT](https://img.shields.io/badge/License-MIT-34d399.svg)](LICENSE)
 
 **如果这个仓库帮到了你，点一个 ⭐ 让更多准备 AI 产品岗的同学看到它。**
@@ -59,7 +59,7 @@ Goal → Diagnose → Quest → Decision → Feedback → Memory → Level Up �
 | 🧭 **AI PRODUCT RPG** | 十周试用期剧情沙盘（10 Case · 四档结局 · 94 词词典）——练判断力 |
 | 🗼 **概念试炼塔** | 335 题 roguelite 爬塔（245 免费 + 6 座进阶实战塔）——练记忆力，每题四选项逐一判词 |
 | 👁 **Shadow Revenge** | 错题事件化：*"A Shadow has appeared — RAG is becoming your weak point."* |
-| 🎴 **Adaptive Daily** | 今日挑战不再纯随机：优先你的焦点技能与本周错题（含推荐理由） |
+| 🎴 **Adaptive Daily** | 今日挑战不再纯随机：优先你的成长区技能与本周错题（含推荐理由） |
 | ◈ **Skill Map** | 强项 / 成长区 / 下一推荐任务——"我正在成为怎样的 AI Product person" |
 | ⟡ **Career Journey** | 时间轴：Started → 技能觉醒 → Quest → RPG 通关 → AI PM Ready |
 | 📖 年鉴墙 · 🎋 六爻求签 · 🌱 伴学植物 | 仪式感与留存层（详见 [docs/DESIGN-DECISIONS.md](docs/DESIGN-DECISIONS.md)） |
