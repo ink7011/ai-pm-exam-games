@@ -165,4 +165,16 @@
       return enabled;
     }
   };
+
+  /* 自动播放策略兼容：浏览器不允许无声页面直接出声——首次用户交互（点击/按键）时自动开播。
+     enabled 为开而从未手动进设置关过 BGM 的玩家，点第一个选项的那一刻音乐就进来了。 */
+  function gestureBoot() {
+    document.removeEventListener('pointerdown', gestureBoot);
+    document.removeEventListener('keydown', gestureBoot);
+    document.removeEventListener('touchstart', gestureBoot);
+    if (enabled && !running) start();
+  }
+  document.addEventListener('pointerdown', gestureBoot);
+  document.addEventListener('keydown', gestureBoot);
+  document.addEventListener('touchstart', gestureBoot);
 })();
