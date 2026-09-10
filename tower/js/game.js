@@ -220,27 +220,14 @@
       '<div class="pw-desc">' + esc(t.desc) + ' · ' + n + ' 题（含压轴 Boss）· 每题带解析 · 暗影复仇适用</div>' +
       '<div class="pw-price">解锁价 <b>¥' + t.price + '</b> <span>· 一次解锁，永久有效，跟随存档码走</span></div>' +
       (buyUrl
-        ? '<a class="pw-buy" href="' + buyUrl + '" target="_blank" rel="noopener">🛒 平台购买 · 自动发码秒到账（推荐）</a><div class="pw-pay">'
-        : '<div class="pw-pay">') +
-      '<div class="pw-tabs"><button class="pw-tab on" data-p="wx">微信支付</button><button class="pw-tab" data-p="ali">支付宝</button></div>' +
-      '<img class="pw-qr" id="qrImg" src="../docs/images/pay-wechat.jpg" alt="收款码">' +
-      '<div class="pw-qr-note">或扫码支付 ¥' + t.price + '（需人工发码，稍慢）</div>' +
-      '</div>' +
+        ? '<a class="pw-buy" href="' + buyUrl + '" target="_blank" rel="noopener">🛒 去平台购买 · 付款自动发码，秒到账</a>' +
+          '<div class="pw-qr-note">购买页支持微信 / 支付宝付款，完成后把收到的兑换码（NOVA-XXXXXX）填到下面即可</div>'
+        : '') +
       '<input id="codeInput" placeholder="输入兑换码（如 NOVA-XXXXXX）" autocomplete="off">' +
       '<button class="pw-btn" id="applyCode">🔓 验证并解锁</button>' +
-      '<div class="pw-tip">付款后请联系店主核验并发码；兑换码一次解锁永久有效，跟随存档码跨设备<br>本塔为原创模拟题：考点整理自公开渠道（面经/官方JD/报道），无内部资料；「鹅厂/猫厂/宇宙厂/开水团/桔厂/薯厂」为社区外号，仅示考点风格，与对应公司无关联</div>' +
+      '<div class="pw-tip">兑换码一次解锁永久有效，跟随存档码跨设备<br>本塔为原创模拟题：考点整理自公开渠道（面经/官方JD/报道），无内部资料；「鹅厂/猫厂/宇宙厂/开水团/桔厂/薯厂」为社区外号，仅示考点风格，与对应公司无关联</div>' +
       '</div>';
     openModal('大厂实战塔 · 解锁', html, '兑换码与本地存档绑定；更换设备请用存档码迁移。');
-    const qr = $('qrImg');
-    if (qr) qr.onerror = () => { qr.style.display = 'none'; const n = document.createElement('div'); n.className = 'pw-qr-miss'; n.textContent = '📷 收款码配置中（docs/images/pay-wechat.jpg / pay-alipay.jpg）'; qr.parentNode.insertBefore(n, qr.nextSibling); };
-    document.querySelectorAll('.pw-tab').forEach(b => {
-      b.onclick = () => {
-        document.querySelectorAll('.pw-tab').forEach(x => x.classList.remove('on'));
-        b.classList.add('on');
-        const img = $('qrImg');
-        if (img) { img.style.display = ''; img.src = '../docs/images/pay-' + (b.dataset.p === 'wx' ? 'wechat' : 'alipay') + '.jpg'; }
-      };
-    });
     const btn = $('applyCode');
     if (btn) btn.onclick = () => {
       const v = String($('codeInput').value || '').trim().toUpperCase();
