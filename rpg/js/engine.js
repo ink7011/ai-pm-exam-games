@@ -333,6 +333,7 @@
   function startCase(idx) {
     // T3 修复：播过场之前先把新一周状态落盘——动画中刷新页面也能 resume 到本周，
     // 而不是回退到上一案的 outro。startCaseNow 开头的重复赋值保留（幂等无害）。
+    if (idx > S.caseIdx && window.LE) window.LE.recordRpgEvent('chapter');   // V0.5：一周复盘完毕 → 判断力+
     S.caseIdx = idx; S.phase = 'intro'; S.clues = [];
     S.roundIdx = 0; S.roundPicked = []; S.roundWrong = 0; S.revealed = false; S.roundAttempted = false; S.roundsFirstTryThisCase = 0;
     save();
@@ -650,6 +651,7 @@
     const grade = tier.grade;
     S.finalGrade = grade;                                     // P2-1：跨游戏成就读取
     ach('rpg_finish');
+    if (window.LE) window.LE.recordRpgEvent('finished');     // V0.5：通关 → 判断力大幅成长
     if (grade === 'S' && tier.name === '天选之人') ach('rpg_chosen');
     if (S.errors.length > 0 && unresolvedErrors().length === 0) ach('rpg_lantern');
     achCrossDual(grade);

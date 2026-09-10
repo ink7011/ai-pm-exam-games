@@ -255,13 +255,50 @@
     const pool = D.items.map(x => Object.assign({}, x, { opts: x.opts.slice() }));
     const normals = pool.filter(x => !x.boss);
     const bosses = pool.filter(x => x.boss);
-    const pick = seededShuffle(normals, rng).slice(0, 9);
+    // V0.5 Adaptive：优先「今日焦点」技能的题（来自 Learner 弱点/本周错题），其余随机补齐；
+    // 抽取顺序固定，同一天全世界（同一档案状态）得到的仍是确定序列
+    let focus = null;
+    try { focus = (window.LE && window.LE.profile()) ? window.LE.dailyFocus(P) : null; } catch (e) {}
+    let pick;
+    if (focus && window.LE) {
+      const fmods = Object.keys(window.LE.MOD2SKILL).filter(m => window.LE.MOD2SKILL[m] === focus.skill);
+      const hot = normals.filter(x => fmods.includes(x.mod));
+      const cold = normals.filter(x => !fmods.includes(x.mod));
+      pick = seededShuffle(hot, rng).slice(0, 5).concat(seededShuffle(cold, rng).slice(0, 4));
+    } else {
+      pick = seededShuffle(normals, rng).slice(0, 9);
+    }
     const boss = bosses.length ? bosses[Math.floor(rng() * bosses.length)] : pick[pick.length - 1];
     const slots = pick.map((it, i) => ({
       item: it, kind: i === 4 ? 'elite' : 'normal', floor: i + 1
     }));
     slots.push({ item: boss, kind: 'boss', floor: 10 });
-    return { slots: slots, pending: [], date: ds };
+    return { slots: slots, pending: [], date: ds, focus: focus };
+  }
+  /* ---------------- V0.5 Personal Quest：聚焦小关 ---------------- */
+  function buildQuestRun(q) {
+    const rng = mulberry32(hashDate(todayStr() + '|' + q.id));
+    let pool = D.items.filter(x => q.mods.includes(x.mod) && !x.boss);
+    if (pool.length < 5) pool = D.items.filter(x => !x.boss);
+    const pick = seededShuffle(pool.map(x => Object.assign({}, x, { opts: x.opts.slice() })), rng).slice(0, 5);
+    return pick.map((it, i) => ({ item: it, kind: i === 4 ? 'elite' : 'normal', floor: i + 1 }));
+  }
+  function startQuestRun(qid) {
+    const LE = window.LE;
+    if (!LE) { startRun('mix'); return; }
+    const q = LE.QUESTS.filter(x => x.id === qid)[0];
+    if (!q) { startRun('mix'); return; }
+    LE.startQuest(qid);
+    R = {
+      towerId: 'quest:' + qid, questId: qid,
+      hp: 2, maxHp: 2, coins: 0, combo: 0, maxCombo: 0,
+      items: { fifty: 0, hint: 0, potion: 0, retry: 0, hourglass: 0 },
+      pos: 0, slots: buildQuestRun(q), pendingShadow: [],
+      banner: 'QUEST · ' + q.zh + ' — ' + q.story,
+      score: 0, firstTry: 0, asked: 0, modRun: {}, done: false
+    };
+    renderPlayer(); renderFloors();
+    serveNext();
   }
   function dailyInfo() {
     const t = todayStr();
@@ -270,12 +307,17 @@
   function startDaily() {
     const built = buildDaily();
     const info = dailyInfo();
+    let dbanner = null;
+    if (built.focus && window.LE) {
+      const sk = window.LE.SKILLS.filter(x => x.id === built.focus.skill)[0];
+      dbanner = "TODAY'S FOCUS · " + (sk ? sk.name : built.focus.skill) + " — " + built.focus.reason;
+    }
     R = {
       towerId: 'daily', daily: built.date,
       practice: !!(info && info.done),   // 今日已计入成绩后再刷 = 练习
       hp: 1, maxHp: 1, coins: 0, combo: 0, maxCombo: 0,
       items: { fifty: 0, hint: 0, potion: 0, retry: 0, hourglass: 0 },
-      pos: 0, slots: built.slots, pendingShadow: [],
+      pos: 0, slots: built.slots, pendingShadow: [], banner: dbanner,
       score: 0, firstTry: 0, asked: 0, modRun: {}, done: false
     };
     renderPlayer(); renderFloors();
@@ -291,6 +333,7 @@
     P.daily = { date: t, best: R.score, streak: streak, done: true };
     if (streak >= 7) ach('tw_daily_7');                  // P2-1：每日挑战 7 连胜
     save();
+    if (window.LE) window.LE.track('dailyChallengeCompleted', { score: R.score, streak: streak });
   }
 
   /* ---------------- panels ---------------- */
@@ -441,8 +484,19 @@
       TOWERS.filter(t => (t.group || 'basic') === g.key).forEach(t => {
         const n = poolOf(t).length;
         const locked = towerLocked(t);
+        let recoTag = '';
+        if (window.LE && window.LE.profile() && !locked) {
+          const grows = window.LE.growthAreas().map(x => x.id);
+          const tSkills = [...new Set((t.mods || []).map(m => window.LE.MOD2SKILL[m]).filter(Boolean))];
+          const hit = tSkills.find(sk => grows.includes(sk));
+          if (hit) {
+            const sk = window.LE.SKILLS.filter(x => x.id === hit)[0];
+            recoTag = '<div style="margin-top:5px;font-size:10.5px;color:#67e8f9;border:1px dashed rgba(34,211,238,.45);border-radius:6px;padding:2px 8px;display:inline-block">▸ Recommended for you · 补强 ' + esc(sk ? sk.name : hit) + '</div>';
+          }
+        }
         const b = H('button', 'tower' + (g.key === 'company' ? ' company' : '') + (locked ? ' locked' : ''),
           '<div class="tn">' + esc(t.name) + '</div><div class="td">' + esc(t.desc) + ' · ' + n + ' 题</div>' +
+          recoTag +
           (locked
             ? '<div class="lock-tag">🔒 解锁 ¥' + t.price + '</div>'
             : (P.best[t.id] ? '<div class="best">最佳：' + P.best[t.id] + ' 分</div>' : '')));
@@ -492,7 +546,7 @@
     if (R.pendingShadow.length && R.pendingShadow[0].at <= R.pos + 1 && R.hp > 0 && !R.done) {
       const sh = R.pendingShadow.shift();
       const it = item(sh.id);
-      if (it) { renderBattle(it, 'shadow', '暗影 · ' + it.k); return; }
+      if (it) { if (window.LE) window.LE.recordShadow(it.mod); renderBattle(it, 'shadow', '暗影 · ' + it.k); return; }
     }
     if (R.hp <= 0 || R.done) { renderResult(); return; }
     if (R.pos >= R.slots.length) { renderResult(); return; }
@@ -516,6 +570,8 @@
     const b = H('div', 'battle ' + (kind === 'boss' ? 'boss' : (isElite ? 'elite' : '')));
     b.id = 'battleCard';
     b.innerHTML =
+      (R && R.banner && R.pos === 0 ? '<div style="border:1px solid rgba(34,211,238,.4);background:rgba(34,211,238,.06);border-radius:10px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:#67e8f9;line-height:1.6">' + esc(R.banner) + '</div>' : '') +
+      (kind === 'shadow' ? '<div style="border:1px solid rgba(167,139,250,.45);background:rgba(167,139,250,.07);border-radius:10px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:#c4b5fd;line-height:1.6">👁 A SHADOW HAS APPEARED — ' + esc(it.modName) + ' 正在成为你的弱点。连对两次，将其净化为星光。</div>' : '') +
       (isElite ? '<div class="timerbar" id="tbar"><i style="width:100%"></i></div>' : '') +
       '<div class="b-head">' + kindChips(kind) +
       '<span class="chip">' + esc(it.modName) + '</span>' +
@@ -593,6 +649,7 @@
       cur.answered = true;
       R.asked++;                                  // 只在最终结算时计数一次
       bumpMod(it.mod, cur.wrongPicks.length === 0);
+      if (window.LE) window.LE.recordAnswer(it.mod, true, cur.wrongPicks.length === 0);
       optsEls.forEach(el => { el.disabled = true; if (+el.dataset.i === it.ans) el.classList.add('right'); });
       $('battleCard').classList.add('slash');
       beep(784, 0.1); setTimeout(() => beep(1046, 0.14), 100);
@@ -641,6 +698,7 @@
     optsEls.forEach(el => { el.disabled = true; if (+el.dataset.i === it.ans) el.classList.add('right'); });
     R.asked++;                                  // 最终结算才计数
     bumpMod(it.mod, false);
+    if (window.LE) window.LE.recordAnswer(it.mod, false, false);
     R.combo = 0; R.hp--;
     // 错题入册 + 暗影排程
     if (!P.wrong[it.id]) P.wrong[it.id] = { miss: 0, streak: 0 };
@@ -756,7 +814,11 @@
     if (R && !R.done) {
       R.done = true;
       if (R.daily) settleDaily();                 // P2-2：每日挑战成绩（不进生涯积分，防刷）
-      else P.lifetime += R.score;
+      else if (!R.questId) P.lifetime += R.score;
+      if (R.questId && !R.questClaimed && R.hp > 0) {
+        R.questClaimed = true;
+        if (window.LE) window.LE.completeQuest(R.questId);
+      }
       const prevBest = P.best[R.towerId] || 0;
       const newBest = R.score > prevBest;
       if (newBest) P.best[R.towerId] = R.score;
@@ -1015,6 +1077,8 @@
   window.TOWERTEST = { buildRun: buildRun, TOWERS: TOWERS, buildDaily: buildDaily, hashDate: hashDate, todayStr: todayStr, startDaily: startDaily, checkCode: checkCode, towerLocked: towerLocked, unlockPaid: unlockPaid, loadPaidCaches: loadPaidCaches, P: P, items: D.items };
   // URL 预选塔：?mod=<塔id 或 模块id> 打开即自动进入对应塔；无参数时行为不变
   (function () {
+    const q = new URLSearchParams(location.search).get('quest');
+    if (q && window.LE && window.LE.QUESTS.some(x => x.id === q)) { startQuestRun(q); return; }
     const m = new URLSearchParams(location.search).get('mod');
     if (!m) return;
     const t = TOWERS.find(x => x.id === m) ||

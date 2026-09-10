@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skill Map · NOVA</title>
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#07090f;--panel:#0e131d;--panel2:#121926;--line:#26324a;--ink:#dbe4f0;--dim:#8b9bb4;--faint:#5a6b84;--cyan:#22d3ee;--violet:#a78bfa;--amber:#fbbf24;--green:#34d399;--mono:ui-monospace,Menlo,monospace}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,'PingFang SC','Noto Sans SC',sans-serif;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(900px 500px at 80% -10%,rgba(34,211,238,.06),transparent 60%),radial-gradient(700px 400px at 0% 110%,rgba(167,139,250,.05),transparent 60%);pointer-events:none}
+.wrap{max-width:860px;margin:0 auto;padding:40px 22px 80px}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:4px;color:var(--cyan);margin-bottom:8px}
+h1{font-size:26px;font-weight:900;margin-bottom:2px}
+.sub{font-size:12.5px;color:var(--faint);margin-bottom:26px}
+.topbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.back{font-family:var(--mono);font-size:12px;color:var(--dim);text-decoration:none;border:1px solid var(--line);padding:7px 14px;border-radius:9px}
+.back:hover{color:var(--cyan);border-color:var(--cyan)}
+.head{display:flex;gap:16px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px 24px;margin-bottom:18px}
+.h-name{font-size:19px;font-weight:900}
+.h-role{font-size:12.5px;color:var(--dim)}
+.h-lv{margin-left:auto;font-family:var(--mono);font-size:11.5px;color:var(--amber);border:1px solid rgba(251,191,36,.4);border-radius:8px;padding:4px 11px;white-space:nowrap}
+.grid{display:grid;grid-template-columns:1fr;gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 24px}
+.card h3{font-family:var(--mono);font-size:11px;letter-spacing:3px;color:var(--faint);margin-bottom:14px;font-weight:400}
+.srow{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid #151d2c}
+.srow:last-child{border-bottom:none}
+.sname{width:170px;font-size:13.5px}
+.sname small{display:block;color:var(--faint);font-size:11px}
+.strack{flex:1;height:9px;background:#131a2b;border-radius:5px;overflow:hidden;position:relative}
+.sfill{height:100%;border-radius:5px;background:linear-gradient(90deg,#0e7490,var(--cyan));transition:width .6s}
+.sfill.low{background:linear-gradient(90deg,#92400e,var(--amber))}
+.sval{width:34px;text-align:right;font-family:var(--mono);font-size:12.5px;color:#67e8f9}
+.starget{position:absolute;top:-3px;width:2px;height:15px;background:rgba(219,228,240,.35)}
+.chips{display:flex;gap:9px;flex-wrap:wrap}
+.chip{font-size:12.5px;padding:7px 15px;border-radius:999px;border:1px solid var(--line);color:var(--dim)}
+.chip.up{color:var(--green);border-color:rgba(52,211,153,.45)}
+.chip.grow{color:var(--amber);border-color:rgba(251,191,36,.45)}
+.quest{border:1px solid rgba(34,211,238,.35);background:rgba(34,211,238,.05);border-radius:13px;padding:15px 18px;margin-top:4px}
+.quest .qt{font-weight:800;font-size:15px}
+.quest .qs{font-size:12.5px;color:var(--dim);margin:5px 0 7px;line-height:1.6}
+.quest .qw{font-size:12px;color:#67e8f9}
+.quest a{display:inline-block;margin-top:10px;font-family:var(--mono);font-size:11.5px;letter-spacing:2px;color:#04141a;background:linear-gradient(90deg,var(--cyan),#67e8f9);padding:8px 18px;border-radius:9px;text-decoration:none;font-weight:700}
+.footnote{margin-top:22px;font-size:11.5px;color:var(--faint);line-height:1.9;font-family:var(--mono)}
+@media(max-width:640px){.sname{width:120px}.h-name{font-size:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div>
+      <div class="kicker">SKILL MAP // 我正在成为怎样的 AI PRODUCT PERSON</div>
+      <h1>Skill Map</h1>
+      <div class="sub">不是成绩单——是你正在长成的样子。数值来自你在塔与 RPG 里的每一次真实作答。</div>
+    </div>
+    <div style="display:flex;gap:9px">
+      <a class="back" href="../journey/">⟡ JOURNEY</a>
+      <a class="back" href="../">◂ BACK TO HUB</a>
+    </div>
+  </div>
+  <div id="app"></div>
+  <div class="footnote">SKILL TARGET = 70 · 规则引擎推荐（无 AI 生成）· 数据仅存于你的浏览器<br>SKILLS ARE COMPUTED FROM YOUR REAL ANSWERS — NO INFLATED NUMBERS.</div>
+</div>
+<script src="../shared/learner.js?v=1"></script>
+<script>
+(function () {
+  'use strict';
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]; }); }
+  var app = document.getElementById('app');
+  if (window.LE.needsOnboarding()) {
+    app.innerHTML = '<div class="card"><h3>NO PROFILE YET</h3><div style="color:var(--dim);font-size:13.5px;line-height:1.8">还没有你的成长档案。先去首页回答 3 个问题，或直接开始爬塔——记录会自动建立。</div><div style="margin-top:14px"><a class="back" href="../">▸ 回到首页建立档案</a></div></div>';
+    return;
+  }
+  var LE = window.LE, S = LE.profile();
+  var rk = LE.ranked();
+  var bars = rk.map(function (s) {
+    var low = s.v < 40;
+    return '<div class="srow"><div class="sname">' + esc(s.name) + '<small>' + esc(s.zh) + '</small></div>' +
+      '<div class="strack"><span class="starget" style="left:70%"></span><span class="sfill' + (low ? ' low' : '') + '" style="width:' + s.v + '%"></span></div>' +
+      '<div class="sval">' + s.v + '</div></div>';
+  }).join('');
+  var ups = LE.strengths().map(function (s) { return '<span class="chip up">▲ ' + esc(s.name) + '</span>'; }).join('') || '<span class="chip">— 还没有达到 30 的技能</span>';
+  var grw = LE.growthAreas().map(function (s) { return '<span class="chip grow">◇ ' + esc(s.name) + '</span>'; }).join('') || '<span class="chip">— 各项均衡，继续保持</span>';
+  var q = LE.currentQuest();
+  var questHtml = q ? '<div class="quest"><div style="font-family:var(--mono);font-size:10px;letter-spacing:3px;color:var(--amber);margin-bottom:5px">NEXT RECOMMENDED QUEST</div>' +
+    '<div class="qt">' + esc(q.title) + '</div><div class="qs">' + esc(q.story) + '</div>' +
+    '<div class="qw">Why — ' + esc(LE.questWhy(q)) + '</div>' +
+    '<a href="' + (q.kind === 'rpg' ? '../rpg/' : '../tower/?quest=' + q.id) + '">▸ ENTER QUEST</a></div>' : '';
+  app.innerHTML =
+    '<div class="head"><div><div class="h-name">' + esc(S.name || 'Explorer') + '</div><div class="h-role">→ ' + esc(S.goalLabel) + '</div></div><div class="h-lv">LEVEL ' + String(LE.level()).padStart(2, '0') + ' · ' + esc(LE.levelTitle()) + '</div></div>' +
+    '<div class="grid">' +
+    '<div class="card"><h3>SKILLS · 虚线为目标线 70</h3>' + bars + '</div>' +
+    '<div class="card"><h3>READING YOUR MAP</h3><div style="font-size:12px;color:var(--faint);margin-bottom:10px;letter-spacing:1px">STRENGTHS · 强项</div><div class="chips">' + ups + '</div>' +
+    '<div style="font-size:12px;color:var(--faint);margin:14px 0 10px;letter-spacing:1px">GROWTH AREAS · 成长区</div><div class="chips">' + grw + '</div></div>' +
+    '<div class="card"><h3>NEXT RECOMMENDED QUEST</h3>' + questHtml + '</div>' +
+    '</div>';
+})();
+</script>
+</body>
+</html>

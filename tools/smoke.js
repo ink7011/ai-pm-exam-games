@@ -412,6 +412,16 @@ async function main() {
   ok('manifest icons：SVG any + maskable',
     mf.icons.some((i) => i.type === 'image/svg+xml' && i.sizes === 'any' && i.purpose === 'any') &&
     mf.icons.some((i) => i.purpose === 'maskable'));
+  ok('V0.5 接线：三端都引入 learner.js', (() => {
+    const hub = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+    const tw = fs.readFileSync(path.join(ROOT, 'tower/index.html'), 'utf8');
+    const rp = fs.readFileSync(path.join(ROOT, 'rpg/index.html'), 'utf8');
+    return hub.includes('learner-ui.js') && tw.includes('learner.js') && rp.includes('learner.js');
+  })());
+  ok('V0.5 新页面存在且入 SW 缓存', (() => {
+    const sw = fs.readFileSync(path.join(ROOT, 'sw.js'), 'utf8');
+    return fs.existsSync(path.join(ROOT, 'skillmap/index.html')) && fs.existsSync(path.join(ROOT, 'journey/index.html')) && sw.includes('skillmap') && sw.includes('learner.js');
+  })());
   ok('sw.js：缓存版本号 nova-v1 + activate 清旧缓存 + 导航网络优先',
     /nova-v1/.test(swSrc) && /caches\.delete/.test(swSrc) && /skipWaiting/.test(swSrc) &&
     /req\.mode === 'navigate'/.test(swSrc) && /fetch\(req\)/.test(swSrc));
@@ -462,6 +472,69 @@ async function main() {
     ok('三座新塔题池就绪（字节/阿里/小红书）', !!(bd && al && xh));
     ok('三座新塔各有压轴 Boss', [bd, al, xh].every(x => x && x.boss === true));
   } catch (e) { ok('付费门控节执行', false, e.message); }
+
+    /* ========== 11b. V0.5 Learner Model ========== */
+  section('11b. V0.5 Personal Career Layer');
+  try {
+    const gl = sandbox({ autoCreate: true });
+    loadIn(gl, 'shared/learner.js');
+    const LE = gl.window.LE;
+    ok('LE 模块加载', !!LE && typeof LE.create === 'function');
+    // 覆盖度：题库 17 个 mod 全部有技能归属
+    const deckSrc = fs.readFileSync(path.join(ROOT, 'tower/js/deck-data.js'), 'utf8');
+    const dm = deckSrc.match(/"items": \[([\s\S]*)\],\s*"meta"/);
+    const freeItems = JSON.parse('[' + dm[1] + ']');
+    const allMods = new Set(freeItems.map(i => i.mod));
+    const covered = [...allMods].every(m => LE.MOD2SKILL[m]);
+    ok('全部题库模块都映射到技能（' + allMods.size + ' 个 mod）', covered);
+    ok('技能共 7 项', LE.SKILLS.length === 7, String(LE.SKILLS.length));
+    ok('Quest 模板 id 唯一且字段齐', (() => {
+      const ids = LE.QUESTS.map(q => q.id);
+      return new Set(ids).size === ids.length && LE.QUESTS.every(q => q.title && q.story && q.gains && Object.keys(q.gains).length >= 2);
+    })());
+    // onboarding → create
+    LE.create('Tester', 'ai-pm', 'preparing', ['technical', 'ai']);
+    const S1 = LE.profile();
+    ok('create 建档：goal/stage/focus', S1.goal === 'ai-pm' && S1.stage === 'preparing' && S1.focus.length === 2);
+    ok('focus 加成只加对应技能 5 点', (S1.skills.technicalDepth || 0) === 5 && (S1.skills.business || 0) === 0);
+    // 作答 → 技能成长
+    LE.recordAnswer('eval', true, true); LE.recordAnswer('eval', true, false);
+    LE.recordAnswer('rag', false, false);
+    ok('答题喂技能：eval +3 / rag 错题不加分', (LE.profile().skills.aiEvaluation || 0) === 3 && (LE.profile().skills.technicalDepth || 0) === 5);
+    // 封顶
+    for (let i = 0; i < 60; i++) LE.recordAnswer('eval', true, true);
+    ok('技能封顶 100', LE.profile().skills.aiEvaluation === 100);
+    // 派生
+    ok('growthAreas 取最低两项（并列 0 时任取）', (() => { const g = LE.growthAreas(); return g.length === 2 && g.every(x => x.v === 0); })(), JSON.stringify(LE.growthAreas()));
+    // Quest 规则引擎
+    const q1 = LE.recommendQuest();
+    ok('推荐 Quest 指向成长区且非历史完成', !!q1 && LE.growthAreas().some(g => g.id === q1.skill), q1 && q1.id);
+    LE.startQuest(q1.id);
+    ok('startQuest 记录 current', LE.profile().quest && LE.profile().quest.id === q1.id);
+    LE.completeQuest(q1.id);
+    ok('completeQuest 发放收益并写历史', LE.profile().questHistory.length === 1 && !LE.profile().quest);
+    const rec2 = LE.recommendQuest();
+    ok('完成后推荐换下一个', !!rec2 && rec2.id !== q1.id, rec2 && rec2.id);
+    // dailyFocus：本周错题驱动
+    const LEf = LE;
+    const tp = { wrong: { q1: { miss: 2, t: Date.now() - 86400000 }, q2: { miss: 1, t: Date.now() }, q3: { miss: 1, t: Date.now() }, q4: { miss: 1, t: Date.now() } }, __itemMap: { q1: { mod: 'rag' }, q2: { mod: 'rag' }, q3: { mod: 'rag' }, q4: { mod: 'rag' } } };
+    const f1 = LEf.dailyFocus(tp);
+    ok('dailyFocus 优先本周错题最多的技能', f1 && f1.skill === 'technicalDepth' && f1.kind === 'wrong' && /missed 4/.test(f1.reason), JSON.stringify(f1));
+    const f2 = LEf.dailyFocus({ wrong: {} });
+    ok('无错题时回落到成长区', f2 && f2.kind === 'gap');
+    // 迁移：老塔友
+    const gm = sandbox({ autoCreate: true });
+    loadIn(gm, 'shared/learner.js');
+    const LEm = gm.window.LE;
+    LEm.migrateExisting({ modStats: { eval: { seen: 10, ok: 9 }, llm: { seen: 5, ok: 2 } }, codex: { a: 1, b: 2, c: 3, d: 4 } });
+    const Sm = LEm.profile();
+    ok('老用户迁移：默认 AI PM 目标 + 技能种子', Sm.migrated === true && Sm.goal === 'ai-pm' && Sm.skills.aiEvaluation === 18 && Sm.skills.technicalDepth === 4, JSON.stringify(Sm.skills));
+    // journey
+    const steps = LEm.journey({ endingRank: 'S' });
+    ok('journey 含开始/迁移节点', steps.some(x => x.title === 'Started') && steps.some(x => x.title === 'Legacy merged'));
+    // 事件环
+    ok('事件环形缓冲 ≤200', LEm.profile().events.length <= 200);
+  } catch (e) { ok('learner 节执行', false, e.message); }
 
     /* ========== 12. 贡献榜 + 塔 BGM ========== */
   section('12. 贡献榜（本地）+ 塔BGM');

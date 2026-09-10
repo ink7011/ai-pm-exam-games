@@ -2,7 +2,23 @@
 
 > 产品视角的版本史：每一步都从用户问题出发。工程细节见各文件头部版本号（如 `game.js v34`、`engine.js v17`、`deck-data v8`）。
 
-## v0.4 · 双端与进阶内容（当前）
+## v0.5 · Personal Career Layer（当前）
+
+> 产品方向升级：从「AI PM 笔试题库游戏」到 **AI-native Career Learning RPG**（第一个 vertical 仍是 AI Product Management）。本版本只验证一个假设：学习内容与个人目标/能力/轨迹绑定，用户是否更愿意持续回来。
+
+- **Onboarding（3 问）**：想成为什么 → 现在在哪 → 想加强什么；完成即建立 Career Profile，"Your world is ready"。
+- **Learner Model（`shared/learner.js`）**：goal/stage/skills/questHistory/事件环（≤200 条，预留 analytics 适配口 `NOVA_ANALYTICS`）；7 项高层技能由 16 个题库模块折叠而来，**由真实作答计算**（答对+2/+1，非自评）；老用户用 `modStats` 无感迁移。
+- **Skill Map（`skillmap/`）**：强项/成长区/下一推荐任务，目标线 70——"我正在成为怎样的 AI Product person"。
+- **Today's Quest**：规则引擎推荐最弱技能对应的叙事化任务（8 个模板，含 why this why now），深链进入 5 题聚焦小关，通关发放技能收益。
+- **Adaptive Daily**：每日挑战不再纯随机——优先本周错题最多的技能（含推荐理由："You missed 4 Technical Depth questions this week"），无数据回落到成长区；同日仍为确定性序列。
+- **Shadow 事件化**：暗影出现时宣告"正在成为你的弱点"（A SHADOW HAS APPEARED），错题成为世界事件而非单纯的题。
+- **Career Journey（`journey/`）**：时间轴全部由真实事件推导（Started → Quest → 技能觉醒 → RPG 通关 → AI PM READY），未来检查点（First Job/90 Days/Promotion/Founder）标注为 designed, not yet built。
+- **塔选页 "Recommended for you"**：塔卡按成长区标记推荐与补强技能——题库变成 Career Skill Training。
+- **RPG 接入 Learner State**：每周复盘完毕 → 判断力+2，通关 → 判断力+6。
+- **README 重构**：以 AI-native Career Learning RPG 定位组织（What/Idea/Vertical/How/Philosophy），明确 early-stage prototype、假设未证明、无虚构用户数据。
+- 工程面：smoke 从 160 → **186 断言**（learner 全链路：建档/迁移/技能数学/封顶/推荐规则/日焦点回落/旅程/事件环）；e2e 覆盖 onboarding 全流程、面板渲染、答题喂技能、Quest 深链、双新页渲染。
+
+## v0.4 · 进阶内容与聚焦
 
 - **一个砍功能的决策**：小程序双端版开发完成后主动搁置——各厂在线测评均在电脑端进行，移动端不是目标用户的主场景；集中火力打磨 Web 体验。（代码本地归档）
 - **每题四选项逐一判定**：不只是"答案+解析"，而是每个选项都有一句判词（为什么对/为什么错），把"蒙对"变成"排除法可教"。

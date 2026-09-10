@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Career Journey · NOVA</title>
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#07090f;--panel:#0e131d;--line:#26324a;--ink:#dbe4f0;--dim:#8b9bb4;--faint:#5a6b84;--cyan:#22d3ee;--violet:#a78bfa;--amber:#fbbf24;--green:#34d399;--mono:ui-monospace,Menlo,monospace}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,'PingFang SC','Noto Sans SC',sans-serif}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(900px 500px at 85% -10%,rgba(167,139,250,.07),transparent 60%),radial-gradient(700px 400px at 0% 110%,rgba(34,211,238,.05),transparent 60%);pointer-events:none}
+.wrap{max-width:760px;margin:0 auto;padding:40px 22px 90px}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:4px;color:var(--violet);margin-bottom:8px}
+h1{font-size:26px;font-weight:900;margin-bottom:2px}
+.sub{font-size:12.5px;color:var(--faint);margin-bottom:26px}
+.topbar{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px}
+.back{font-family:var(--mono);font-size:12px;color:var(--dim);text-decoration:none;border:1px solid var(--line);padding:7px 14px;border-radius:9px;white-space:nowrap}
+.back:hover{color:var(--violet);border-color:var(--violet)}
+.tl{position:relative;margin-top:8px;padding-left:30px}
+.tl::before{content:"";position:absolute;left:9px;top:6px;bottom:6px;width:2px;background:linear-gradient(180deg,var(--cyan),var(--violet),rgba(38,50,74,.4))}
+.ms{position:relative;margin-bottom:20px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px 19px}
+.ms::before{content:"";position:absolute;left:-27px;top:20px;width:11px;height:11px;border-radius:50%;background:var(--bg);border:2.5px solid var(--cyan)}
+.ms.vio::before{border-color:var(--violet)}
+.ms.fin::before{border-color:var(--amber);background:var(--amber);box-shadow:0 0 14px rgba(251,191,36,.7)}
+.ms.pend::before{border-color:#33405c}
+.ms .mt{font-weight:800;font-size:14.5px}
+.ms .mt .zh{color:var(--dim);font-weight:400;font-size:12.5px;margin-left:8px}
+.ms .md{font-size:12.5px;color:var(--dim);margin-top:4px;line-height:1.7}
+.ms .mw{font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-top:6px;letter-spacing:1px}
+.ms.fin{border-color:rgba(251,191,36,.5);background:linear-gradient(150deg,rgba(251,191,36,.06),var(--panel))}
+.ms.fin .mt{color:var(--amber);letter-spacing:1px}
+.ms.pend{opacity:.75;border-style:dashed}
+.empty{border:1px dashed var(--line);border-radius:16px;padding:34px;text-align:center;color:var(--dim);font-size:13.5px;line-height:1.9}
+.footnote{margin-top:24px;font-size:11.5px;color:var(--faint);line-height:1.9;font-family:var(--mono)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div>
+      <div class="kicker">CAREER JOURNEY // THE LEARNING WORLD EVOLVES WITH YOU</div>
+      <h1>Your Career Journey</h1>
+      <div class="sub">时间轴上的每一个节点都来自你的真实事件——开始、任务、技能觉醒、通关。没有虚构。</div>
+    </div>
+    <div style="display:flex;gap:9px">
+      <a class="back" href="../skillmap/">◈ SKILL MAP</a>
+      <a class="back" href="../">◂ BACK TO HUB</a>
+    </div>
+  </div>
+  <div class="tl" id="tl"></div>
+  <div class="footnote">FUTURE CHECKPOINTS (DESIGNED, NOT YET BUILT): FIRST JOB · FIRST 90 DAYS · PROMOTION · FOUNDER<br>本页只展示学习旅程（V0.5 范围）。</div>
+</div>
+<script src="../shared/learner.js?v=1"></script>
+<script>
+(function () {
+  'use strict';
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]; }); }
+  function fmt(t) { if (!t) return '—'; var d = new Date(t); return d.getFullYear() + '.' + (d.getMonth() + 1) + '.' + d.getDate(); }
+  var tl = document.getElementById('tl');
+  if (window.LE.needsOnboarding()) {
+    tl.innerHTML = '<div class="empty">还没有你的成长档案。<br>去首页回答 3 个问题开始你的旅程——或直接开始玩，记录会自动建立。<br><br><a class="back" href="../">▸ 回到首页</a></div>';
+  } else {
+    var LE = window.LE, S = LE.profile();
+    var rpg = null;
+    try { rpg = JSON.parse(localStorage.getItem('aiProductRpg.v1') || 'null'); } catch (e) {}
+    var evs = S.events || [];
+    var firstQ = evs.filter(function (e) { return e.e === 'questCompleted'; })[0];
+    var firstA = evs.filter(function (e) { return e.e === 'questionAnswered'; })[0];
+    var steps = LE.journey(rpg).map(function (m) {
+      var cls = m.final ? ' fin' : (m.pending ? ' pend' : '');
+      return '<div class="ms' + cls + '"><div class="mt">' + esc(m.title) + '<span class="zh">' + esc(m.zh || '') + '</span></div>' +
+        '<div class="md">' + esc(m.desc) + '</div><div class="mw">' + (m.t ? fmt(m.t) : 'ONGOING') + '</div></div>';
+    }).join('');
+    tl.innerHTML = steps;
+  }
+})();
+</script>
+</body>
+</html>
