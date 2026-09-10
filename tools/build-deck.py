@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 build-deck.py — 从 Markdown 题库解析出概念题 deck，生成 deck-data.js
-（供《NOVA 概念试炼塔》Web 版与微信小程序版共同使用）。
+（供《NOVA 概念试炼塔》使用）。
 
 支持的题库格式（两种 id 风格）：
   A. **1.** 题干 / 两行选项 A.B. + C.D. / **答案：X**【考点】【★★】【P0】解析
@@ -12,7 +12,7 @@ build-deck.py — 从 Markdown 题库解析出概念题 deck，生成 deck-data.
 用法：
   python3 tools/build-deck.py 综合题库.md [美团题库.md ...] -o tower/js/deck-data.js
 
-输出: window.DECK = { items: [...], meta: {...} }（另同步生成小程序用的 CommonJS 版本）
+输出: window.DECK = { items: [...], meta: {...} }
 """
 import re, json, sys, os, argparse
 
@@ -135,7 +135,6 @@ def main():
     ap = argparse.ArgumentParser(description="Markdown 题库 → deck-data.js")
     ap.add_argument("inputs", nargs="+", help="题库 Markdown 文件（第 1 个为综合格式，其余为美团格式；也可全部用 -f/--full 或 -m/--meituan 指定风格）")
     ap.add_argument("-o", "--out", default=DEFAULT_OUT, help="输出路径（默认 tower/js/deck-data.js）")
-    ap.add_argument("--mp", action="store_true", help="同时生成微信小程序 CommonJS 版（miniprogram/data/deck.js）")
     args = ap.parse_args()
 
     items = []
@@ -178,11 +177,6 @@ def main():
     os.makedirs(os.path.dirname(out), exist_ok=True)
     open(out, "w", encoding="utf-8").write("window.DECK = " + json.dumps(data, ensure_ascii=False, indent=0) + ";")
     print("已生成:", out, "(%.1f KB)" % (os.path.getsize(out) / 1024))
-    if args.mp:
-        mp_out = os.path.join(ROOT, "miniprogram", "data", "deck.js")
-        os.makedirs(os.path.dirname(mp_out), exist_ok=True)
-        open(mp_out, "w", encoding="utf-8").write("module.exports = " + json.dumps(data, ensure_ascii=False, indent=0) + ";")
-        print("已生成(小程序):", mp_out, "(%.1f KB)" % (os.path.getsize(mp_out) / 1024))
 
 
 if __name__ == "__main__":

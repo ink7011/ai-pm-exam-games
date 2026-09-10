@@ -10,7 +10,7 @@
 var CACHE = 'nova-v18';
 
 /* 离线可玩清单：三个入口页 + 全部游戏 JS + PWA 资产
-   （docs/ 截图与 miniprogram/ 不属于 Web 游戏运行资源，刻意不入缓存） */
+   （docs/ 截图不属于 Web 游戏运行资源，刻意不入缓存） */
 var ASSETS = [
   './',
   'index.html',

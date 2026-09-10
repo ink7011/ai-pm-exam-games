@@ -93,7 +93,7 @@ flowchart TD
 
 ## 📋 迭代记录
 
-**v0.1 双世界 MVP** → **v0.2 记忆系统成型**（暗影 2.0 · 每日挑战 · 成就墙）→ **v0.3 仪式感与留存**（六爻求签 · 伴学植物 · 年鉴墙 · 内测反馈驱动难度重排）→ **v0.4 双端与进阶内容**（小程序同步 · 四选项判词 · 6 座进阶实战塔）。
+**v0.1 双世界 MVP** → **v0.2 记忆系统成型**（暗影 2.0 · 每日挑战 · 成就墙）→ **v0.3 仪式感与留存**（六爻求签 · 伴学植物 · 年鉴墙 · 内测反馈驱动难度重排）→ **v0.4 进阶内容与聚焦**（四选项判词 · 6 座进阶实战塔 · 决策砍掉小程序版：各厂测评在电脑端进行，专注 Web）。
 
 完整版本史：**[docs/CHANGELOG.md](docs/CHANGELOG.md)**
 
@@ -116,14 +116,13 @@ flowchart TD
 ## 🏗 技术架构
 
 - **零依赖**：纯原生 HTML/CSS/JS，无框架、无构建链、无后端；动画手写，BGM 用 WebAudio 实时合成
-- **双端同核**：Web（`tower/js` · `rpg/js`）与微信小程序（`miniprogram/`）共享同一份题库与核心逻辑，兑换码互通
 - **离线 PWA**：Service Worker 版本化缓存，断网可玩
 - **零后端解锁**：进阶题库以密文随前端分发，兑换码哈希校验（FNV-1a）与解密（SHA-256 链式密钥流）全部本地完成（`shared/paid-crypto.js`）
 - **回归安全网**：`node tools/smoke.js` —— 161 条断言（题库完整性 / 双端一致性 / 安全边界 / 版本卫生）
 
 ## 🚀 运行 / Run
 
-**在线玩**：https://ink7011.github.io/ai-pm-exam-games/ · **本地**：`python3 -m http.server 8000` · **测试**：`node tools/smoke.js` · **微信小程序**：`miniprogram/`（已同步 245 题基础库 · 解析 · 大厂分区 · 兑换码与 Web 互通，导入微信开发者工具即可预览，发布指南见 `docs/WECHAT.md`）
+**在线玩**：https://ink7011.github.io/ai-pm-exam-games/ · **本地**：`python3 -m http.server 8000` · **测试**：`node tools/smoke.js`
 
 ## 🤖 附赠：终端刷题 Agent Skill
 
@@ -137,7 +136,6 @@ cp -r agent-skill ~/.claude/skills/ai-pm-quiz    # Claude Code；ZCode 用 .zcod
 
 - [ ] 英文版 / English version
 - [ ] RPG Season 2：模型战争（Benchmark 迷思 / SFT / RLHF / Reasoning）
-- [ ] 微信小程序发布 / WeChat Mini Program release
 - [ ] 更多题库接入（欢迎 PR 你的题库）
 
 **更新题库**：`python3 tools/build-deck.py 你的题库.md -o tower/js/deck-data.js` · [MIT](LICENSE)

@@ -1,4 +1,4 @@
-/* NOVA 进阶内容解密（零依赖纯 JS，Web 与小程序共用同一实现）
+/* NOVA 进阶内容解密（零依赖纯 JS）
    - fnv1a(s)：兑换码校验哈希（与 pack-paid.py 同构）
    - sha256hex / sha256bytes：纯 JS 同步实现
    - keystream(seedHex, len)：sha256 链式密钥流（与 pack-paid.py 同构）

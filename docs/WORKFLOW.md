@@ -73,7 +73,7 @@ grill-with-docs ──▶ to-spec ──▶ to-tickets ──▶ implement ─�
 |---|---|---|
 | 打榜机制（贡献值，不展示名次） | 设计稿已交付，待拍板 | `docs/LEADERBOARD-DESIGN.md` |
 | 结构重构（拆模块+抽共享CSS） | Phase 3 | Spec v2.0 路线图 |
-| 移动端打磨 + 小程序题库同步 | Phase 3（Web 优先） | Spec v2.0 路线图 |
+| 移动端打磨 | Phase 3（Web 优先） | Spec v2.0 路线图 |
 | Season 2 模型战争 | Phase 4（重构后） | `docs/WORLDVIEW.md` §2.5 |
 
 ---

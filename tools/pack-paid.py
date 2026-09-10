@@ -8,9 +8,8 @@
   codes/<tower>.txt     每塔已铸兑换码（一行一码）
   codes/_bundle.txt     全家桶共享码（存在则附加进每座塔的码表）
 
-输出（提交到仓库，均为不可逆/密文）：
+输出（提交到仓库，不可逆/密文）：
   tower/js/deck-paid.js            window.PAID_DECK = {...}
-  miniprogram/data/deck-paid.js    module.exports = {...}
 
 结构：每塔 { n, salt, h[], w[], d }
   h[i] = FNV-1a(第 i 个码)                —— 校验用（不可逆推码）
@@ -69,10 +68,7 @@ def main():
     js = ('/* NOVA 进阶内容数据块（加密）· 由 tools/pack-paid.py 生成，勿手改 */\n'
           'window.PAID_DECK = ' + json.dumps(out, ensure_ascii=False, separators=(',', ':')) + ';\n')
     io.open(os.path.join(ROOT, 'tower/js/deck-paid.js'), 'w', encoding='utf-8').write(js)
-    mini = ('/* NOVA 进阶内容数据块（加密）· 由 tools/pack-paid.py 生成，勿手改 */\n'
-            'module.exports = ' + json.dumps(out, ensure_ascii=False, separators=(',', ':')) + ';\n')
-    io.open(os.path.join(ROOT, 'miniprogram/data/deck-paid.js'), 'w', encoding='utf-8').write(mini)
-    print('deck-paid.js written (web + miniprogram)')
+    print('deck-paid.js written (web)')
 
 
 if __name__ == '__main__':

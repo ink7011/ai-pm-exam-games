@@ -503,7 +503,6 @@ async function main() {
     ok('游戏内无 sha256/verifyOwner', gsrc.indexOf('sha256') === -1 && gsrc.indexOf('verifyOwner') === -1);
     ok('游戏内无管理面板', gsrc.indexOf('ownerPanel') === -1 && gsrc.indexOf('ownerLogin') === -1);
     ok('游戏内无铸码算法（genCode/mulberry 铸码链）', gsrc.indexOf('function genCode') === -1);
-    ok('小程序内无铸码算法', fs.readFileSync(path.join(ROOT, 'miniprogram/utils/core.js'), 'utf8').indexOf('function genCode') === -1);
     const gi = fs.readFileSync(path.join(ROOT, '.gitignore'), 'utf8');
     ok('本地铸造台已被 gitignore', gi.indexOf('tools/admin.html') !== -1);
     ok('兑换码目录仍被 gitignore', gi.indexOf('codes') !== -1);

@@ -1,4 +1,0 @@
-{
-  "desc": "AI PM 题库学习工具",
-  "rules": [{ "action": "allow", "page": "*" }]
-}
