@@ -1,4 +1,4 @@
-# Nova 学院 · AI-native Career Learning RPG
+# Shuamone · AI-native Career Learning RPG
 
 ### Start with AI Product Management.
 
