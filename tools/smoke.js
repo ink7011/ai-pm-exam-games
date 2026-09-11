@@ -412,6 +412,12 @@ async function main() {
   ok('manifest icons：SVG any + maskable',
     mf.icons.some((i) => i.type === 'image/svg+xml' && i.sizes === 'any' && i.purpose === 'any') &&
     mf.icons.some((i) => i.purpose === 'maskable'));
+  ok('类型契约层在场（types.js + @ts-check + tsconfig + typecheck.sh）', (() => {
+    const lj = fs.readFileSync(path.join(ROOT, 'shared/learner.js'), 'utf8');
+    return fs.existsSync(path.join(ROOT, 'shared/types.js')) && lj.includes('@ts-check') &&
+      fs.existsSync(path.join(ROOT, 'tsconfig.json')) && fs.existsSync(path.join(ROOT, 'tools/typecheck.sh')) &&
+      lj.includes("import('./types.js').TowerSave") && lj.includes("import('./types.js').RpgSave");
+  })());
   ok('V0.5 接线：三端都引入 learner.js', (() => {
     const hub = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
     const tw = fs.readFileSync(path.join(ROOT, 'tower/index.html'), 'utf8');

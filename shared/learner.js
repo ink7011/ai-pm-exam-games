@@ -1,11 +1,16 @@
+// @ts-check
 /* NOVA Learner Model · V0.5 Personal Career Layer
    零依赖纯 JS。localStorage: nova.learner.v1
    职责：成长档案(goal/stage/skills) · 事件记录(analytics-ready) · 规则引擎(quest/daily focus) · 老用户迁移
    原则：Adaptive ≠ AI-generated；先用规则系统验证 Personalization → engagement。 */
 (function () {
   'use strict';
+  /** @typedef {import('./types.js').TowerSave} TowerSave */
+  /** @typedef {import('./types.js').RpgSave} RpgSave */
+  /** @typedef {import('./types.js').LearnerSave} LearnerSave */
   var KEY = 'nova.learner.v1';
   var EVMAX = 200;
+  /** @type {any} */ var W = window;   // 挂载点（LE / NOVA_ANALYTICS 由宿主页面消费）
 
   /* 16 个题库模块 → 7 项高层技能（复用现有 taxonomy，不另起炉灶） */
   var MOD2SKILL = {
@@ -66,6 +71,7 @@
   var LEVELS = ['Aspirant', 'Learner', 'Apprentice', 'Builder', 'Product Builder', 'Senior Builder', 'Lead Builder', 'Architect', 'Veteran', 'Master', 'AI PM Ready'];
 
   /* ---------- 存取 ---------- */
+  /** @returns {LearnerSave|null} */
   function load() {
     try {
       var s = JSON.parse(localStorage.getItem(KEY) || 'null');
@@ -82,6 +88,7 @@
     return null;
   }
   function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  /** @type {LearnerSave|null} */
   var S = load();
 
   function blank() {
@@ -96,7 +103,7 @@
 
   /* ---------- 事件（analytics-ready：留 NOVA_ANALYTICS 适配口） ---------- */
   function track(evt, data) {
-    if (window.NOVA_ANALYTICS) { try { window.NOVA_ANALYTICS(evt, data || {}); } catch (e) {} }
+    if (W.NOVA_ANALYTICS) { try { W.NOVA_ANALYTICS(evt, data || {}); } catch (e) {} }
     if (!S) return;
     S.events.push({ e: evt, t: Date.now(), d: data || {} });
     if (S.events.length > EVMAX) S.events = S.events.slice(-EVMAX);
@@ -189,6 +196,7 @@
   }
 
   /* ---------- Adaptive Daily：今日焦点（规则引擎） ---------- */
+  /** @param {TowerSave} towerP */
   function dailyFocus(towerP) {
     if (!S) return null;
     // 优先：本周错题最多的技能（数据来自塔的错题本）
@@ -196,7 +204,7 @@
     try {
       var now = Date.now();
       Object.keys((towerP && towerP.wrong) || {}).forEach(function (qid) {
-        var w = towerP.wrong[qid] || {};
+        /** @type {Partial<import('./types.js').WrongEntry>} */ var w = towerP.wrong[qid] || {};
         var mod = w.mod;                        // 生产形状：finalizeWrong 写入 {miss, streak, mod, t}
         if (!mod) return;
         var ageDays = w.t ? (now - w.t) / 86400000 : 99;
@@ -217,6 +225,7 @@
   }
 
   /* ---------- Career Journey（真实事件推导，无虚构） ---------- */
+  /** @param {RpgSave} rpgSave */
   function journey(rpgSave) {
     if (!S) return [];
     var steps = [];
@@ -261,6 +270,7 @@
     return S;
   }
   /* 老用户：已有塔记录但没有档案 → 用 modStats/codex/wrong 无感建档 */
+  /** @param {TowerSave} towerP */
   function migrateExisting(towerP) {
     if (S || !towerP) return null;
     S = blank();
@@ -270,7 +280,7 @@
     var seeds = {};
     var ms = towerP.modStats || {};
     Object.keys(ms).forEach(function (mod) {
-      var st = ms[mod] || {};
+      /** @type {Partial<import('./types.js').ModStat>} */ var st = ms[mod] || {};
       var right = (st.right || 0);              // 生产形状：bumpMod 写 {right, wrong}
       if (right > 0) { var sk = skillOf(mod); seeds[sk] = (seeds[sk] || 0) + right * 2; }
     });
@@ -295,7 +305,7 @@
   }
 
   /* ---------- 挂载 ---------- */
-  window.LE = {
+  W.LE = {
     MOD2SKILL: MOD2SKILL, SKILLS: SKILLS, GOALS: GOALS, STAGES: STAGES, FOCUS_AREAS: FOCUS_AREAS, QUESTS: QUESTS,
     needsOnboarding: needsOnboarding, create: create, migrateExisting: migrateExisting, profile: profile,
     track: track, tick: tick,

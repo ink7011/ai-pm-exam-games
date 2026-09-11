@@ -16,7 +16,8 @@
 - **塔选页 "Recommended for you"**：塔卡按成长区标记推荐与补强技能——题库变成 Career Skill Training。
 - **RPG 接入 Learner State**：每周复盘完毕 → 判断力+2，通关 → 判断力+6。
 - **README 重构**：以 AI-native Career Learning RPG 定位组织（What/Idea/Vertical/How/Philosophy），明确 early-stage prototype、假设未证明、无虚构用户数据。
-- 工程面：smoke 从 160 → **186 断言**（learner 全链路：建档/迁移/技能数学/封顶/推荐规则/日焦点回落/旅程/事件环）；e2e 覆盖 onboarding 全流程、面板渲染、答题喂技能、Quest 深链、双新页渲染。
+- **类型契约层（types-only）**：`shared/types.js` 定义三份存档形状（Tower/RPG/Learner），`learner.js` 开 `@ts-check` 消费——审查抓到的三类字段错配自此有编译期疫苗；`tools/typecheck.sh` 一键检查，无构建产物、零运行时依赖。
+- 工程面：smoke 从 160 → **195 断言**（learner 全链路：建档/迁移/技能数学/封顶/推荐规则/日焦点回落/旅程/事件环）；e2e 覆盖 onboarding 全流程、面板渲染、答题喂技能、Quest 深链、双新页渲染。
 
 ## v0.4 · 进阶内容与聚焦
 
