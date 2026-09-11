@@ -442,7 +442,7 @@ async function main() {
     const hub = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
     const sw = fs.readFileSync(path.join(ROOT, 'sw.js'), 'utf8');
     const learner = fs.readFileSync(path.join(ROOT, 'shared/learner.js'), 'utf8');
-    return hub.includes('href="opc/"') && sw.includes('opc/index.html') && learner.includes("'opc'");
+    return hub.includes('SHUAMONE OPC') && sw.includes('opc/index.html') && learner.includes("'opc'");
   })());
   ok('票1·SIM 配置在场且字段完整', (() => {
     const ge = sandbox({ autoCreate: true });

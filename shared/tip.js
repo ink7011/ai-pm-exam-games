@@ -148,7 +148,7 @@
       (sg.moving.length ? ' · ' + esc(sg.moving.join('、')) + ' 爻动' : '');
     document.getElementById('tpSignL').innerHTML = lineHtml(sg.lines);
     document.getElementById('tpSignS').textContent = sg.bless;
-    document.getElementById('tpSignD').textContent = '起卦：' + sg.key + ' · ' + sg.dateCn + ' · ' + sg.hour + '时 · NOVA 学院六爻';
+    document.getElementById('tpSignD').textContent = '起卦：' + sg.key + ' · ' + sg.dateCn + ' · ' + sg.hour + '时 · SHUAMONE 耍门六爻';
     box.classList.remove('on'); void box.offsetWidth; box.classList.add('on');
   }
   function bless(amount) {

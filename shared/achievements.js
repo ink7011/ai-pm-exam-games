@@ -1,5 +1,5 @@
 /* ============================================================
-   NOVA 学院 · 成就系统 ACHS（RPG / 试炼塔共用，纯本地）
+   SHUAMONE 耍门 · 成就系统 ACHS（RPG / 试炼塔共用，纯本地）
    · ACH 定义数组（跨游戏成就两边渲染时互读对方 localStorage）
    · ACHS.init({side, get, persist, toast}) 各游戏启动时注入自己的存档
    · ACHS.unlock(id) 去重 + toast 庆祝 + 写档（幂等）

@@ -1,4 +1,4 @@
-# Shuamone · AI-native Career Learning RPG
+# SHUAMONE 耍门 · AI-native Career Learning RPG
 
 ### Start with AI Product Management.
 

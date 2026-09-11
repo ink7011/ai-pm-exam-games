@@ -1,5 +1,5 @@
 /* ============================================================
-   NOVA 学院 · 过场动画引擎 CINEMA（两游戏共用）
+   SHUAMONE 耍门 · 过场动画引擎 CINEMA（两游戏共用）
    信箱遮幅 + 打字机 + 点击跳过 + reduced-motion 即显
    脚本正典见 docs/WORLDVIEW.md §7
    用法：CINEMA.play([{h:'[标题]', lines:['…','…'], slam:true}], opts).then(...)
