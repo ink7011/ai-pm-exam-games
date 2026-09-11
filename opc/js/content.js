@@ -14,7 +14,7 @@ window.CONTENT = (function () {
       { id: 'product', label: 'Product 产品力' },
       { id: 'energy', label: 'Energy 精力' }
     ],
-    init: { revenue: 0, runway: 12, momentum: 5, product: 30, energy: 80 },
+    init: { revenue: 0, runway: 10, momentum: 5, product: 30, energy: 80 },
     drift: { energy: [-6, -3], runway: [-1, -1], momentum: [-2, -1] },
     final: {
       weights: { revenue: 2, product: 1, energy: 1, momentum: 1 },
@@ -25,13 +25,13 @@ window.CONTENT = (function () {
           headline: '你一个人做到了 $1,000 MRR。没有融资，没有团队，没有老板。',
           victor: '"你证明了 AI 时代一个人可以是一家公司。"',
           lin: '"你的判断力是这家公司唯一的护城河。"',
-          min: 40, minTrust: null },
+          min: 32, minTrust: null },
         { grade: 'A', name: 'Lifestyle OPC', cls: 'tier-star', kicker: 'OPC V1 COMPLETE · LIFESTYLE',
           title: '🧘 Lifestyle OPC · Freedom First',
           headline: '收入在涨，精力还在。你没有成为独角兽，但你成了自己时间的主人。',
           victor: '"不是每家公司都需要规模。有些只需要自由。"',
           lin: '"你找到了自己的节奏。"',
-          min: 35, minTrust: null },
+          min: 25, minTrust: null },
         { grade: 'B', name: 'Side Project', cls: 'tier-potential', kicker: 'OPC V1 COMPLETE · KEEP BUILDING',
           title: '🌱 Side Project · Not Dead Yet',
           headline: '有一些用户，有一些收入，还有很多要学的。但你还活着。',
@@ -39,7 +39,7 @@ window.CONTENT = (function () {
           lin: '"再来一局，试试不同的市场。"',
           min: 0, minTrust: null }
       ],
-      legendGate: { min: 50, minTrust: 0 },
+      legendGate: { min: 40, minTrust: 0 },
       failStates: [
         { metric: 'energy', below: 10, name: '😵 Burnout', headline: '你把自己烧干了。产品还在，但你不在了。',
           victor: '"休息不是失败。你只是需要充电。"', lin: '"Energy 是 OPC 最重要的资产，不是代码。"' },
@@ -133,7 +133,7 @@ window.CONTENT = (function () {
           skill: 'opc_build',
           q: '你怎么用这两周？',
           options: [
-            { t: '花满 14 天做完整产品——上线就要惊艳', ok: false, fx: { product: 15, momentum: -8, energy: -15 },
+            { t: '花满 14 天做完整产品——上线就要惊艳', ok: false, fx: { product: 15, momentum: -8, energy: -15, runway: -1 },
               fb: 'AI Agent：产品确实好。但上线时你已经没力气推广了，而且市场窗口可能关了。', why: 'OPC 最大的陷阱：完美主义。Done > Perfect。' },
             { t: '5 天做 No-Code MVP，剩下 9 天找用户', ok: true, mark: 'opc_n2_mvp', fx: { product: 8, momentum: 8, energy: -8 },
               fb: 'AI Agent：产品不是最好的，但你有时间做最重要的事——找用户。', why: 'OPC 的杠杆在于分配精力：产品够用就好，剩余精力投给分发。' },

@@ -138,7 +138,7 @@
       '</style>' +
       '<div class="fbw">' +
       '<div class="fb-stamp" id="fbStamp">已写进年鉴 ✓</div>' +
-      '<div class="fb-k">NOVA Academy · Yearbook · 来自 ' + esc(src) + '</div>' +
+      '<div class="fb-k">SHUAMONE · Yearbook · 来自 ' + esc(src) + '</div>' +
       '<div class="fb-t">📖 NOVA 年鉴 · 留言墙</div>' +
       '<div class="fb-cols">' +
       '<div class="fb-wall" id="fbWall">' + wallHtml(d, game) + '</div>' +

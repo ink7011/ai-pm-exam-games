@@ -16,7 +16,7 @@
 
   function newState(name) {
     return {
-      v: 2, started: true, name: name || 'Nova',
+      v: 2, started: true, name: name || 'Founder',
       role: 'Product Associate', xp: 0,
       company: Object.assign({}, (window.CONTENT && window.CONTENT.SIM && window.CONTENT.SIM.init) || { revenue: 58, users: 52, trust: 68, quality: 72, cost: 45, morale: 64 }),
       caseIdx: 0, phase: 'intro', roundIdx: 0,

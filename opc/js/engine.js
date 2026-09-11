@@ -14,7 +14,7 @@
       v: 1, started: true, name: name || 'Founder', role: SIM.startRole,
       company: Object.assign({}, SIM.init),
       nodeIdx: 0, phase: 'intro', roundIdx: 0,
-      clues: [], roundPicked: [], roundWrong: 0, revealed: false, roundAttempted: false,
+      clues: [], roundAttempted: false,
       marks: {}, echoDone: {},
       stats: { firstTry: 0, total: 0, wrongTotal: 0 },
       finished: false, finalGrade: ''
@@ -119,11 +119,6 @@
       host.appendChild(bar);
     });
   }
-  function renderMsgs(container) {
-    const feed = $('msgFeed');
-    if (!feed) return;
-    feed.querySelectorAll('.opc-node-msg').forEach(e => e.remove());
-  }
   function addMsg(npcKey, text, urgent) {
     const feed = $('msgFeed'); if (!feed) return;
     const npc = C.NPCS[npcKey] || C.NPCS.sys || { name: npcKey, color: '#8b9bb4' };
@@ -136,9 +131,8 @@
   /* ---------- 节点流程 ---------- */
   function startNode(idx) {
     if (idx >= C.CASES.length) { endSimulation(); return; }
-    if (idx > S.nodeIdx) rpgSkillFeed('chapter');
     S.nodeIdx = idx; S.phase = 'intro'; S.clues = [];
-    S.roundIdx = 0; S.roundPicked = []; S.roundWrong = 0; S.revealed = false; S.roundAttempted = false;
+    S.roundAttempted = false;
     save();
     renderNodePanel();
     renderAll();
@@ -215,6 +209,7 @@
     if (op.mark) { S.marks[op.mark] = (S.marks[op.mark] || 0) + 1; save(); }
     if (!S.roundAttempted) { S.stats.total++; if (op.ok) S.stats.firstTry++; S.roundAttempted = true; }
     const verdict = $('verdict'); if (!verdict) return;
+    verdict.style.display = '';   // 🔴 修复：解除初始 display:none
     verdict.innerHTML = `<div class="opc-verdict ${op.ok ? 'good' : 'warn'}"><b>${op.ok ? '✓ 好判断' : '△ 有代价的选择'}</b><br>${esc(op.fb)}<br><span class="why">${esc(op.why)}</span></div>`;
     const next = h('button', 'opc-btn primary', '下一节点 ▸');
     next.onclick = () => { $('verdict').innerHTML = ''; nextNode(); };
@@ -222,6 +217,7 @@
     renderActionBar(); save();
   }
   function nextNode() {
+    rpgSkillFeed('chapter');   // V0.6: 每节点结算时喂 Learner（原来在 startNode 里永不触发）
     const drift = applyDrift();
     const fail = checkFail();
     if (fail) { endSimulation(fail); return; }   // V0.6: 即时出局（不是等到最后一屏）
@@ -232,6 +228,7 @@
     renderNodePanel(); playIntro(); renderActionBar();
   }
   function endSimulation(failOverride) {
+    const v = $('verdict'); if (v) v.style.display = 'none';
     S.finished = true;
     rpgSkillFeed('finished');
     const tier = failOverride || finalTier();
@@ -246,7 +243,7 @@
         <div class="opc-quote"><b>VC 朋友：</b>${esc(tier.victor || '')}</div>
         <div class="opc-quote"><b>AI Agent：</b>${esc(tier.lin || '')}</div>
         <div class="opc-stats">
-          <div>Revenue: $${S.company.revenue * 10}/mo</div>
+          <div>Revenue: $${S.company.revenue * 15}/mo</div>
           <div>Runway: ${S.company.runway} months</div>
           <div>Energy: ${S.company.energy}%</div>
           <div>首答正确率: ${S.stats.total ? Math.round(S.stats.firstTry / S.stats.total * 100) : 0}%</div>
@@ -281,5 +278,5 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 
-  window.OPCTEST = { finalTier: finalTier, startNode: startNode, S: S };
+  window.OPCTEST = { finalTier: finalTier, startNode: startNode, get S() { return S; } };
 })();

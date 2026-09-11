@@ -213,7 +213,7 @@
       '.tipw .tp-bless{width:100%;font-size:13px;font-weight:700;color:#fde68a;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.4);border-radius:10px;padding:9px;cursor:pointer;margin:10px 0}' +
       '.tipw .tp-foot{font-size:11px;color:#5a6b84;line-height:1.8;margin-top:12px;text-align:center}' +
       '</style><div class="tipw">' +
-      '<div class="tp-k">NOVA Academy · I-Ching Fortune</div>' +
+      '<div class="tp-k">SHUAMONE · I-Ching Fortune</div>' +
       '<div class="tp-t">🎋 求个上上签</div>' +
       '<div class="tp-note">周易六爻起卦：以<b>你的名（或档案号）+ 今日 + 此时辰</b>摇卦，<b>免费求</b>。卦随人变、随日变、随时辰变——一季（90 天）之内，你的签<b>不会重复</b>。截图当壁纸，愿它陪你好运上岸。</div>' +
       '<button type="button" class="tp-signbtn" id="tpDraw">' + (lucky ? '🎋 再摇一卦' : '🎋 摇卦起签') + '</button>' +
