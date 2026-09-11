@@ -2,7 +2,7 @@
 
 > **Build. Break. Fix. Ship. — Learn AI by running an AI company.**
 
-一款可以玩完整流程的 AI 产品经理校招训练游戏。你扮演 NOVA·AI 的新人 Product Associate，在真实的职业剧情里做产品决策、处理事故、分析数据、选择技术方案——不知不觉掌握 AI 产品 & 运营校招需要的技术、产品、数据和商业知识。
+一款可以玩完整流程的 AI 产品经理校招训练游戏。你扮演 NOVA·AI（SHUAMONE 世界内的虚构公司）的新人 Product Associate，在真实的职业剧情里做产品决策、处理事故、分析数据、选择技术方案——不知不觉掌握 AI 产品 & 运营校招需要的技术、产品、数据和商业知识。
 
 ## 🎮 怎么玩
 

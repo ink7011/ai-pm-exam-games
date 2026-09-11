@@ -1,5 +1,5 @@
 /* ============================================================
-   NOVA OPC — One-Person Company Simulation (V1 · $0→$1K)
+   SHUAMONE OPC — One-Person Company Simulation (V1 · $0→$1K)
    Build something from zero with limited time, money, and energy.
    ============================================================ */
 window.CONTENT = (function () {

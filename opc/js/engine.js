@@ -1,5 +1,5 @@
 /* ============================================================
-   NOVA OPC ENGINE — One-Person Company Simulation
+   SHUAMONE OPC ENGINE — One-Person Company Simulation
    复用 PM RPG 引擎骨架（SIM 配置驱动），去掉 Boss/技能树/词典等 RPG 特有层
    ============================================================ */
 (function () {

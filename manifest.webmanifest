@@ -1,7 +1,7 @@
 {
   "name": "SHUAMONE 耍门 · AI Career Learning RPG",
   "short_name": "SHUAMONE 耍门",
-  "description": "AI PRODUCT RPG + NOVA 概念试炼塔：把 AI 产品方向的求职备考（原创模拟题，非真题）变成剧情与爬塔，学习路径随你的目标与技能演化。纯本地运行。",
+  "description": "AI PRODUCT RPG + SHUAMONE 概念试炼塔：把 AI 产品方向的求职备考（原创模拟题，非真题）变成剧情与爬塔，学习路径随你的目标与技能演化。纯本地运行。",
   "lang": "zh-CN",
   "dir": "ltr",
   "start_url": "./",
