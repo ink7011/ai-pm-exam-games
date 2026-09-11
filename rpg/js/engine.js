@@ -44,6 +44,7 @@
     if (typeof s.cleanStreak !== 'number') s.cleanStreak = 0; // P2-1 连续零失误章节
     if (typeof s.finalGrade !== 'string') s.finalGrade = '';  // P2-1 通关评级（跨游戏成就用）
     if (typeof s.learnerFini !== 'boolean') s.learnerFini = !!s.finished;  // V0.5：老通关档视为已发过（防重开页刷 XP）
+    if (!s.profile) s.profile = {};                 // 老档兜底：调查点击依赖 S.profile（engine.js:383）
     if (!s.bossVariants) s.bossVariants = [];
     if (typeof s.clock !== 'number') s.clock = 9 * 60;
     return s;
