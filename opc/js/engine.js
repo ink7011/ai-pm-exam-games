@@ -182,11 +182,13 @@
         b.onclick = () => {
           S.clues.push(op.id);
           addMsg('sys', op.clue);
-          applyDrift();
           renderActionBar(); save();
         };
         btns.appendChild(b);
       });
+      // budget 强制：耗尽时禁用全部线索按钮
+      const left = cs.investigate.budget - S.clues.length;
+      if (left <= 0) btns.querySelectorAll('.opc-btn:not(.primary)').forEach(b => b.disabled = true);
       const go = h('button', 'opc-btn primary', '我有了判断 → 进入决策');
       go.disabled = S.clues.length === 0;
       go.onclick = () => { S.phase = 'decide'; renderDecide(); };
@@ -221,19 +223,21 @@
   }
   function nextNode() {
     const drift = applyDrift();
+    const fail = checkFail();
+    if (fail) { endSimulation(fail); return; }   // V0.6: 即时出局（不是等到最后一屏）
     addMsg('sys', '节点结算——精力-' + Math.abs(drift.energy || 0) + '，Runway-' + Math.abs(drift.runway || 0) + ' 月。');
     S.nodeIdx++;
     if (S.nodeIdx >= C.CASES.length) { endSimulation(); return; }
     S.phase = 'intro'; S.clues = []; S.roundIdx = 0; save();
     renderNodePanel(); playIntro(); renderActionBar();
   }
-  function endSimulation() {
+  function endSimulation(failOverride) {
     S.finished = true;
     rpgSkillFeed('finished');
-    const tier = finalTier();
+    const tier = failOverride || finalTier();
     S.finalGrade = tier.grade;
     save();
-    const host = $('screen');
+    const host = $('gameScreen');
     host.innerHTML = `
       <div class="opc-card opc-result">
         <div class="opc-kicker">${esc(tier.kicker || 'OPC COMPLETE')}</div>

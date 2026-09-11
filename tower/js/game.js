@@ -427,7 +427,7 @@
     R = null; renderPlayer(); renderFloors();
     const box = H('div', 'titlebox');
     box.innerHTML =
-      '<div style="font-family:var(--mono);font-size:11px;letter-spacing:3px;color:var(--dim)">NOVA·学院 // 林博士的训练模拟器 v2.0</div>' +
+      '<div style="font-family:var(--mono);font-size:11px;letter-spacing:3px;color:var(--dim)">SHUAMONE 耍门 // 林博士的训练模拟器 v2.0</div>' +
       '<div class="biglogo">概念<b>试炼塔</b></div>' +
       '<div class="tagline">CONCEPT TOWER — ' + D.items.length + ' 道真题概念 · 15 层 · 3 颗心 · 暗影复仇</div>' +
       '<div style="color:var(--dim);font-size:13px;line-height:1.9;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:0 0 18px">' +

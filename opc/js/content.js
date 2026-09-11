@@ -14,7 +14,7 @@ window.CONTENT = (function () {
       { id: 'product', label: 'Product 产品力' },
       { id: 'energy', label: 'Energy 精力' }
     ],
-    init: { revenue: 0, runway: 10, momentum: 5, product: 30, energy: 80 },
+    init: { revenue: 0, runway: 12, momentum: 5, product: 30, energy: 80 },
     drift: { energy: [-6, -3], runway: [-1, -1], momentum: [-2, -1] },
     final: {
       weights: { revenue: 2, product: 1, energy: 1, momentum: 1 },
@@ -25,7 +25,7 @@ window.CONTENT = (function () {
           headline: '你一个人做到了 $1,000 MRR。没有融资，没有团队，没有老板。',
           victor: '"你证明了 AI 时代一个人可以是一家公司。"',
           lin: '"你的判断力是这家公司唯一的护城河。"',
-          min: 55, minTrust: null },
+          min: 40, minTrust: null },
         { grade: 'A', name: 'Lifestyle OPC', cls: 'tier-star', kicker: 'OPC V1 COMPLETE · LIFESTYLE',
           title: '🧘 Lifestyle OPC · Freedom First',
           headline: '收入在涨，精力还在。你没有成为独角兽，但你成了自己时间的主人。',
@@ -39,7 +39,7 @@ window.CONTENT = (function () {
           lin: '"再来一局，试试不同的市场。"',
           min: 0, minTrust: null }
       ],
-      legendGate: { min: 70, minTrust: 0 },
+      legendGate: { min: 50, minTrust: 0 },
       failStates: [
         { metric: 'energy', below: 10, name: '😵 Burnout', headline: '你把自己烧干了。产品还在，但你不在了。',
           victor: '"休息不是失败。你只是需要充电。"', lin: '"Energy 是 OPC 最重要的资产，不是代码。"' },
@@ -212,9 +212,9 @@ window.CONTENT = (function () {
               fb: 'AI Agent：你获得了 100 个免费用户。收入：$0。快乐指数：暂时的。', why: '免费用户不是客户，是用户。OPC 没有vc兜底——你需要收入，不是虚荣指标。' },
             { t: '$15/月——便宜到不需要犹豫', ok: false, fx: { revenue: 8, momentum: 3 },
               fb: '3 人付费了。$45 MRR。不错……但你需要 22 个用户才能到 $1K。以现在的增速要 6 个月。', why: '低价 = 需要更多用户 = 更多精力在获客上。对 OPC 不友好。' },
-            { t: '$49/月——中端，价值明确', ok: true, mark: 'opc_n4_mid', fx: { revenue: 15, energy: -5 },
+            { t: '$49/月——中端，价值明确', ok: true, mark: 'opc_n4_mid', fx: { revenue: 15, energy: -5, runway: 1 },
               fb: '2 人立刻付费。$98 MRR。你发现：定价越高，用户质量越高，客服越少。', why: '对 OPC 最优：20 个客户×$50 = $1K。你只需要找到 20 个对的人。' },
-            { t: '$199/月——直接瞄准企业/专业用户', ok: false, mark: 'opc_n4_premium', fx: { revenue: 20, momentum: -5, product: 5 },
+            { t: '$199/月——直接瞄准企业/专业用户', ok: false, mark: 'opc_n4_premium', fx: { revenue: 20, momentum: -5, product: 5, runway: 1 },
               fb: '1 人付费。$199 MRR。你只需要 5 个这样的客户。但每一个都期待你随叫随到。', why: '高定价=高期待=高精力消耗。你要确定一个人扛得住。' }
           ],
           hints: ['你一个人能服务多少个客户？', '定价不只是收入问题，是"你想服务谁"的问题']
@@ -253,7 +253,7 @@ window.CONTENT = (function () {
               fb: 'AI Agent：功能上线了。客户很高兴。但你的 Product Roadmap 现在由一个客户决定了。', why: '客户不是产品经理。第一个付费用户的请求≠产品方向。' },
             { t: '拒绝。专注核心价值，不做定制', ok: false, fx: { product: 3, revenue: -3, energy: -2 },
               fb: '用户：好吧，理解。不过有点失望。……继续用了一个月，然后退了。', why: '过度专注也会失去客户。关键是判断哪些请求在核心路径上。' },
-            { t: '收费做。$200 一次性定制开发，交付后变成通用功能', ok: true, mark: 'opc_n5_paid_custom', fx: { product: 8, revenue: 10, energy: -8 },
+            { t: '收费做。$200 一次性定制开发，交付后变成通用功能', ok: true, mark: 'opc_n5_paid_custom', fx: { product: 8, revenue: 10, energy: -8, runway: 1 },
               fb: '用户：成交！你用 AI Agent 在 2 天内搞定了。$200 到账 + 功能进了主线。两全其美。', why: '把定制请求变成收入+产品力——这是 OPC 的杠杆。' },
             { t: '先收集更多用户反馈，确认是普遍需求再做', ok: false, fx: { momentum: 3, energy: -3 },
               fb: '一周后你问了 10 个用户。6 个说"有最好"，3 个说"无所谓"，1 个说"别加，太复杂了"。你更迷茫了。', why: '验证是必要的。但 OPC 的时间有限——过度验证 = 不做。' }
@@ -294,7 +294,7 @@ window.CONTENT = (function () {
           options: [
             { t: '招一个兼职客服。$500/月，但把 Support 全交出去', ok: false, mark: 'opc_n6_hire', fx: { energy: 15, revenue: -5 },
               fb: 'VC 朋友：你把时间买回来了，但 $500/月吃掉了一半利润。OPC 的意义不就是"不雇人"吗？', why: '雇人解决短期问题，但改变 OPC 的性质。' },
-            { t: '全自动化。AI Agent 接管 Support + Content + Sales', ok: true, mark: 'opc_n6_agent', fx: { energy: 20, revenue: -3, product: 5 },
+            { t: '全自动化。AI Agent 接管 Support + Content + Sales', ok: true, mark: 'opc_n6_agent', fx: { energy: 20, revenue: -3, product: 5, runway: 2 },
               fb: 'AI Agent：接管完成。你的日程从 9.5h/天变成了 6h/天。多出来的时间用来……你愣住了。你已经忘了不工作是什么感觉。', why: 'AI-Native OPC 的终极形态：人类做判断，Agent 做执行。' },
             { t: '不招不自动化。就这样。$1K 够了，自由比规模重要', ok: false, mark: 'opc_n6_stay', fx: { energy: 5, revenue: 0 },
               fb: 'VC 朋友：……你确定？Energy 25% 不是"稳定"，是在悬崖边。', why: '"Stay small"是选择不是逃避。但你得先解决 Energy 危机。' },

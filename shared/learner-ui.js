@@ -94,7 +94,7 @@
       } else {
         var g = data.goals.filter(function (x) { return x.id === goalId; })[0] || {};
         inner = '<div class="lj-ready"><div class="r1">WORLD GENERATED</div><div class="r2">Your world is ready ✦</div><div class="r3">Goal: ' + esc(g.label) + ' · 旅程从今天开始</div>' +
-          '<button type="button" class="lj-next" id="ljGo">ENTER NOVA ▸</button></div>';
+          '<button type="button" class="lj-next" id="ljGo">ENTER SHUAMONE ▸</button></div>';
       }
       st.innerHTML = '<div class="lj-obc"><a class="lj-skip" id="ljSkip">' + (step < 3 ? '先随便看看 skip' : '') + '</a>' + inner +
         (step < 3 ? '<button type="button" class="lj-next" id="ljNext"' + ((step === 0 && !goalId) || (step === 1 && !stageId) ? ' disabled' : '') + '>[CONTINUE ▸]</button>' : '') +
@@ -155,7 +155,7 @@
     var questHtml = '';
     if (q) {
       var href = q.kind === 'rpg' ? 'rpg/' : 'tower/?quest=' + q.id;
-      var label = q.kind === 'rpg' ? '▸ 进入 NOVA RPG' : '▸ 接受任务 ENTER QUEST';
+      var label = q.kind === 'rpg' ? '▸ 进入 AI PRODUCT RPG' : '▸ 接受任务 ENTER QUEST';
       questHtml = '<div class="lj-quest"><div style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:3px;color:#fbbf24;margin-bottom:6px">' + (S.questHistory.length ? "TODAY'S QUEST" : 'FIRST QUEST') + ' · ' + esc(q.zh) + '</div>' +
         '<div class="qt">' + esc(q.title) + '</div><div class="qs">' + esc(q.story) + '</div>' +
         '<div class="qw">Why this, why now — ' + esc(LE.questWhy(q)) + '</div>' +

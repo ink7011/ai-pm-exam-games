@@ -1,4 +1,4 @@
-# NOVA 概念试炼塔 · Concept Tower
+# SHUAMONE 概念试炼塔 · Concept Tower
 
 > **RPG 练判断，试炼塔练记忆。** 与《AI PRODUCT RPG》同世界观的姐妹游戏。
 

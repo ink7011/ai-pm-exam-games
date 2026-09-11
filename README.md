@@ -73,7 +73,7 @@ Goal → Diagnose → Quest → Decision → Consequence → Memory → Level Up
 
 - 5 维属性：Revenue / Runway / Momentum / Product / **Energy**
 - Energy 归零 = 过劳出局 · Runway 归零 = 没钱出局
-- 选择回响：N1 选的市场决定 N5 的客户说什么
+- 选择回响：你在 N1 选的市场、N2 的构建策略、N4 的定价，都会在后面的节点回来找你
 
 ## Personal Career Layer
 
@@ -124,7 +124,7 @@ node tools/smoke.js
 
 ## Documentation
 
-- **[docs/CHANGELOG.md](docs/CHANGELOG.md)** — 迭代记录 v0.1 → v0.6
+- **[docs/CHANGELOG.md](docs/CHANGELOG.md)** — 迭代记录 v0.1 → v0.5
 - **[docs/DESIGN-DECISIONS.md](docs/DESIGN-DECISIONS.md)** — 10 条设计取舍（含被否掉的方案）
 - **[docs/WORLDVIEW.md](docs/WORLDVIEW.md)** — 世界观正典 · 编年史 · 过场动画
 - **[docs/WORKFLOW.md](docs/WORKFLOW.md)** — Builder/Reviewer 分离制 + Soul Review 宪章
