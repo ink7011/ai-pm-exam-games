@@ -39,6 +39,7 @@
     { id: 'ai-ops', label: 'AI Product / Growth', zh: 'AI 产品运营/增长' },
     { id: 'engineer', label: 'AI Engineer', zh: 'AI 工程师' },
     { id: 'founder', label: 'Founder', zh: '创业者' },
+    { id: 'opc', label: 'Solo Founder (OPC)', zh: '一个人创业' },
     { id: 'other', label: 'Exploring for now', zh: '还在探索' }
   ];
   var STAGES = [

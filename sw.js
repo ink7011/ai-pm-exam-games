@@ -7,7 +7,7 @@
    版本号缓存：nova-v1（改静态资源时递增版本号即可整体换血）
    ============================================================ */
 /* eslint-env serviceworker */
-var CACHE = 'nova-v24';
+var CACHE = 'nova-v25';
 
 /* 离线可玩清单：三个入口页 + 全部游戏 JS + PWA 资产
    （docs/ 截图不属于 Web 游戏运行资源，刻意不入缓存） */
@@ -16,6 +16,9 @@ var ASSETS = [
   'index.html',
   'skillmap/index.html',
   'journey/index.html',
+  'opc/index.html',
+  'opc/js/content.js',
+  'opc/js/engine.js',
   'shared/learner.js',
   'shared/learner-ui.js',
   'manifest.webmanifest',

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA OPC · One-Person Company</title>
+<link rel="icon" href="../icon.svg" type="image/svg+xml">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#07090f;--panel:#0e131d;--panel2:#121926;--line:#26324a;--ink:#dbe4f0;--dim:#8b9bb4;--faint:#5a6b84;--cyan:#22d3ee;--violet:#a78bfa;--amber:#fbbf24;--green:#34d399;--red:#f87171;--mono:ui-monospace,Menlo,monospace}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,'PingFang SC',sans-serif;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(800px 400px at 80% -5%,rgba(34,211,238,.06),transparent 60%);pointer-events:none}
+.wrap{max-width:900px;margin:0 auto;padding:34px 22px 80px}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:4px;color:var(--cyan);margin-bottom:10px}
+h1{font-size:26px;font-weight:900;margin-bottom:2px}
+.sub{font-size:12.5px;color:var(--faint);margin-bottom:22px}
+
+/* Start */
+#startScreen{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:18px}
+#startScreen .big{font-size:22px;font-weight:900;text-align:center;line-height:1.5}
+#startScreen .hint{font-size:13px;color:var(--dim);text-align:center;max-width:420px;line-height:1.8}
+#nameInput{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:13px 18px;color:var(--ink);font-size:15px;width:280px;text-align:center;outline:none}
+#nameInput:focus{border-color:var(--cyan)}
+
+/* Game layout */
+#gameScreen{display:none;flex-direction:column;gap:16px}
+.opc-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 24px}
+.opc-kicker{font-family:var(--mono);font-size:11px;letter-spacing:3px;color:var(--faint);margin-bottom:6px}
+.opc-title{font-size:20px;font-weight:800}
+.opc-brief{font-size:13px;color:var(--dim);margin-top:6px;line-height:1.7}
+
+/* Metrics */
+#metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px 18px;padding:16px 20px}
+.opc-metric{display:flex;align-items:center;gap:10px;font-size:12px}
+.opc-metric .ml{width:110px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}
+.opc-metric .mt{flex:1;height:7px;background:#131a2b;border-radius:4px;overflow:hidden}
+.opc-metric .mf{display:block;height:100%;background:linear-gradient(90deg,#0e7490,var(--cyan));border-radius:4px;transition:width .4s}
+.opc-metric .mf.low{background:linear-gradient(90deg,#92400e,var(--amber))}
+.opc-metric .mv{width:38px;text-align:right;font-family:var(--mono);font-size:11px;color:#67e8f9}
+
+/* Messages */
+#msgFeed{max-height:280px;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:10px}
+.opc-msg{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.7}
+.opc-msg .nm{flex-shrink:0;font-weight:700;font-size:12px;min-width:70px}
+.opc-msg .nt{color:var(--dim)}
+.opc-msg.urgent .nt{color:var(--ink)}
+.opc-msg.urgent{border-left:2px solid var(--violet);padding-left:10px}
+
+/* Action bar */
+#actionBar{padding:16px 20px}
+.opc-label{font-family:var(--mono);font-size:10.5px;letter-spacing:3px;color:var(--faint);margin-bottom:10px}
+.opc-btns{display:flex;flex-wrap:wrap;gap:8px}
+.opc-btn{padding:10px 18px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);color:var(--ink);font-size:13px;cursor:pointer;transition:all .15s}
+.opc-btn:hover:not(:disabled){border-color:var(--cyan);color:var(--cyan)}
+.opc-btn:disabled{opacity:.4;cursor:not-allowed}
+.opc-btn.primary{background:linear-gradient(90deg,var(--cyan),#67e8f9);color:#04141a;font-weight:700;border:none}
+.opc-btn.done{opacity:.4}
+.opc-opts{display:flex;flex-direction:column;gap:8px}
+.opc-opt{text-align:left;padding:13px 18px;border:1px solid var(--line);border-radius:12px;background:var(--panel2);color:var(--ink);font-size:13.5px;cursor:pointer;transition:all .15s;line-height:1.5}
+.opc-opt:hover{border-color:var(--cyan);background:rgba(34,211,238,.06)}
+
+/* Verdict */
+#verdict{padding:16px 20px}
+.opc-verdict{font-size:13.5px;line-height:1.8;padding:16px;border-radius:12px;margin-bottom:12px}
+.opc-verdict.good{border:1px solid rgba(52,211,153,.4);background:rgba(52,211,153,.06)}
+.opc-verdict.warn{border:1px solid rgba(251,191,36,.4);background:rgba(251,191,36,.05)}
+.opc-verdict .why{display:block;margin-top:8px;color:var(--faint);font-size:12px}
+
+/* Result */
+.opc-result{text-align:center;padding:36px 28px}
+.opc-tier{font-size:24px;font-weight:900;margin:10px 0}
+.opc-tier.tier-legend{color:var(--amber)}
+.opc-tier.tier-star{color:var(--cyan)}
+.opc-tier.tier-fail{color:var(--red)}
+.opc-headline{font-size:14px;color:var(--dim);margin:8px 0 18px;line-height:1.7}
+.opc-quote{font-size:13px;color:var(--dim);margin:8px 0;text-align:left;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.7}
+.opc-quote b{color:var(--ink)}
+.opc-stats{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin:20px 0;font-family:var(--mono);font-size:13px;color:var(--cyan)}
+.opc-link{display:inline-block;margin-top:12px;color:var(--dim);font-size:12px;text-decoration:none}
+
+/* Dock */
+.opc-dock{position:fixed;left:14px;bottom:14px;display:flex;gap:8px;z-index:50}
+.opc-dock a{font-size:11px;color:var(--dim);text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:6px 12px;background:rgba(14,19,29,.85);backdrop-filter:blur(6px)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">NOVA OPC · ONE-PERSON COMPANY SIMULATION</div>
+  <h1>一个人 · 一台电脑 · $0 起步</h1>
+  <div class="sub">Build something from zero with limited time, money, and energy. → 从零开始，用有限的时间、金钱和精力做出一件事。</div>
+
+  <div id="startScreen">
+    <div class="big">你辞职了。<br>存款 $20,000 · 月耗 $2,000 · Runway 10 个月<br>目标：赚到第一个 $1,000 MRR</div>
+    <div class="hint">6 个决策节点 · 你的每一个选择都会改变公司状态<br>选错不会死——但会在后面回来找你</div>
+    <input id="nameInput" placeholder="你的名字（会出现在存档里）" maxlength="20">
+    <button class="opc-btn primary" id="startBtn" style="padding:13px 32px;font-size:15px">辞职 ▸ 开始创业</button>
+  </div>
+
+  <div id="gameScreen">
+    <div class="opc-card" id="nodePanel"></div>
+    <div class="opc-card" id="metrics"></div>
+    <div class="opc-card" id="msgFeed"></div>
+    <div class="opc-card" id="actionBar"></div>
+    <div class="opc-card" id="verdict" style="display:none"></div>
+  </div>
+
+  <div class="opc-dock"><a href="../">◂ Hub</a><a href="../skillmap/">◈ Skill Map</a></div>
+</div>
+<script src="../shared/learner.js?v=3"></script>
+<script src="js/content.js?v=1"></script>
+<script src="js/engine.js?v=1"></script>
+</body>
+</html>

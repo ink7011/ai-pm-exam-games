@@ -421,6 +421,29 @@ async function main() {
       fs.existsSync(path.join(ROOT, 'tsconfig.json')) && fs.existsSync(path.join(ROOT, 'tools/typecheck.sh')) &&
       lj.includes("import('./types.js').TowerSave") && lj.includes("import('./types.js').RpgSave");
   })());
+  ok('OPC：内容+引擎+页面存在且 SIM 五维齐全', (() => {
+    const go = sandbox({ autoCreate: true });
+    loadIn(go, 'opc/js/content.js');
+    const SIM = go.window.CONTENT.SIM;
+    return fs.existsSync(path.join(ROOT, 'opc/index.html')) && fs.existsSync(path.join(ROOT, 'opc/js/engine.js')) &&
+      SIM.metrics.length === 5 && Object.keys(SIM.init).length === 5 &&
+      SIM.final.tiers.length === 3 && (SIM.final.failStates || []).length >= 2 &&
+      go.window.CONTENT.CASES.length === 6;
+  })());
+  ok('OPC：选择印记→回响闭合', (() => {
+    const go = sandbox({ autoCreate: true });
+    loadIn(go, 'opc/js/content.js');
+    const raw = fs.readFileSync(path.join(ROOT, 'opc/js/content.js'), 'utf8');
+    const marks = new Set([...raw.matchAll(/mark: '([a-z0-9_]+)'/g)].map(m => m[1]));
+    const echoRefs = [...raw.matchAll(/\{ mark: '([a-z0-9_]+)'/g)].map(m => m[1]);
+    return echoRefs.length >= 2 && echoRefs.every(m => marks.has(m));
+  })());
+  ok('OPC：Hub/SW/Learner 已接线', (() => {
+    const hub = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+    const sw = fs.readFileSync(path.join(ROOT, 'sw.js'), 'utf8');
+    const learner = fs.readFileSync(path.join(ROOT, 'shared/learner.js'), 'utf8');
+    return hub.includes('href="opc/"') && sw.includes('opc/index.html') && learner.includes("'opc'");
+  })());
   ok('票1·SIM 配置在场且字段完整', (() => {
     const ge = sandbox({ autoCreate: true });
     loadIn(ge, 'rpg/js/content.js');
