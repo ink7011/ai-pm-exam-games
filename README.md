@@ -1,105 +1,141 @@
-# SHUAMONE 耍门 · AI-native Career Learning RPG
+# SHUAMONE 耍门
 
-### Start with AI Product Management.
+### Play the decisions. Learn the career.
 
-> **A career learning RPG that evolves with your goals, skills, and journey.**
-> 把求职备考做成一个随你成长而演化的学习世界——当前第一个 vertical：AI 产品方向。
-> 耍中找学，学中来耍。Play to learn, learn to play.
+> **A career simulation platform where you step into professional roles, make real decisions, and see what happens next.**
+> 耍中找学，学中来耍。耍学结合，以耍为主。
 
 [![Play Online](https://img.shields.io/badge/▶_在线玩_Play_Online-22d3ee?style=for-the-badge)](https://ink7011.github.io/ai-pm-exam-games/)
-[![Questions](https://img.shields.io/badge/题库-335_题-fbbf24.svg)](tower/js/deck-data.js)
+[![Questions](https://img.shields.io/badge/免费题库-245_题-fbbf24.svg)](tower/js/deck-data.js)
 [![Status](https://img.shields.io/badge/status-early--stage_prototype-fbbf24.svg)](docs/CHANGELOG.md)
-[![Tests](https://img.shields.io/badge/smoke-186_断言-34d399.svg)](tools/smoke.js)
+[![Tests](https://img.shields.io/badge/smoke-209_断言-34d399.svg)](tools/smoke.js)
 [![License: MIT](https://img.shields.io/badge/License-MIT-34d399.svg)](LICENSE)
 
-**如果这个仓库帮到了你，点一个 ⭐ 让更多准备 AI 产品岗的同学看到它。**
+**如果这个仓库帮到了你，点一个 ⭐ 让更多人看到。**
 
 ---
 
-## 1. What is this?
+## What is this?
 
-An **AI-native Career Learning RPG**. 当前处于 early-stage prototype（V0.5）。
+**SHUAMONE 耍门** is an AI-native career sandbox — a collection of playable simulations that let you experience what a career actually feels like before committing to it.
 
-传统学习平台围绕「科目」组织内容；这个项目探索另一种模型：
-
-> **Organize learning around the learner.**
-
-用户不是来"刷完课程"的，而是在一个持续成长的学习世界里，围绕自己的职业目标完成任务、做决策、获得反馈——学习路径随能力与阶段变化。
-
-## 2. The Idea（本版本要验证的假设）
-
-不是把产品做成巨大的 lifelong-learning platform，而是先验证一件事：
-
-> **如果学习内容与用户自己的职业目标、能力和成长轨迹绑定，用户是否会比单纯刷题更愿意持续回来学习？**
-
-三个具体假设：用户愿意告诉产品"我想成为谁"；用户感到"这个任务确实是针对我的"；用户因为"我的 Career Journey 在继续"而回来。
-
-AI-native ≠ AI-generated everything. V0.5 的个性化全部由**规则引擎**驱动（无 LLM、无 API 调用）——先证明 Personalization → engagement，再谈模型。
-
-## 3. Current Vertical
-
-**AI Product Management**（AI PM / 运营 / 增长方向的求职者与想入行的人）。其他职业方向是未来的事，不是现在。
-
-## 4. How It Works
+Traditional learning platforms organize content around subjects. We organize it around **you**:
 
 ```
-Goal → Diagnose → Quest → Decision → Feedback → Memory → Level Up → New Quest
+SHUAMONE 耍门 (Career Sandbox)
+│
+├── 🧭 Product World
+│   ├── AI PRODUCT RPG — 十周试用期，练判断力
+│   └── 概念试炼塔 — 335 题爬塔，练记忆力
+│
+├── 🚀 Founder World
+│   └── OPC Simulation — 一个人，$0 到 $1K MRR（内测中）
+│
+└── [Future] Growth World · Builder World · ...
 ```
 
-- **Goal**：3 个问题的 onboarding 建立你的 Career Profile（目标 / 阶段 / 想加强的方向）
-- **Diagnose**：Skill Map——7 项技能由你在塔与 RPG 里的**真实作答**计算，不是自评
-- **Quest**：Today's Quest 由你的最弱技能规则化推荐，并告诉你 *why this, why now*
-- **Memory**：暗影复仇——错题化为暗影回塔，连对两次净化（间隔重复）
-- **Level Up**：技能值、等级、Career Journey 时间轴全部由真实事件推导
+## The Idea
 
-## 5. Current Experience
+> People don't know what a career actually feels like until they enter it.
 
-| 模块 | 说明 |
-|---|---|
-| 🧭 **AI PRODUCT RPG** | 十周试用期剧情沙盘（10 Case · 四档结局 · 94 词词典）——练判断力 |
-| 🗼 **概念试炼塔** | 335 题 roguelite 爬塔（245 免费 + 6 座进阶实战塔）——练记忆力，每题四选项逐一判词 |
-| 👁 **Shadow Revenge** | 错题事件化：*"A Shadow has appeared — RAG is becoming your weak point."* |
-| 🎴 **Adaptive Daily** | 今日挑战不再纯随机：优先你的成长区技能与本周错题（含推荐理由） |
-| ◈ **Skill Map** | 强项 / 成长区 / 下一推荐任务——"我正在成为怎样的 AI Product person" |
-| ⟡ **Career Journey** | 时间轴：Started → 技能觉醒 → Quest → RPG 通关 → AI PM Ready |
-| 📖 年鉴墙 · 🎋 六爻求签 · 🌱 伴学植物 | 仪式感与留存层（详见 [docs/DESIGN-DECISIONS.md](docs/DESIGN-DECISIONS.md)） |
+Each simulation puts you inside a professional role:
 
-## 6. Product Philosophy
+- **AI Product Manager**: Navigate ambiguity, build products, make high-stakes decisions
+- **Solo Founder (OPC)**: Build something from zero with limited time, money, and energy
 
-- **We are exploring whether** organizing learning around the learner improves engagement——不是"我们重新发明了教育"。
-- **Early-stage prototype**：没有成千上万的 learners，没有已验证的留存数据。假设尚未被证明。
-- 零后端、零依赖（纯原生 JS）、数据只在用户浏览器里；付费内容（6 座进阶塔）以密文分发 + 本地哈希校验解锁，基础内容永远免费。
-- 小程序双端版开发完成后**主动砍掉**（各厂测评在电脑端），聚焦 Web——详见 [docs/CHANGELOG.md](docs/CHANGELOG.md)。
+You don't memorize frameworks. You **make decisions, experience consequences, and develop judgment** — the learning is invisible.
 
-## 7. 迭代与设计
+```
+Goal → Diagnose → Quest → Decision → Consequence → Memory → Level Up → New Quest
+```
 
-- **v0.1** 双世界 MVP → **v0.2** 记忆系统（暗影/每日/成就）→ **v0.3** 仪式与留存（六爻/植物/年鉴）→ **v0.4** 进阶内容与聚焦 → **v0.5** Personal Career Layer（当前）
-- 完整版本史：[docs/CHANGELOG.md](docs/CHANGELOG.md) · 十条设计取舍（含被否掉的方案）：[docs/DESIGN-DECISIONS.md](docs/DESIGN-DECISIONS.md)
-- 世界观正典：[docs/WORLDVIEW.md](docs/WORLDVIEW.md)
+## Current Simulations
 
-## 8. Run
+### 🧭 AI PRODUCT RPG · 判断力训练
 
-**在线玩**：https://ink7011.github.io/ai-pm-exam-games/ · **本地**：`python3 -m http.server 8000` · **测试**：`node tools/smoke.js`
+入职 NOVA·AI，十周试用期。虚荣指标、99% 的谎言、胡说八道的 AI、凌晨两点的 P0——最终在季终复盘会证明自己。
 
-## 📸 Screenshots
+- 10 个剧情 Case · 四档结局 · 94 词术语悬浮词典
+- 你的选择有**回响**：第一周的决定会在后面的周回来找你
+- 6 维公司指标随每次决策真实摆动 · 不进则退
 
-| 门户 + Career 面板 | RPG · 剧情决策 | 塔 · 概念遭遇 | 塔 · 每题解析 |
+### 🗼 概念试炼塔 · 记忆力训练
+
+335 题 roguelite 爬塔（245 免费 + 6 座进阶实战塔）。答错的题化为**暗影**回塔复仇——连对两次才净化。
+
+- 每题四选项逐一判词 · 间隔重复的游戏化
+- 🎴 Adaptive Daily：围绕你的成长区与本周错题聚焦
+- 🎵 WebAudio 实时合成 BGM · PWA 离线可玩
+
+### 🚀 OPC Simulation · 创业模拟（内测中）
+
+一个人 · 一台电脑 · 几个 AI Agent · $0 收入。6 个决策节点，从选市场到第一个 $1K MRR。
+
+- 5 维属性：Revenue / Runway / Momentum / Product / **Energy**
+- Energy 归零 = 过劳出局 · Runway 归零 = 没钱出局
+- 选择回响：N1 选的市场决定 N5 的客户说什么
+
+## Personal Career Layer
+
+Every simulation feeds your **Learner Model** — a cross-game profile that evolves with you:
+
+- **Onboarding（3 问）**: 想成为谁 → 现在在哪 → 想加强什么
+- **Skill Map**: 7 项技能由真实作答计算（不是自评），强项/成长区/下一推荐任务
+- **Today's Quest**: 规则引擎推荐最弱技能对应的任务 + "Why this, why now"
+- **Career Journey**: 时间轴上的每一步都来自真实事件
+
+```
+RPG 每周复盘 → Judgment+2
+塔每题答对 → 对应技能+2
+OPC 每节点 → Business+2, Judgment+1
+```
+
+## Architecture
+
+- **零依赖**: 纯原生 JS，无框架、无构建、无后端、零 npm install
+- **配置驱动引擎**: 每个模拟是一份 `SIM` 配置（指标/初始值/衰减/结局/角色/技能喂养），引擎通用
+- **类型契约**: `shared/types.js` 定义存档形状，`tsc --checkJs` 编译期检查字段匹配
+- **PWA 离线**: Service Worker 版本化缓存，断网可玩
+- **测试**: `node tools/smoke.js` — 209 条断言（语法/题库/引擎/安全边界/版本卫生）
+
+```bash
+# 本地运行
+python3 -m http.server 8000
+
+# 测试
+node tools/smoke.js
+
+# 类型检查
+./tools/typecheck.sh
+```
+
+## Product Philosophy
+
+- **We are exploring whether** organizing learning around the learner improves engagement — 不是"我们重新发明了教育"
+- **Early-stage prototype**: 没有成千上万的 learners，没有已验证的留存数据
+- **AI-native ≠ AI-generated everything**: 个性化全部由规则引擎驱动（无 LLM、无 API），先证明 Personalization → engagement
+- **Play first. Learn along the way.** 耍中找学，学中来耍，以耍为主
+
+## Screenshots
+
+| 门户 + Career 面板 | RPG · 剧情决策 | 塔 · 暗影复仇 | Skill Map |
 |---|---|---|---|
 | ![hub](docs/images/hub.png) | ![gameplay](docs/images/rpg-gameplay.png) | ![battle](docs/images/tower-battle.png) | ![expl](docs/images/tower-expl.png) |
 
-## 🤖 附赠：终端刷题 Agent Skill
+## Documentation
 
-```bash
-cp -r agent-skill ~/.claude/skills/ai-pm-quiz    # Claude Code；ZCode 用 .zcode/skills/
-```
+- **[docs/CHANGELOG.md](docs/CHANGELOG.md)** — 迭代记录 v0.1 → v0.6
+- **[docs/DESIGN-DECISIONS.md](docs/DESIGN-DECISIONS.md)** — 10 条设计取舍（含被否掉的方案）
+- **[docs/WORLDVIEW.md](docs/WORLDVIEW.md)** — 世界观正典 · 编年史 · 过场动画
+- **[docs/WORKFLOW.md](docs/WORKFLOW.md)** — Builder/Reviewer 分离制 + Soul Review 宪章
 
 ## 🗺 Roadmap
 
-- [ ] 验证 V0.5 三假设（真实留存数据）
+- [ ] OPC 故事扩容：创业社区 / VC / 路演 / 融资 / 竞对 / 个人生活
 - [ ] RPG Season 2：模型战争（Benchmark 迷思 / SFT / RLHF / Reasoning）
-- [ ] Learner Model 接入 LLM（当规则引擎证明假设之后）
+- [ ] 验证 Career Sandbox 三假设（真实留存数据）
 - [ ] 更多题库接入（欢迎 PR 你的题库）
 
 **更新题库**：`python3 tools/build-deck.py 你的题库.md -o tower/js/deck-data.js` · [MIT](LICENSE)
 
-**迭代工作流**：Builder / Reviewer 分离制（grill → spec → tickets → implement → code-review），见 [docs/WORKFLOW.md](docs/WORKFLOW.md)。
+**迭代工作流**：Builder / Reviewer 分离制，见 [docs/WORKFLOW.md](docs/WORKFLOW.md)。
