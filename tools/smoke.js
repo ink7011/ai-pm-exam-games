@@ -428,7 +428,7 @@ async function main() {
     return fs.existsSync(path.join(ROOT, 'opc/index.html')) && fs.existsSync(path.join(ROOT, 'opc/js/engine.js')) &&
       SIM.metrics.length === 5 && Object.keys(SIM.init).length === 5 &&
       SIM.final.tiers.length === 3 && (SIM.final.failStates || []).length >= 2 &&
-      go.window.CONTENT.CASES.length === 6;
+      go.window.CONTENT.CASES.length === 10;
   })());
   ok('OPC：选择印记→回响闭合', (() => {
     const go = sandbox({ autoCreate: true });

@@ -51,11 +51,16 @@ window.CONTENT = (function () {
   };
 
   const NPCS = {
-    you:  { name: '你', color: '#22d3ee' },
-    ai:   { name: 'AI Agent', color: '#a78bfa', role: 'AGENT' },
-    user: { name: '第一位用户', color: '#f472b6', role: 'USER' },
-    vc:   { name: 'VC 朋友', color: '#fbbf24', role: 'OBSERVER' },
-    sys:  { name: 'OPC 终端', color: '#7c8ba1', role: 'SYSTEM' }
+    you:      { name: '你', color: '#22d3ee' },
+    ai:       { name: 'AI Agent', color: '#a78bfa', role: 'AGENT' },
+    user:     { name: '第一位用户', color: '#f472b6', role: 'USER' },
+    vc:       { name: 'VC 朋友', color: '#fbbf24', role: 'OBSERVER' },
+    founder:  { name: 'Alex · 独立开发者', color: '#34d399', role: 'PEER' },
+    hater:    { name: '匿名评论者', color: '#f87171', role: 'COMMUNITY' },
+    partner:  { name: '伴侣', color: '#f9a8d4', role: 'PERSONAL' },
+    angel:    { name: '天使投资人 Sarah', color: '#60a3fa', role: 'INVESTOR' },
+    rival:    { name: '竞对创始人', color: '#fb923c', role: 'RIVAL' },
+    sys:      { name: 'OPC 终端', color: '#7c8ba1', role: 'SYSTEM' }
   };
 
   const CASES = [
@@ -143,6 +148,46 @@ window.CONTENT = (function () {
       outro: [{ npc: 'ai', text: '构建完成。接下来是最难的部分：让有人知道它的存在。' }]
     },
 
+    /* ============ N2.5 · 社区的毒与蜜 ============ */
+    {
+      id: 'opc2b', title: '社区的毒与蜜',
+      brief: '你把第一周构建日志发上了 Indie Hackers。20 分钟后，一个粉丝 10 倍于你的独立开发者截图你的产品，评论道："又一个 GPT wrapper。"',
+      tags: ['Community', 'Build in Public', 'Haters'],
+      echoes: [],
+      intro: [
+        { sys: 'INDIE HACKERS · #build-in-public 频道' },
+        { npc: 'hater', text: '"又一个 GPT wrapper。下个月就死了。"——37 个赞。' },
+        { npc: 'founder', text: '（私信）别理他。我三个月前也被这么说过。但我注意到你的定价页面有个 bug——要不要我帮你看看？' }
+      ],
+      investigate: {
+        budget: 2,
+        options: [
+          { id: 'who', label: '查这个评论者是谁', layer: 'Business', title: 'Commentator Profile',
+            clue: '粉丝 12K，自己做过 3 个 SaaS，两个卖了。技术很强，嘴也很毒。但他的批评有 30% 的时候是对的——他的粉丝也知道这一点。' },
+          { id: 'thread', label: '看完整讨论串', layer: 'Growth', title: 'Thread Context',
+            clue: '在你之前有 4 个 AI 产品被他评论过：\\n2 个确实死了\\n1 个转型了\\n1 个不理他，现在 $8K MRR\\n共同点：活下来的都没跟他吵' }
+        ]
+      },
+      rounds: [
+        {
+          skill: 'opc_community',
+          q: '你怎么回应？',
+          options: [
+            { t: '公开回击：逐条反驳他的技术判断，证明你不是 wrapper', ok: false, mark: 'opc_cm_fight', fx: { momentum: 5, energy: -8 },
+              fb: 'Alex：（私信）你说的技术上没错。但你现在的关注者是他不是你。他转发了你的回复——他赢了互动量，你赢了正确。', why: '跟有话语权的人公开争论，你给他流量，给自己敌人。除非你能一击致命。' },
+            { t: '私信请教：承认定价 bug，问他怎么看你的定位', ok: true, mark: 'opc_cm_learn', fx: { momentum: 3, energy: -3, product: 3 },
+              fb: 'Alex：没想到你真听进去了。行，我帮你看了定价页面——你应该收 $99 起步，不是 $15。你的目标用户不是学生。', why: '最猛烈的批评者可能是你最精准的免费顾问——前提是你放下防御。' },
+            { t: '沉默，继续发下一周的构建日志', ok: false, mark: 'opc_cm_silent', fx: { energy: -2, momentum: 2 },
+              fb: '（一周后）你发了 Week 2 日志。那个评论者没有再出现。但有一个新评论："关注了。持续在做比说得对更重要。"', why: 'Build in Public 的核心不是回应所有人，是持续展示你在做。' },
+            { t: '删帖。这种环境不适合认真做产品的人', ok: false, fx: { momentum: -5, energy: -5 },
+              fb: 'Alex：你删了？其实那条帖子已经有 200 人看过了。删掉比被骂更伤——大家会觉得你玻璃心。', why: '互联网没有删除键。逃避批评 = 逃避分发。' }
+          ],
+          hints: ['这个社区里有敌人也有盟友', '你的回应方式决定社区怎么记住你']
+        }
+      ],
+      outro: [{ npc: 'founder', text: '对了，我下个月在 Product Hunt 上发新产品。到时候你帮我投一票？' }]
+    },
+
     /* ============ N3 · Launch ============ */
     {
       id: 'opc3', title: '上线了。然后呢？',
@@ -182,12 +227,56 @@ window.CONTENT = (function () {
       outro: [{ npc: 'ai', text: '你有了第一批访客。接下来是最关键的信号：有人愿意付钱吗？' }]
     },
 
+    /* ============ N3.5 · 竞对上线了 ============ */
+    {
+      id: 'opc3b', title: '竞对上线了',
+      brief: '你在 Twitter 刷到一条推文：一家融了 $2M 的公司发布了跟你几乎一样的产品。定价砍半。你的第一位客户把链接转给你："你们是不是一家？"',
+      tags: ['Competition', 'Positioning', 'Survival'],
+      echoes: [
+        { mark: 'opc_n1_smb', npc: 'rival', text: '（回响）看到你们了。说实话我们的技术栈差不多——但我们瞄准的是 Enterprise，你们是 SMB。市场够大。', fx: { momentum: 3 } },
+        { mark: 'opc_n1_niche', npc: 'rival', text: '（回响）Legal AI？有意思。我们本来想做的，但发现领域壁垒太高——你们怎么搞定的？', fx: { product: 3 } }
+      ],
+      intro: [
+        { sys: 'COMPETITOR ALERT' },
+        { npc: 'user', text: '刚看到这个——https://competitor.ai 。界面跟你们几乎一样，但只要 $7/月。你们是一家吗？' },
+        { npc: 'ai', text: '分析完成。功能重合度 82%。他们有 4 名全职工程师。你只有你。正面竞争胜率：11%。' }
+      ],
+      investigate: {
+        budget: 2,
+        options: [
+          { id: 'their_weak', label: '找他们的弱点', layer: 'Product', title: 'Competitor Analysis',
+            clue: '技术：跟你在同一水平线（都是 GPT-4 API + 前端）\n差异：他们没有领域知识，通用型工具\n定价：$7/月 砍到你的一半\n弱点：没有社区，没有 Build in Public，没有"那个人"的故事' },
+          { id: 'your_users', label: '看你的付费用户怎么说', layer: 'Growth', title: 'User Sentiment',
+            clue: '你现有的 3 个付费用户：\n2 个说"不会换，你的更懂我的场景"\n1 个说"价格确实贵了……能给我个年付折扣吗？"\n结论：你卖的不是功能，是理解。' }
+        ]
+      },
+      rounds: [
+        {
+          skill: 'opc_competition',
+          q: '你的应对策略？',
+          options: [
+            { t: '功能竞速——每周迭代，用速度碾压他们', ok: false, mark: 'opc_comp_race', fx: { product: 10, energy: -15, momentum: 5 },
+              fb: 'AI Agent：两周内你发了 3 个版本。他们也发了 3 个——因为他们有 4 个人。你开始失眠。', why: '跟有资源的团队拼速度是 OPC 的死法。你的优势是判断，不是产出量。' },
+            { t: '提价，做深你的细分场景——他们做通用，你做专业', ok: true, mark: 'opc_comp_niche', fx: { product: 8, revenue: 5, momentum: -3 },
+              fb: '你把定价从 $49 提到 $79，同时加了三个只有你的领域用户才懂的功能。竞对跟不了——他们不懂这个领域。', why: 'OPC 的护城河不是功能，是你对细分领域的理解深度。通用工具永远做不到。' },
+            { t: '直接找对方创始人聊——也许可以合作', ok: false, mark: 'opc_comp_talk', fx: { energy: -5, momentum: 3 },
+              fb: '竞对创始人：（回复很快）嘿！我一直在关注你的 Build in Public。你的内容做得比我们好。要不要聊聊？', why: '竞对不一定是敌人——有时候是最好的合作伙伴。但你要先放下防备。' },
+            { t: '无视。专注自己的用户，不看竞对', ok: false, fx: { energy: -2, product: 3 },
+              fb: 'AI Agent：说得好听。但你上周看了 14 次他们的 Pricing 页面。', why: '"无视竞对"和"不在乎竞对"是两件事。前者是压抑，后者是自信。' }
+          ],
+          hints: ['他们的弱点就是你该放大的地方', 'OPC 的优势不是速度，是深度']
+        }
+      ],
+      outro: [{ npc: 'ai', text: '竞对没有杀死你。你也没有杀死竞对。市场比你想的大——也比你想的残酷。' }]
+    },
+
     /* ============ N4 · First Signal ============ */
     {
       id: 'opc4', title: '第一个付费信号',
       brief: '一个用户在邮件里问："这个有 Pro 版吗？我愿意付费。"你心跳加速了。',
       tags: ['Pricing', 'First Revenue', 'Signal'],
       echoes: [
+        { mark: 'opc_n2_mvp', npc: 'ai', text: '（回响）你的 No-Code MVP 已经服务了 50 个用户，零 downtime。选择快速上线是对的——你有 9 天去找用户，而不是打磨没人用的完美产品。', fx: { momentum: 3 } },
         { mark: 'opc_n2_waitlist', npc: 'user', text: '（回响）我从你两周前的 Waitlist 邮件过来的！当时 200 人报名，我是第 47 个。你终于做出来了。', fx: { momentum: 5 } }
       ],
       intro: [
@@ -264,6 +353,46 @@ window.CONTENT = (function () {
       outro: [{ npc: 'ai', text: '你活过了第一次 Feature Request。接下来是最难的关卡。' }]
     },
 
+    /* ============ N5.5 · 周五晚上 ============ */
+    {
+      id: 'opc5b', title: '周五晚上',
+      brief: '伴侣说："你已经三周没在饭桌前吃完一顿饭了。"同一时刻，dashboard 弹出一条 churn 警报。',
+      tags: ['Personal', 'Energy', 'Why You Build'],
+      echoes: [],
+      intro: [
+        { sys: 'FRIDAY 7:32 PM · 家 · 厨房' },
+        { npc: 'partner', text: '我在说话。你在看你的手机。你在看你的 dashboard 对不对？' },
+        { npc: 'ai', text: '（推送）Churn Alert: 1 paying user cancelled today. Reason: "switching to competitor". Revenue impact: -$49/mo.' }
+      ],
+      investigate: {
+        budget: 2,
+        options: [
+          { id: 'churn', label: '看是谁退了', layer: 'Business', title: 'Churn Details',
+            clue: '退订用户：你最早的付费客户之一。\n原因："I found something cheaper."\n你已经知道是谁了——是上周竞对上线后被转发链接的那个。' },
+          { id: 'energy', label: '诚实看看自己的状态', layer: 'Product', title: 'Self Check',
+            clue: '过去 7 天：\n工作时长：平均 11h/天\n睡眠：5.2h\n运动：0 次\n和家人完整吃饭：0 次\n"我是不是该放弃"的念头：每天至少一次\nEnergy 余量：你比你自己以为的更累。' }
+        ]
+      },
+      rounds: [
+        {
+          skill: 'opc_life',
+          q: '现在是周五晚上。你的伴侣在等你回答。Dashboard 在闪。',
+          options: [
+            { t: '"等一下，有个用户退了，我看看怎么回事"——打开电脑', ok: false, mark: 'opc_life_work', fx: { energy: -10, product: 3 },
+              fb: '伴侣离开了餐桌。你处理完了 churn——是竞对价格战。你赢了这一单，但厨房的饭凉了。', why: '每次选择工作，你都在告诉身边的人：他们排第二。Energy 不是从代码里掉出来的。' },
+            { t: '"你说得对。"关电脑。这周末不碰工作', ok: true, mark: 'opc_life_rest', fx: { energy: 15, revenue: -2 },
+              fb: '周六你睡了 10 小时。周日你带伴侣去了海边。周一回来，你发现退订的那个用户发邮件说"能不能再给我一次机会"。有时候你退一步，世界也退一步。', why: '休息不是浪费。OPC 是一场马拉松，不是冲刺。你的 Energy 是公司最重要的资产。' },
+            { t: '把手机递给伴侣："你看，这是用户发来的感谢信"', ok: false, mark: 'opc_life_share', fx: { energy: 5, momentum: 3 },
+              fb: '伴侣看了。是一封真的感谢信："Your tool saved me 5 hours this week. Thank you for building this."伴侣看完说："我从来不知道有人在用你做的东西。"那一刻，她不是在支持你的产品——她是在重新认识你。', why: '让爱的人看到你为什么做这件事，比让他们理解你在做什么更重要。' },
+            { t: '"我知道。但再给我三个月。到 $1K 我就正常了"', ok: false, fx: { energy: -5 },
+              fb: '伴侣：\'你上次说"再给我两个月"。两个月前。\'——她没生气。她只是更累了。你也是。', why: '"到了 X 我就正常了"是创业者最大的自我欺骗。终点线会一直往后移，除非你现在就画。' }
+          ],
+          hints: ['Energy 不只是游戏机制——它代表你的生活', '用户会走也会回来。人走了就真的走了']
+        }
+      ],
+      outro: [{ npc: 'partner', text: '（不管你选了什么）我不是要你放弃。我是要你在。' }]
+    },
+
     /* ============ N6 · The $1K Question ============ */
     {
       id: 'opc6', title: '$1K MRR · 一个人够了？',
@@ -305,6 +434,49 @@ window.CONTENT = (function () {
         }
       ],
       outro: [{ npc: 'ai', text: '结算画面生成中……' }]
+    },
+
+    /* ============ N6.5 · The Pitch（路演·终章前最后一步）============ */
+    {
+      id: 'opc6b', title: '咖啡店 · 15 分钟',
+      brief: '一个天使投资人看了你的 Twitter thread，约你喝咖啡。15 分钟。讲讲你在做什么。',
+      tags: ['Pitch', 'Fundraising', 'Final Choice'],
+      echoes: [
+        { mark: 'opc_n3_x', npc: 'angel', text: '（回响）我一直在看你的 Build in Public 日志。你的透明度让投资人格外放心——你知道自己在做什么，而且你不需要隐藏什么。', fx: { momentum: 5 } },
+        { mark: 'opc_cm_learn', npc: 'angel', text: '（回响）我之前在 Indie Hackers 看到你跟那个大 V 的对话。你处理得不错——承认错误，请教而不是对抗。这是我想投的那种人。', fx: { momentum: 5 } },
+        { mark: 'opc_comp_talk', npc: 'angel', text: '（回响）我知道你联系过你的竞对。说实话，愿意跟竞对聊的创始人很少。大多数人在防御，你在学习。', fx: { momentum: 3 } }
+      ],
+      intro: [
+        { sys: 'COFFEE SHOP · THURSDAY 10 AM · 天使投资人 Sarah' },
+        { npc: 'angel', text: '我看了你的 Twitter。数据不错——$900 MRR，一个人做的。我有个问题：你为什么不拿钱？' }
+      ],
+      investigate: {
+        budget: 2,
+        options: [
+          { id: 'terms', label: '看条款', layer: 'Business', title: 'Term Sheet Summary',
+            clue: '$250K 种子轮 · 18% 股权\n无董事会席位\n每月增长报告（非强制但"期望"）\n18 个月 Runway\n竞对也在融资——如果你不拿，他们拿了会怎样？' },
+          { id: 'freedom', label: '算算不拿钱能活多久', layer: 'Business', title: 'Current Trajectory',
+            clue: '当前 MRR: ~$900\nRunway: 剩余 ~4 个月（如果不再加新客户）\n如果 MRR 到 $2K，Runway 变成可持续\n不拿钱 = 你 100% 控制权，但失败风险更高' }
+        ]
+      },
+      rounds: [
+        {
+          skill: 'opc_fundraise',
+          q: 'Sarah 在等你的回答。',
+          options: [
+            { t: '"我拿。" $250K 换 18%——我要 Scale', ok: false, mark: 'opc_pitch_take', fx: { momentum: 15, revenue: 10, energy: -10, runway: 18 },
+              fb: 'Sarah：成交。欢迎 aboard——从今天起，你的"一个人公司"变成了"一家公司"。你会有投资人月会、增长预期、和一种新的孤独——你不再只对自己负责了。', why: '拿钱不是升级，是换一种活法。有些创始人如鱼得水，有些窒息。你要知道自己是哪种。' },
+            { t: '"我不要。" 一个人做得挺好，不想变', ok: false, mark: 'opc_pitch_reject', fx: { energy: 10, product: 5 },
+              fb: 'Sarah：笑了。"这是今天我听到的最诚实的回答。如果你改变主意——我的邮箱不会变。"她买单走了。你坐了很久。你拒绝了 $250K。你感觉自己……更轻了。', why: '拒绝钱需要比拿钱更大的自信。OPC 的 O 就是 One——你选了一个人走。' },
+            { t: '"给我想想。" 提出 SAFE——不定价不进董事会', ok: true, mark: 'opc_pitch_safe', fx: { momentum: 8, runway: 12, energy: 3 },
+              fb: 'Sarah：SAFE？可以。$100K SAFE，估值上限 $3M。你保持控制权，我赌你会长大。没有月会，没有 KPI。但别让我等太久。', why: 'SAFE 是介于"完全独立"和"彻底融资"之间的第三条路——拿了钱但保住了节奏。适合还不确定要不要 Scale 的 OPC。' },
+            { t: '"我要的不是钱。我想要你介绍几个企业客户。"', ok: false, mark: 'opc_pitch_clients', fx: { revenue: 15, momentum: 5 },
+              fb: 'Sarah：愣了一下，然后笑了。"两年了，你是第一个坐在这里不要我的钱的人。行——我认识三个创始人，他们正好需要你这种工具。下周约。"你用一次 pitch 换到了三个客户，而不是一个投资人。', why: '融资不是唯一从投资人那里获得的东西。人脉和背书有时候比钱更值。' }
+          ],
+          hints: ['这一刻的选择决定你拿到哪个结局', '没有正确答案——只有你想要的生活']
+        }
+      ],
+      outro: [{ npc: 'angel', text: '不管你选了什么——记住今天的感觉。这个感觉比钱重要。' }]
     }
   ];
 
