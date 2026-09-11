@@ -166,7 +166,7 @@
     host.innerHTML = '<div class="lj-panel">' +
       '<div class="lj-kicker">YOUR CAREER JOURNEY // ' + esc(stg.label ? stg.label.toUpperCase() : '') + '</div>' +
       '<div class="lj-head"><span class="lj-name">' + esc(S.name || 'Explorer') + '</span><span class="lj-role">→ ' + esc(S.goalLabel) + '</span><span class="lj-lv">LEVEL ' + String(lv).padStart(2, '0') + ' · ' + esc(LE.levelTitle()) + '</span></div>' +
-      '<div class="lj-meta"><div><b>CURRENT GOAL</b><span>' + esc(S.goalLabel) + '</span></div><div><b>CURRENT STAGE</b><span>' + esc(stg.label || S.stage) + ' · ' + esc(stg.zh || '') + '</span></div><div><b>QUESTS DONE</b><span>' + S.questHistory.length + '</span></div><div><b>SINCE</b><span>' + fmtTime(S.createdAt) + '</span></div></div>' +
+      '<div class="lj-meta"><div><b>CURRENT GOAL</b><span>' + esc(S.goalLabel) + '</span></div><div><b>CURRENT STAGE</b><span>' + esc(stg.label || S.stage) + ' · ' + esc(stg.zh || '') + '</span></div><div><b>冒险足迹</b><span>' + S.questHistory.length + ' 段</span></div><div><b>启程</b><span>' + fmtTime(S.createdAt) + '</span></div></div>' +
       '<div class="lj-bars">' + bars + '</div>' +
       ((ups || grw) ? '<div class="lj-chips">' + ups + grw + '</div>' : '') +
       questHtml +

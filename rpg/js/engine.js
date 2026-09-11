@@ -27,6 +27,7 @@
       company: { revenue: 58, users: 52, trust: 68, quality: 72, cost: 45, morale: 64 },
       caseIdx: 0, phase: 'intro', roundIdx: 0,
       clues: [], roundPicked: [], roundWrong: 0, revealed: false, roundAttempted: false, potions: 0, roundsFirstTryThisCase: 0,
+      marks: {}, echoDone: {},
       skills: [], errors: [], profile: {},
       stats: { firstTry: 0, total: 0, wrongTotal: 0, investLeftoverXp: 0 },
       bossVariants: [], bossVariantIdx: 0, finished: false, clock: 9 * 60,
@@ -45,6 +46,8 @@
     if (typeof s.finalGrade !== 'string') s.finalGrade = '';  // P2-1 通关评级（跨游戏成就用）
     if (typeof s.learnerFini !== 'boolean') s.learnerFini = !!s.finished;  // V0.5：老通关档视为已发过（防重开页刷 XP）
     if (!s.profile) s.profile = {};                 // 老档兜底：调查点击依赖 S.profile（engine.js:383）
+    if (!s.marks) s.marks = {};                     // V0.6：选择印记（世界记忆）
+    if (!s.echoDone) s.echoDone = {};               // V0.6：回响已触发记录
     if (!s.bossVariants) s.bossVariants = [];
     if (typeof s.clock !== 'number') s.clock = 9 * 60;
     return s;
@@ -349,6 +352,15 @@
     renderCasePanel();
     const cs = C.CASES[idx];
     addTitleCard(cs);
+    // V0.6：世界记忆——若本 Case 声明了 echoes 且印记在场，注入回响剧情（一次性）
+    (cs.echoes || []).forEach(ez => {
+      const key = idx + ':' + ez.mark;
+      if (!S.marks[ez.mark] || S.echoDone[key]) return;
+      S.echoDone[key] = 1;
+      addMsg(ez.npc || 'sys', ez.text);
+      if (ez.fx) applyFx(ez.fx);
+      save();
+    });
     cs.intro.forEach(m => { if (m.npc) addMsg(m.npc, m.text, m.urgent); else addSys(m.sys); });
     if (idx > 0) {
       const drift = { quality: -(2 + Math.floor(Math.random() * 3)), trust: -(1 + Math.floor(Math.random() * 3)), cost: (1 + Math.floor(Math.random() * 3)) };
@@ -455,6 +467,7 @@
     const op = round.options[i];
     const card = btnEl.closest('.decision');
     applyFx(op.fx);
+    if (op.mark) { S.marks[op.mark] = (S.marks[op.mark] || 0) + 1; save(); }   // V0.6：选择印记——世界会记住
     // 首答口径：每个 round 只统计第一次点击
     if (!S.roundAttempted) {
       S.stats.total++;

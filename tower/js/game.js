@@ -312,7 +312,8 @@
     let dbanner = null;
     if (built.focus && window.LE) {
       const sk = window.LE.SKILLS.filter(x => x.id === built.focus.skill)[0];
-      dbanner = "TODAY'S FOCUS · " + (sk ? sk.name : built.focus.skill) + " — " + built.focus.reason;
+      var skZh = sk ? sk.zh : '';
+      dbanner = "今日星象 · " + (sk ? sk.name : built.focus.skill) + (skZh ? '（' + skZh + '）' : '') + " 之地有暗影集结 — " + built.focus.reason;
     }
     R = {
       towerId: 'daily', daily: built.date,

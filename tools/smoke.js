@@ -418,6 +418,20 @@ async function main() {
       fs.existsSync(path.join(ROOT, 'tsconfig.json')) && fs.existsSync(path.join(ROOT, 'tools/typecheck.sh')) &&
       lj.includes("import('./types.js').TowerSave") && lj.includes("import('./types.js').RpgSave");
   })());
+  ok('灵魂审查修复：RPG 决策选项零后果（fx:{}）已清零', !fs.readFileSync(path.join(ROOT, 'rpg/js/content.js'), 'utf8').includes('fx: {}'));
+  ok('灵魂审查修复：印记-回响闭合（echoes 引用的 mark 都存在于选项）', (() => {
+    const src = fs.readFileSync(path.join(ROOT, 'rpg/js/content.js'), 'utf8');
+    const marks = new Set([...src.matchAll(/mark: '([a-z0-9_]+)'/g)].map(m => m[1]));
+    const echoRefs = [...src.matchAll(/\{ mark: '([a-z0-9_]+)'/g)].map(m => m[1]);
+    return echoRefs.length >= 3 && echoRefs.every(m => marks.has(m));
+  })());
+  ok('灵魂审查修复：北极星轮四选项全部有真实后果', (() => {
+    const src = fs.readFileSync(path.join(ROOT, 'rpg/js/content.js'), 'utf8');
+    const i = src.indexOf('DAU——投资人最认这个数');
+    const seg = src.slice(i - 200, i + 1600);
+    const fxCount = (seg.match(/fx: \{[^}]+\}/g) || []).length;
+    return fxCount >= 4;
+  })());
   ok('V0.5 接线：三端都引入 learner.js', (() => {
     const hub = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
     const tw = fs.readFileSync(path.join(ROOT, 'tower/index.html'), 'utf8');
