@@ -176,8 +176,11 @@ async function main() {
   /* ========== 3+4+5. engine 沙箱：finalTier / T3 / T6 / 键盘 ========== */
   section('3. RPG engine 沙箱（finalTier 边界 / T3 落盘 / T6 存档码）');
   const gE = sandbox({ autoCreate: true });
-  // 极简 CONTENT：boot/resume 只触碰这些字段
-  gE.CONTENT = {
+  // V0.6 票1：先加载真实 content.js（SIM 配置），engine 依赖 CONTENT.SIM
+  const gContent = sandbox({ autoCreate: true });
+  loadIn(gContent, 'rpg/js/content.js');
+  // 极简桩覆写（SIM 来自真实 content，其余字段是测试桩）
+  gE.CONTENT = Object.assign(gContent.CONTENT, {
     TICKER: ['smoke'],
     SKILLS: {}, KNOWLEDGE: {}, SKILL_CATS: [],
     NPCS: { sys: { name: 'SYS', color: '#000' } },
@@ -186,7 +189,7 @@ async function main() {
       title: '案例' + i, tags: ['t'], brief: 'b', kind: 'normal',
       intro: [], outro: [], investigate: { budget: 2, options: [] }, rounds: []
     }))
-  };
+  });
   gE.CINEMA = { play: () => new Promise(() => {}), isPlaying: () => false }; // 永不完成：验证落盘先于动画
   loadIn(gE, 'shared/achievements.js'); // P2-1：先于 engine 注入，engine 加载时会 ACHS.init
   // 预置一份 v1 旧存档（caseIdx=1, phase=intro）
@@ -417,6 +420,26 @@ async function main() {
     return fs.existsSync(path.join(ROOT, 'shared/types.js')) && lj.includes('@ts-check') &&
       fs.existsSync(path.join(ROOT, 'tsconfig.json')) && fs.existsSync(path.join(ROOT, 'tools/typecheck.sh')) &&
       lj.includes("import('./types.js').TowerSave") && lj.includes("import('./types.js').RpgSave");
+  })());
+  ok('票1·SIM 配置在场且字段完整', (() => {
+    const ge = sandbox({ autoCreate: true });
+    loadIn(ge, 'rpg/js/content.js');
+    const SIM = ge.window.CONTENT.SIM;
+    return !!SIM && !!SIM.role && SIM.metrics.length === 6 && Object.keys(SIM.init).length === 6 &&
+      Object.keys(SIM.drift).length === 3 && SIM.final.tiers.length === 4 && SIM.skillFeed.chapter.judgment === 2;
+  })());
+  ok('票1·finalTier tiers 档位值与 legendGate 对拍', (() => {
+    const ge = sandbox({ autoCreate: true });
+    loadIn(ge, 'rpg/js/content.js');
+    const F = ge.window.CONTENT.SIM.final;
+    const t = F.tiers;
+    return t.length === 4 && t[0].grade === 'S' && t[0].name === '天选之人' && t[0].min === 100 &&
+      F.legendGate.min === 95 && F.legendGate.minTrust === 85 &&
+      t[1].min === 85 && t[2].min === 70 && t[3].min === 0;
+  })());
+  ok('票1·引擎已消费 SIM 配置（源码守卫）', (() => {
+    const src = fs.readFileSync(path.join(ROOT, 'rpg/js/engine.js'), 'utf8');
+    return src.includes('companyAvgCalc()') && src.includes('SIM.skillFeed') && src.includes('SIM.drift') && src.includes('SIM.init');
   })());
   ok('灵魂审查修复：RPG 决策选项零后果（fx:{}）已清零', !fs.readFileSync(path.join(ROOT, 'rpg/js/content.js'), 'utf8').includes('fx: {}'));
   ok('灵魂审查修复：印记-回响闭合（echoes 引用的 mark 都存在于选项）', (() => {

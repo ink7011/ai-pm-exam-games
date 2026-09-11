@@ -60,4 +60,20 @@
  * @property {number} firstVisit
  */
 
+/**
+ * Simulation 配置契约（rpg/js/content.js 的 SIM 块 / 未来 opc 的 SIM 块）
+ * @typedef {Object} SimConfig
+ * @property {string} role           通关授予的角色名
+ * @property {string} startRole      开局角色名
+ * @property {Array<{id: string, label: string, reversed?: boolean}>} metrics
+ * @property {Object<string, number>} init          各指标初始值
+ * @property {Object<string, [number, number]>} drift   各指标每周衰减区间 [min,max]
+ * @property {Object} final
+ * @property {Object<string, number>} final.weights   companyAvg 权重
+ * @property {Array<string>} final.invert             反向计的指标（值越高越差）
+ * @property {Array<Object>} final.tiers               结局档（按 min 降序；tiers[0] 可走 legendGate 双门）
+ * @property {{min: number, minTrust: number}} final.legendGate
+ * @property {Object<string, Object<string, number>>} skillFeed  Learner 喂养表 {chapter:{skill:xp}, finished:{skill:xp}}
+ */
+
 export {};

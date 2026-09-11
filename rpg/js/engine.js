@@ -6,14 +6,8 @@
   'use strict';
   const C = window.CONTENT;
   const SAVE_KEY = 'aiProductRpg.v1';
-  const METRIC_DEFS = [
-    ['revenue', 'Revenue 营收'],
-    ['users', 'Users 用户'],
-    ['trust', 'Trust 信任'],
-    ['quality', 'Model Quality 质量'],
-    ['cost', 'Cost 成本', true],   // reversed: higher = worse
-    ['morale', 'Morale 士气']
-  ];
+  const SIM = (window.CONTENT && window.CONTENT.SIM) || {};   // V0.6 票1：从 content.js 读配置
+  const METRIC_DEFS = (SIM.metrics || []).map(m => [m.id, m.label].concat(m.reversed ? [true] : []));
   const LAYERS = ['Data', 'Model', 'Retrieval', 'Infra', 'Eval', 'Product', 'Growth', 'Business'];
 
   /* ---------------- state ---------------- */
@@ -24,7 +18,7 @@
     return {
       v: 2, started: true, name: name || 'Nova',
       role: 'Product Associate', xp: 0,
-      company: { revenue: 58, users: 52, trust: 68, quality: 72, cost: 45, morale: 64 },
+      company: Object.assign({}, (window.CONTENT && window.CONTENT.SIM && window.CONTENT.SIM.init) || { revenue: 58, users: 52, trust: 68, quality: 72, cost: 45, morale: 64 }),
       caseIdx: 0, phase: 'intro', roundIdx: 0,
       clues: [], roundPicked: [], roundWrong: 0, revealed: false, roundAttempted: false, potions: 0, roundsFirstTryThisCase: 0,
       marks: {}, echoDone: {},
@@ -210,6 +204,13 @@
     });
     lastDeltas = {};
   }
+  function rpgSkillFeed(kind) {
+    if (!window.LE) return;
+    const feed = (window.CONTENT && window.CONTENT.SIM && window.CONTENT.SIM.skillFeed) || {};
+    const gains = feed[kind] || (kind === 'chapter' ? { judgment: 2 } : {});
+    Object.keys(gains).forEach(sk => window.LE.addXp(sk, gains[sk]));
+    window.LE.track('rpgMilestone', { kind: kind, gains: gains });
+  }
   let lastDeltas = {};
   function applyFx(fx) {
     if (!fx) return;
@@ -338,7 +339,7 @@
   function startCase(idx) {
     // T3 修复：播过场之前先把新一周状态落盘——动画中刷新页面也能 resume 到本周，
     // 而不是回退到上一案的 outro。startCaseNow 开头的重复赋值保留（幂等无害）。
-    if (idx > S.caseIdx && window.LE) window.LE.recordRpgEvent('chapter');   // V0.5：一周复盘完毕 → 判断力+
+    if (idx > S.caseIdx) rpgSkillFeed('chapter');   // V0.6：一周复盘完毕 → 按 SIM.skillFeed 喂技能
     S.caseIdx = idx; S.phase = 'intro'; S.clues = [];
     S.roundIdx = 0; S.roundPicked = []; S.roundWrong = 0; S.revealed = false; S.roundAttempted = false; S.roundsFirstTryThisCase = 0;
     save();
@@ -363,7 +364,9 @@
     });
     cs.intro.forEach(m => { if (m.npc) addMsg(m.npc, m.text, m.urgent); else addSys(m.sys); });
     if (idx > 0) {
-      const drift = { quality: -(2 + Math.floor(Math.random() * 3)), trust: -(1 + Math.floor(Math.random() * 3)), cost: (1 + Math.floor(Math.random() * 3)) };
+      const DR = (window.CONTENT && window.CONTENT.SIM && window.CONTENT.SIM.drift) || { quality: [-4, -2], trust: [-3, -1], cost: [1, 3] };
+      const drift = {};
+      Object.keys(DR).forEach(k => { const [mn, mx] = DR[k]; drift[k] = mn + Math.floor(Math.random() * (mx - mn + 1)); });
       applyFx(drift);
       addSys('第 ' + (idx + 1) + ' 周开始。竞对在迭代、用户期待在抬高——什么都不做，指标会自然下滑（质量 ' + drift.quality + ' / 信任 ' + drift.trust + ' / 成本 +' + drift.cost + '）。', 'TIME PASSES // 不进则退');
     }
@@ -605,37 +608,34 @@
   }
 
   function finalTier(acc, trust) {
+    const F = (window.CONTENT && window.CONTENT.SIM && window.CONTENT.SIM.final) || {};
+    const tiers = F.tiers || [];
     const tr = (typeof trust === 'number') ? trust : (S && S.company ? S.company.trust : 0);
-    if (acc >= 100 || (acc >= 95 && tr >= 85)) return {
-      grade: 'S', name: '天选之人', cls: 'tier-legend', kicker: 'SEASON 1 COMPLETE · PERFECT',
-      title: '👑 天选之人 · The Chosen One',
-      headline: '十周，每一道题都首答命中。这不是运气，是产品直觉。',
-      victor: '“我改一下招聘流程——以后这个岗位的 JD 里会写：要求达到 ta 的一半。”',
-      lin: '“数据不会说谎。你是我带过的新人里，最接近『产品直觉』这个词的一个。”'
-    };
-    if (acc >= 85) return {
-      grade: 'S', name: '传奇产品人', cls: 'tier-star', kicker: 'SEASON 1 COMPLETE · EXCELLENT',
-      title: '🌟 传奇产品人 · The Rising Star',
-      headline: '错误很少，且每一次都被你变成了经验。',
-      victor: '“下季度的产品评审会，第一场由你来主持。”',
-      lin: '“你的判断链已经成形——接下来只是让它在更多场景里被验证。”'
-    };
-    if (acc >= 70) return {
-      grade: 'A', name: '稳健派', cls: 'tier-steady', kicker: 'SEASON 1 COMPLETE · SOLID',
-      title: '🌿 稳健派 · The Steady Hand',
-      headline: '没有惊才绝艳，但每一步都踩得住。',
-      victor: '“稳，比快值钱。”',
-      lin: '“这是能在这行走十年的人的样子。补齐薄弱模块，你会更快。”'
-    };
-    return {
-      grade: 'B', name: '潜力股', cls: 'tier-potential', kicker: 'SEASON 1 COMPLETE · KEEP GOING',
-      title: '🌱 潜力股 · The Dark Horse',
-      headline: '你犯的每个错都被记进了错题本——而错题会回来，你也会赢回来。',
-      victor: '“我们投资潜力。”',
-      lin: '“再战一局，Boss 战前那些题还会考你。赢回来，就是真正掌握了。”'
-    };
+    const gate = F.legendGate || { min: 95, minTrust: 85 };
+    // 天选之人双门：满分直达，或高分+高信任
+    if (tiers[0]) {
+      const t0 = tiers[0];
+      if (acc >= (t0.min || 100) || (acc >= gate.min && tr >= gate.minTrust)) return t0;
+    }
+    for (let i = 1; i < tiers.length; i++) {
+      if (acc >= (tiers[i].min || 0)) return tiers[i];
+    }
+    return tiers[tiers.length - 1] || {};
   }
-  // 冒烟测试钩子（tools/smoke.js 专用；无运行时副作用，生产环境不会被调用）
+  // companyAvg ← SIM.final.weights/invert（权重求和，cost 反向）
+  function companyAvgCalc() {
+    const F = (window.CONTENT && window.CONTENT.SIM && window.CONTENT.SIM.final) || {};
+    const W = F.weights || {};
+    const INV = new Set(F.invert || ['cost']);
+    let sum = 0, wsum = 0;
+    Object.keys(W).forEach(k => {
+      const w = W[k] || 0;
+      let v = (S.company[k] !== undefined) ? S.company[k] : 0;
+      if (INV.has(k)) v = 100 - v;
+      sum += v * w; wsum += w;
+    });
+    return wsum ? Math.round(sum / wsum) : 0;
+  }
   window.RPGTEST = { finalTier: finalTier, startCase: startCase };
   /* 天选之人彩带：纯 CSS 动画，3.6s 后自动清理 */
   function spawnConfetti() {
@@ -658,15 +658,15 @@
 
   function chapterEnd() {
     S.phase = 'done'; S.finished = true;
-    S.role = 'AI Product Manager';
+    S.role = (window.CONTENT && window.CONTENT.SIM && window.CONTENT.SIM.role) || 'AI Product Manager';
     renderChar(); renderCasePanel(); save();
     const acc = S.stats.total ? Math.round((S.stats.firstTry / S.stats.total) * 100) : 0;
-    const companyAvg = Math.round((S.company.revenue + S.company.users + S.company.trust + S.company.quality + (100 - S.company.cost) + S.company.morale) / 6);
+    const companyAvg = companyAvgCalc();   // V0.6 票1：权重配置化
     const tier = finalTier(acc, S.company.trust);
     const grade = tier.grade;
     S.finalGrade = grade;                                     // P2-1：跨游戏成就读取
     ach('rpg_finish');
-    if (!S.learnerFini) { S.learnerFini = true; if (window.LE) window.LE.recordRpgEvent('finished'); }  // V0.5：通关 XP 仅首发一次（boot 重放 chapterEnd 不重发）
+    if (!S.learnerFini) { S.learnerFini = true; rpgSkillFeed('finished'); }  // V0.6：通关 XP 仅首发一次，喂养表来自 SIM.skillFeed
     if (grade === 'S' && tier.name === '天选之人') ach('rpg_chosen');
     if (S.errors.length > 0 && unresolvedErrors().length === 0) ach('rpg_lantern');
     achCrossDual(grade);
@@ -704,7 +704,7 @@
     bar.querySelector('.ab-btns').appendChild(exp);
     bar.querySelector('.ab-btns').appendChild(rst);
     beep(659, 0.12); setTimeout(() => beep(880, 0.12), 130); setTimeout(() => beep(1318, 0.2), 260);
-    toast('Season 1 通关 · 晋升 AI Product Manager', 'ok');
+    toast('Season 1 通关 · 晋升 ' + S.role, 'ok');
   }
   function rcell(v, k) { return '<div class="rcell"><div class="rv">' + v + '</div><div class="rk">' + k + '</div></div>'; }
   function profileBarsHtml() {
@@ -720,7 +720,7 @@
     const acc = S.stats.total ? Math.round((S.stats.firstTry / S.stats.total) * 100) : 0;
     const txt = [
       'AI PRODUCT RPG — Season 1 能力报告',
-      '角色：' + S.name + ' · AI Product Manager',
+      '角色：' + S.name + ' · ' + S.role,
       'XP：' + S.xp + ' · 首答正确率：' + acc + '%',
       '技能解锁：' + S.skills.length + '/' + Object.keys(C.SKILLS).length,
       '已解锁：' + S.skills.map(id => C.SKILLS[id].name).join('、'),

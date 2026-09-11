@@ -4,6 +4,58 @@
    ============================================================ */
 window.CONTENT = (function () {
 
+  /* ---------- SIM 配置（V0.6 票1：引擎与内容分离的第一块基石）----------
+     以前散落在 engine.js 的四处硬编码——指标表/初始值/衰减/结局公式——现在收进这里。
+     未来新 Simulation（如 OPC）按同一 schema 提供自己的 SIM 块即可复用引擎。
+     schema 见 shared/types.js 的 SimConfig 契约。 */
+  const SIM = {
+    role: 'AI Product Manager',
+    startRole: 'Product Associate',
+    metrics: [
+      { id: 'revenue', label: 'Revenue 营收' },
+      { id: 'users', label: 'Users 用户' },
+      { id: 'trust', label: 'Trust 信任' },
+      { id: 'quality', label: 'Model Quality 质量' },
+      { id: 'cost', label: 'Cost 成本', reversed: true },
+      { id: 'morale', label: 'Morale 士气' }
+    ],
+    init: { revenue: 58, users: 52, trust: 68, quality: 72, cost: 45, morale: 64 },
+    drift: { quality: [-4, -2], trust: [-3, -1], cost: [1, 3] },   // [min, max] 含端点；每周不进则退
+    final: {
+      // 结局权重：cost 反向计。companyAvg = Σ(value × weight) / Σweight，cost 取 (100 - v)
+      weights: { revenue: 1, users: 1, trust: 1, quality: 1, cost: 1, morale: 1 },
+      invert: ['cost'],
+      tiers: [
+        { grade: 'S', name: '天选之人', cls: 'tier-legend', kicker: 'SEASON 1 COMPLETE · PERFECT',
+          title: '👑 天选之人 · The Chosen One',
+          headline: '十周，每一道题都首答命中。这不是运气，是产品直觉。',
+          victor: '“我改一下招聘流程——以后这个岗位的 JD 里会写：要求达到 ta 的一半。”',
+          lin: '“数据不会说谎。你是我带过的新人里，最接近『产品直觉』这个词的一个。”',
+          min: 100, minTrust: null },   // acc>=100 直达；或 acc>=95 且 trust>=85
+        { grade: 'S', name: '传奇产品人', cls: 'tier-star', kicker: 'SEASON 1 COMPLETE · EXCELLENT',
+          title: '🌟 传奇产品人 · The Rising Star',
+          headline: '错误很少，且每一次都被你变成了经验。',
+          victor: '“下季度的产品评审会，第一场由你来主持。”',
+          lin: '“你的判断链已经成形——接下来只是让它在更多场景里被验证。”',
+          min: 85, minTrust: null },
+        { grade: 'A', name: '稳健派', cls: 'tier-steady', kicker: 'SEASON 1 COMPLETE · SOLID',
+          title: '🌿 稳健派 · The Steady Hand',
+          headline: '没有惊才绝艳，但每一步都踩得住。',
+          victor: '“稳，比快值钱。”',
+          lin: '“这是能在这行走十年的人的样子。补齐薄弱模块，你会更快。”',
+          min: 70, minTrust: null },
+        { grade: 'B', name: '潜力股', cls: 'tier-potential', kicker: 'SEASON 1 COMPLETE · KEEP GOING',
+          title: '🌱 潜力股 · The Dark Horse',
+          headline: '你犯的每个错都被记进了错题本——而错题会回来，你也会赢回来。',
+          victor: '“我们投资潜力。”',
+          lin: '“再战一局，Boss 战前那些题还会考你。赢回来，就是真正掌握了。”',
+          min: 0, minTrust: null }
+      ],
+      legendGate: { min: 95, minTrust: 85 }   // 天选之人双门：acc 与 trust 同时达标
+    },
+    skillFeed: { chapter: { judgment: 2 }, finished: { judgment: 6 } }   // Learner Model 喂养表
+  };
+
   /* ---------- NPC ---------- */
   const NPCS = {
     you:   { name: '你', color: '#22d3ee' },
@@ -655,5 +707,5 @@ window.CONTENT = (function () {
     { kp: '用数据证明价值', text: '【回炉】向管理层证明质量基建的价值，最有力的一组证据是：', options: ['加班时长与会议纪要', '拦截的问题发布数、线上事故率、MTTR、赔付/流失金额变化', 'PPT 页数与架构图复杂度', '团队满意度调研'], ans: 1, explain: '预防量（拦截数）+ 频率（事故率）+ 响应（MTTR）+ 金钱（赔付/流失）构成完整价值链。' }
   ];
 
-  return { NPCS, SKILL_CATS, SKILLS, KNOWLEDGE, CASES, VARIANTS, TICKER };
+  return { NPCS, SKILL_CATS, SKILLS, KNOWLEDGE, CASES, VARIANTS, TICKER , SIM: SIM};
 })();
