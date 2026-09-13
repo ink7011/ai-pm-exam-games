@@ -641,7 +641,7 @@
   function spawnConfetti() {
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const glyphs = ['✦', '✧', '★', '👑', '◆', '❖', '·'];
-    const colors = ['#a78bfa', '#22d3ee', '#fbbf24', '#34d399', '#f472b6'];
+    const colors = ['#7C6BC4', '#6B4FC7', '#D97706', '#3E9B6C', '#C44C7C'];
     for (let i = 0; i < 46; i++) {
       const c = document.createElement('span');
       c.className = 'confetti';
@@ -901,7 +901,7 @@
     openModal('术语表 · GLOSSARY（' + es.length + ' 条）',
       '<input id="gSearch" placeholder="搜索术语…" style="width:100%;background:#0b111c;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:9px 12px;font:13px inherit;outline:none;margin-bottom:10px">' +
       '<div class="klist" id="gList">' + list + '</div>' +
-      '<button id="gTowerCta" style="width:100%;margin-top:14px;display:block;background:linear-gradient(90deg,rgba(167,139,250,.16),rgba(34,211,238,.16));border:1px solid var(--violet);color:var(--ink);border-radius:10px;padding:12px 16px;cursor:pointer;font:13px inherit;line-height:1.7">🗼 到试炼塔继续 · <b style="color:var(--violet)">术语深化塔</b>（' + es.length + ' 词专项刷题，答错会进暗影复仇循环）</button>',
+      '<button id="gTowerCta" style="width:100%;margin-top:14px;display:block;background:linear-gradient(90deg,rgba(124,107,196,.16),rgba(107,79,199,.16));border:1px solid var(--violet);color:var(--ink);border-radius:10px;padding:12px 16px;cursor:pointer;font:13px inherit;line-height:1.7">🗼 到试炼塔继续 · <b style="color:var(--violet)">术语深化塔</b>（' + es.length + ' 词专项刷题，答错会进暗影复仇循环）</button>',
       '游戏内正文里的术语都带虚线下划线，点一下就能看解释。');
     const inp = $('gSearch');
     inp.oninput = () => {

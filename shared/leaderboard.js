@@ -100,7 +100,7 @@ window.LEADERBOARD = (function () {
     } catch (e) {}
     return '<div class="lb-me">' +
       '<div class="lb-pid">' +
-      (ybAv ? '<span style="display:inline-block;width:26px;height:26px;border-radius:50%;overflow:hidden;vertical-align:-8px;margin-right:7px;box-shadow:0 0 0 1.5px #26324a">' + ybAv + '</span>' : '') +
+      (ybAv ? '<span style="display:inline-block;width:26px;height:26px;border-radius:50%;overflow:hidden;vertical-align:-8px;margin-right:7px;box-shadow:0 0 0 1.5px #E5E0D8">' + ybAv + '</span>' : '') +
       (ybNick ? '<b style="margin-right:7px">' + esc(ybNick) + '</b>' : '') +
       '档案号 <b>' + esc(pid()) + '</b>' + luck + ' · 贡献 <b>' + me.total + '</b></div>' +
       '<div class="lb-tower">你的贡献点亮了 <b>第 ' + myTier + ' 层</b> 塔 · ' + (TIER_NAME[myTier] || '灯塔') + ' · 超过 <b>' + pctAbove(me.total) + '%</b> 的塔友</div>' +

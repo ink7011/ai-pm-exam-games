@@ -410,8 +410,8 @@ async function main() {
       /rel="manifest"/.test(h) && /serviceWorker/.test(h) && /https:/.test(h));
   });
   const mf = JSON.parse(fs.readFileSync(path.join(ROOT, 'manifest.webmanifest'), 'utf8'));
-  ok('manifest：name/short_name/theme #07090f',
-    !!mf.name && !!mf.short_name && mf.theme_color === '#07090f');
+  ok('manifest：name/short_name/theme #F5F3EE（浅色主题）',
+    !!mf.name && !!mf.short_name && mf.theme_color === '#F5F3EE');
   ok('manifest icons：SVG any + maskable',
     mf.icons.some((i) => i.type === 'image/svg+xml' && i.sizes === 'any' && i.purpose === 'any') &&
     mf.icons.some((i) => i.purpose === 'maskable'));

@@ -1,0 +1,159 @@
+/* ═══════════════════════════════════════════════════════════
+   SHUAMONE 耍门 · 品牌视觉令牌 Brand Visual Tokens
+   ------------------------------------------------------------
+   风格：梦幻空灵 Dreamy Ethereal（奶油白 + 雾蓝 + 淡紫 + 星光）
+   本文件是全站唯一定义色彩令牌的地方（single source of truth）。
+   页面写 <link rel="stylesheet" href=".../shared/theme.css">
+   然后自己的 <style> 里只写布局，颜色一律 var(--*)。
+   规范文档：docs/BRAND-VISUAL.md
+   改动本文件必须：1) 递增文件引用 ?v=  2) sw.js CACHE 版本
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── 背景层级 ── */
+  --bg: #F7F6F2;            /* 奶油白 · 页面底 */
+  --bg-soft: #F5F3EE;       /* 顶部渐变起 */
+  --bg-deep: #F1F4F0;       /* 底部渐变止 */
+  --panel: #FFFFFF;         /* 实心面板 */
+  --panel-glass: rgba(255, 255, 255, 0.68); /* 玻璃面板（配 backdrop-blur） */
+  --panel2: #FDFCFA;        /* 次级面板 / 输入框底 */
+  --track: #EAF2F7;         /* 进度条轨道 · 雾蓝灰 */
+
+  /* ── 品牌色 ── */
+  --cyan: #3A729B;          /* 主色 · 雾蓝深（沿用旧名，全站主强调色） */
+  --blue: #7CB8D4;          /* 主色亮 · 雾蓝（渐变浅端 / 图形填色） */
+  --blue-deep: #32648C;     /* 主色暗（渐变深端 / hover） */
+  --violet: #7663AA;        /* 辅色 · 淡雾紫 */
+  --gold: #E0B33C;          /* 点缀 · 星光金（图形用） */
+  --gold-text: #C9962E;     /* 点缀 · 金（文字用，保证对比度） */
+  --coral: #DE8A74;         /* 点缀 · 珊瑚 */
+  --coral-deep: #B85A45;    /* 白字渐变端用（4.6:1） */
+  --mint: #6FC0A4;          /* 点缀 · 薄荷 */
+
+  /* ── 功能色（浅底可读版） ── */
+  --green: #2E7D62;         /* 成功 / 涨 */
+  --red: #B35050;           /* 失败 / 跌 */
+  --amber: #8F6A1E;         /* 警告 / 低指标 */
+
+  /* ── 文字层级（蓝灰墨） ── */
+  --ink: #5A6B8C;           /* 标题 */
+  --dim: #5C6B86;           /* 正文 */
+  --faint: #76869F;         /* 次要 / 占位 */
+
+  /* ── 线与影 ── */
+  --line: rgba(170, 200, 225, 0.38);   /* 边框 */
+  --line-strong: rgba(170, 200, 225, 0.6);
+  --shadow: 0 4px 24px rgba(150, 175, 205, 0.14);
+  --shadow-hover: 0 10px 34px rgba(150, 175, 205, 0.22);
+
+  /* ── 形状（零直角原则） ── */
+  --r-xl: 22px;             /* 大卡片 */
+  --r-lg: 16px;             /* 常规卡片 */
+  --r-md: 12px;             /* 小块 */
+  --r-pill: 999px;          /* 胶囊 · 按钮默认 */
+
+  --mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+
+/* ═══════════════ 氛围 · 星光点缀 ═══════════════
+   用法：页面放 <i class="sh-star s1"></i> … s1–s4 四个预设位
+   纯装饰：pointer-events:none，移动端 s3/s4 自动隐藏 */
+.sh-star {
+  position: fixed;
+  color: var(--gold);
+  opacity: 0.45;
+  font-size: 16px;
+  font-style: normal;
+  pointer-events: none;
+  z-index: 0;
+  animation: sh-twinkle 3.4s ease-in-out infinite;
+}
+.sh-star.s1 { top: 64px; right: 72px; }
+.sh-star.s2 { top: 150px; right: 170px; font-size: 11px; color: var(--violet); animation-delay: 1.1s; }
+.sh-star.s3 { top: 88px; right: 250px; font-size: 13px; color: var(--mint); animation-delay: 2.2s; }
+.sh-star.s4 { top: 280px; right: 56px; font-size: 10px; color: var(--blue); animation-delay: 0.6s; }
+@keyframes sh-twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(1); }
+  50%      { opacity: 0.7;  transform: scale(1.18); }
+}
+@media (max-width: 640px) { .sh-star.s3, .sh-star.s4 { display: none; } }
+
+/* ═══════════════ 母题 · 拱门 Arch ═══════════════
+   品牌最强形状 DNA：罗马拱（顶半圆 + 两侧直边）
+   用于：头像框、插画窗洞、卡片顶部强调区 */
+.sh-arch {
+  border-radius: 999px 999px var(--r-md) var(--r-md);
+  overflow: hidden;
+}
+
+/* ═══════════════ 母题 · 圆形画框 Orb ═══════════════
+   圆形容器 + 白描边 + 内侧微光，像一颗小行星 */
+.sh-orb {
+  border-radius: 50%;
+  background: linear-gradient(160deg, #FFFFFF 0%, #EDF4F8 100%);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.9),
+              inset 0 -6px 14px rgba(170, 200, 225, 0.28),
+              var(--shadow);
+}
+
+/* ═══════════════ 母题 · 虚线轨道 Orbit ═══════════════
+   穿过圆点的水平虚线，节点像行星串在轨道上
+   用于：旅程时间线、步骤指引 */
+.sh-orbit {
+  display: flex;
+  align-items: center;
+}
+.sh-orbit::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  height: 0;
+  border-top: 1.5px dashed var(--line-strong);
+}
+.sh-orbit > * { position: relative; }
+
+/* ═══════════════ 组件 · 玻璃卡片 ═══════════════ */
+.sh-card {
+  background: var(--panel-glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow);
+}
+
+/* ═══════════════ 组件 · 胶囊按钮 ═══════════════ */
+.sh-btn {
+  display: inline-block;
+  padding: 11px 20px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-pill);
+  background: var(--panel);
+  color: var(--ink);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(150, 175, 205, 0.1);
+  text-decoration: none;
+}
+.sh-btn:hover {
+  border-color: var(--blue);
+  color: var(--cyan);
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-1px);
+}
+.sh-btn--primary {
+  background: linear-gradient(135deg, var(--cyan), var(--blue-deep));
+  color: #FFFFFF;
+  font-weight: 700;
+  border: 1.5px solid transparent;
+  box-shadow: 0 4px 18px rgba(124, 184, 212, 0.38);
+}
+
+/* ═══════════════ 组件 · 眉题 Kicker ═══════════════ */
+.sh-kicker {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: var(--cyan);
+}

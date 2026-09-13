@@ -51,16 +51,16 @@ window.CONTENT = (function () {
   };
 
   const NPCS = {
-    you:      { name: '你', color: '#22d3ee' },
-    ai:       { name: 'AI Agent', color: '#a78bfa', role: 'AGENT' },
-    user:     { name: '第一位用户', color: '#f472b6', role: 'USER' },
-    vc:       { name: 'VC 朋友', color: '#fbbf24', role: 'OBSERVER' },
-    founder:  { name: 'Alex · 独立开发者', color: '#34d399', role: 'PEER' },
-    hater:    { name: '匿名评论者', color: '#f87171', role: 'COMMUNITY' },
-    partner:  { name: '伴侣', color: '#f9a8d4', role: 'PERSONAL' },
-    angel:    { name: '天使投资人 Sarah', color: '#60a3fa', role: 'INVESTOR' },
-    rival:    { name: '竞对创始人', color: '#fb923c', role: 'RIVAL' },
-    sys:      { name: 'OPC 终端', color: '#7c8ba1', role: 'SYSTEM' }
+    you:      { name: '你', color: '#36719A' },
+    ai:       { name: 'AI Agent', color: '#7663AA', role: 'AGENT' },
+    user:     { name: '第一位用户', color: '#B04F84', role: 'USER' },
+    vc:       { name: 'VC 朋友', color: '#8F6A1E', role: 'OBSERVER' },
+    founder:  { name: 'Alex · 独立开发者', color: '#2E7D62', role: 'PEER' },
+    hater:    { name: '匿名评论者', color: '#B35050', role: 'COMMUNITY' },
+    partner:  { name: '伴侣', color: '#9C5A83', role: 'PERSONAL' },
+    angel:    { name: '天使投资人 Sarah', color: '#3D6CAB', role: 'INVESTOR' },
+    rival:    { name: '竞对创始人', color: '#A8582C', role: 'RIVAL' },
+    sys:      { name: 'OPC 终端', color: '#5F708C', role: 'SYSTEM' }
   };
 
   const CASES = [

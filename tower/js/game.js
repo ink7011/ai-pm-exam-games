@@ -470,7 +470,7 @@
     setPhase('select');
     renderPlayer(); renderFloors();
     const wrap = H('div', 'card');
-    wrap.innerHTML = '<div class="titlecard" style="border:1px solid #243048;border-radius:12px;padding:16px 20px;background:linear-gradient(135deg,#0d1524,#0b0f1a)">' +
+    wrap.innerHTML = '<div class="titlecard" style="border:1px solid #E5E0D8;border-radius:12px;padding:16px 20px;background:linear-gradient(135deg,#FAF8F4,#FAF8F4)">' +
       '<div style="font-family:var(--mono);color:var(--cyan);font-size:11px;letter-spacing:3px;margin-bottom:6px">TOWER SELECT</div>' +
       '<div style="font-size:19px;font-weight:700">选择试炼塔</div>' + weakTip() + '</div>' +
       '<div class="towergrid" id="tgrid"></div>';
@@ -494,7 +494,7 @@
           const hit = tSkills.find(sk => grows.includes(sk));
           if (hit) {
             const sk = window.LE.SKILLS.filter(x => x.id === hit)[0];
-            recoTag = '<div style="margin-top:5px;font-size:10.5px;color:#67e8f9;border:1px dashed rgba(34,211,238,.45);border-radius:6px;padding:2px 8px;display:inline-block">▸ Recommended for you · 补强 ' + esc(sk ? sk.name : hit) + '</div>';
+            recoTag = '<div style="margin-top:5px;font-size:10.5px;color:#8B7EC8;border:1px dashed rgba(107,79,199,.45);border-radius:6px;padding:2px 8px;display:inline-block">▸ Recommended for you · 补强 ' + esc(sk ? sk.name : hit) + '</div>';
           }
         }
         const b = H('button', 'tower' + (g.key === 'company' ? ' company' : '') + (locked ? ' locked' : ''),
@@ -573,8 +573,8 @@
     const b = H('div', 'battle ' + (kind === 'boss' ? 'boss' : (isElite ? 'elite' : '')));
     b.id = 'battleCard';
     b.innerHTML =
-      (R && R.banner && R.pos === 0 ? '<div style="border:1px solid rgba(34,211,238,.4);background:rgba(34,211,238,.06);border-radius:10px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:#67e8f9;line-height:1.6">' + esc(R.banner) + '</div>' : '') +
-      (kind === 'shadow' ? '<div style="border:1px solid rgba(167,139,250,.45);background:rgba(167,139,250,.07);border-radius:10px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:#c4b5fd;line-height:1.6">👁 A SHADOW HAS APPEARED — ' + esc(it.modName) + ' 正在成为你的弱点。连对两次，将其净化为星光。</div>' : '') +
+      (R && R.banner && R.pos === 0 ? '<div style="border:1px solid rgba(107,79,199,.4);background:rgba(107,79,199,.06);border-radius:10px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:#8B7EC8;line-height:1.6">' + esc(R.banner) + '</div>' : '') +
+      (kind === 'shadow' ? '<div style="border:1px solid rgba(124,107,196,.45);background:rgba(124,107,196,.07);border-radius:10px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:#7C6BC4;line-height:1.6">👁 A SHADOW HAS APPEARED — ' + esc(it.modName) + ' 正在成为你的弱点。连对两次，将其净化为星光。</div>' : '') +
       (isElite ? '<div class="timerbar" id="tbar"><i style="width:100%"></i></div>' : '') +
       '<div class="b-head">' + kindChips(kind) +
       '<span class="chip">' + esc(it.modName) + '</span>' +
@@ -1037,7 +1037,7 @@
     let w = $('nvPlant');
     if (!w) {
       const css = document.createElement('style');
-      css.textContent = '#nvPlant{position:fixed;left:14px;bottom:14px;z-index:800;cursor:pointer;background:rgba(10,15,26,.82);border:1px solid #26324a;border-radius:16px;padding:6px 8px 2px;backdrop-filter:blur(6px);transition:border-color .15s,transform .15s;box-shadow:0 4px 14px rgba(0,0,0,.4)}#nvPlant:hover{border-color:#34d399;transform:translateY(-2px)}#nvPlant .np-l{display:block;font-size:9px;color:#8b9bb4;text-align:center;letter-spacing:2px;margin-top:2px}';
+      css.textContent = '#nvPlant{position:fixed;left:14px;bottom:14px;z-index:800;cursor:pointer;background:rgba(255,255,255,.9);border:1px solid rgba(170,200,225,.5);border-radius:16px;padding:6px 8px 2px;backdrop-filter:blur(8px);transition:border-color .15s,transform .15s;box-shadow:0 4px 16px rgba(150,175,205,.25)}#nvPlant:hover{border-color:#2E7D62;transform:translateY(-2px)}#nvPlant .np-l{display:block;font-size:9px;color:#5C6B86;text-align:center;letter-spacing:2px;margin-top:2px}';
       document.head.appendChild(css);
       w = document.createElement('div');
       w.id = 'nvPlant';

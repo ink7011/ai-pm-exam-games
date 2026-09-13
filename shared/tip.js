@@ -166,12 +166,12 @@
   function html() {
     var lucky = luckOn();
     return '<style>' +
-      '.tipw{position:relative;color:#dbe4f0;font-family:inherit}' +
-      '.tipw .tp-k{font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:3px;color:#8b9bb4;text-transform:uppercase;margin-bottom:6px}' +
+      '.tipw{position:relative;color:#5A6B8C;font-family:inherit}' +
+      '.tipw .tp-k{font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:3px;color:#5C6B86;text-transform:uppercase;margin-bottom:6px}' +
       '.tipw .tp-t{font-size:20px;font-weight:800;margin-bottom:8px}' +
-      '.tipw .tp-note{font-size:13px;color:#8b9bb4;line-height:1.85;margin-bottom:12px}' +
-      '.tipw .tp-note b{color:#dbe4f0}' +
-      '.tipw .tp-signbtn{width:100%;font-size:15px;font-weight:700;color:#07090f;background:linear-gradient(90deg,#fbbf24,#f59e0b);border:0;border-radius:10px;padding:12px;cursor:pointer;box-shadow:0 4px 14px rgba(251,191,36,.25);margin-bottom:12px}' +
+      '.tipw .tp-note{font-size:13px;color:#5C6B86;line-height:1.85;margin-bottom:12px}' +
+      '.tipw .tp-note b{color:#5A6B8C}' +
+      '.tipw .tp-signbtn{width:100%;font-size:15px;font-weight:700;color:#FFFFFF;background:linear-gradient(90deg,#8F6A1E,#7A5A18);border:0;border-radius:10px;padding:12px;cursor:pointer;box-shadow:0 4px 14px rgba(143,106,30,.25);margin-bottom:12px}' +
       '.tipw .tp-signbtn:active{transform:translateY(1px)}' +
       '.tipw .tp-sign{display:none;background:#f8f2e2;color:#2b2a26;border-radius:12px;padding:16px 18px;margin-bottom:12px;position:relative;font-family:"Comic Sans MS","Marker Felt","Kaiti SC","KaiTi",cursive,serif}' +
       '.tipw .tp-sign.on{display:block;animation:tpsign .5s ease-out}' +
@@ -187,31 +187,31 @@
       '.tipw .tp-sign .sg-s{font-size:14px;line-height:1.8}' +
       '.tipw .tp-sign .sg-d{font-size:11px;color:#8a7f68;margin-top:8px;line-height:1.7}' +
       '.tipw .tp-sign .sg-stamp{position:absolute;right:12px;top:10px;border:3px double #c2452d;color:#c2452d;border-radius:8px;padding:3px 9px;font-size:13px;font-weight:700;transform:rotate(12deg);letter-spacing:2px}' +
-      '.tipw .tp-sx{border-top:1px dashed #26324a;margin-top:14px;padding-top:10px}' +
-      '.tipw .tp-sxh{color:#5a6b84;font-size:12px;text-align:center;letter-spacing:1px;margin-bottom:2px}' +
-      '.tipw .tp-sxnote{font-size:12px;color:#8b9bb4;line-height:1.8;margin:10px 0;border:1px dashed rgba(251,191,36,.35);border-radius:10px;padding:8px 12px;background:rgba(251,191,36,.04)}' +
-      '.tipw .tp-sxnote b{color:#fbbf24}' +
+      '.tipw .tp-sx{border-top:1px dashed #EAF2F7;margin-top:14px;padding-top:10px}' +
+      '.tipw .tp-sxh{color:#76869F;font-size:12px;text-align:center;letter-spacing:1px;margin-bottom:2px}' +
+      '.tipw .tp-sxnote{font-size:12px;color:#5C6B86;line-height:1.8;margin:10px 0;border:1px dashed rgba(143,106,30,.35);border-radius:10px;padding:8px 12px;background:rgba(143,106,30,.04)}' +
+      '.tipw .tp-sxnote b{color:#8F6A1E}' +
       '.tipw .tp-presets{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}' +
-      '.tipw .tp-chip{font-size:12px;color:#dbe4f0;border:1.5px solid #26324a;background:#0e131d;border-radius:10px;padding:7px 12px;cursor:pointer;text-align:center}' +
-      '.tipw .tp-chip i{display:block;font-style:normal;font-size:10px;color:#5a6b84;margin-top:2px}' +
-      '.tipw .tp-chip.on{border-color:#fbbf24;background:rgba(251,191,36,.08)}' +
-      '.tipw .tp-chip.on i{color:#fbbf24}' +
+      '.tipw .tp-chip{font-size:12px;color:#5A6B8C;border:1.5px solid #EAF2F7;background:#FFFFFF;border-radius:10px;padding:7px 12px;cursor:pointer;text-align:center}' +
+      '.tipw .tp-chip i{display:block;font-style:normal;font-size:10px;color:#76869F;margin-top:2px}' +
+      '.tipw .tp-chip.on{border-color:#8F6A1E;background:rgba(143,106,30,.08)}' +
+      '.tipw .tp-chip.on i{color:#8F6A1E}' +
       '.tipw .tp-custom{display:none;gap:8px;align-items:center;margin-bottom:10px}' +
       '.tipw .tp-custom.show{display:flex}' +
-      '.tipw .tp-custom input{width:110px;background:#0e131d;border:1.5px solid #26324a;border-radius:8px;color:#dbe4f0;font:13px ui-monospace,Menlo,monospace;padding:7px 10px;outline:none}' +
-      '.tipw .tp-custom input:focus{border-color:#fbbf24}' +
-      '.tipw .tp-cap{display:none;font-size:12px;color:#fbbf24;line-height:1.7;margin:0 0 10px;padding:8px 12px;border:1px dashed rgba(251,191,36,.5);border-radius:8px;background:rgba(251,191,36,.05)}' +
+      '.tipw .tp-custom input{width:110px;background:#FFFFFF;border:1.5px solid #EAF2F7;border-radius:8px;color:#5A6B8C;font:13px ui-monospace,Menlo,monospace;padding:7px 10px;outline:none}' +
+      '.tipw .tp-custom input:focus{border-color:#8F6A1E}' +
+      '.tipw .tp-cap{display:none;font-size:12px;color:#8F6A1E;line-height:1.7;margin:0 0 10px;padding:8px 12px;border:1px dashed rgba(143,106,30,.5);border-radius:8px;background:rgba(143,106,30,.05)}' +
       '.tipw .tp-cap.show{display:block}' +
-      '.tipw .tp-qrbox{display:flex;flex-direction:column;align-items:center;gap:8px;border:1px solid #26324a;border-radius:12px;padding:12px;background:#0e131d}' +
+      '.tipw .tp-qrbox{display:flex;flex-direction:column;align-items:center;gap:8px;border:1px solid #EAF2F7;border-radius:12px;padding:12px;background:#FFFFFF}' +
       '.tipw .tp-tabs{display:flex;gap:8px}' +
-      '.tipw .tp-tab{font-size:12px;color:#8b9bb4;border:1px solid #26324a;background:transparent;border-radius:8px;padding:5px 14px;cursor:pointer}' +
-      '.tipw .tp-tab.on{color:#fbbf24;border-color:rgba(251,191,36,.5)}' +
+      '.tipw .tp-tab{font-size:12px;color:#5C6B86;border:1px solid #EAF2F7;background:transparent;border-radius:8px;padding:5px 14px;cursor:pointer}' +
+      '.tipw .tp-tab.on{color:#8F6A1E;border-color:rgba(143,106,30,.5)}' +
       '.tipw .tp-qr{width:150px;height:150px;border-radius:10px;background:#fff;object-fit:contain}' +
-      '.tipw .tp-qrmiss{display:none;width:150px;padding:16px 10px;border:1px dashed #26324a;border-radius:10px;font-size:11px;color:#5a6b84;text-align:center;line-height:1.8}' +
-      '.tipw .tp-amount{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#8b9bb4}' +
-      '.tipw .tp-amount b{color:#34d399;font-size:14px}' +
-      '.tipw .tp-bless{width:100%;font-size:13px;font-weight:700;color:#fde68a;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.4);border-radius:10px;padding:9px;cursor:pointer;margin:10px 0}' +
-      '.tipw .tp-foot{font-size:11px;color:#5a6b84;line-height:1.8;margin-top:12px;text-align:center}' +
+      '.tipw .tp-qrmiss{display:none;width:150px;padding:16px 10px;border:1px dashed #EAF2F7;border-radius:10px;font-size:11px;color:#76869F;text-align:center;line-height:1.8}' +
+      '.tipw .tp-amount{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#5C6B86}' +
+      '.tipw .tp-amount b{color:#3E9B7E;font-size:14px}' +
+      '.tipw .tp-bless{width:100%;font-size:13px;font-weight:700;color:#8F6A1E;background:rgba(143,106,30,.1);border:1px solid rgba(143,106,30,.4);border-radius:10px;padding:9px;cursor:pointer;margin:10px 0}' +
+      '.tipw .tp-foot{font-size:11px;color:#76869F;line-height:1.8;margin-top:12px;text-align:center}' +
       '</style><div class="tipw">' +
       '<div class="tp-k">SHUAMONE · I-Ching Fortune</div>' +
       '<div class="tp-t">🎋 求个上上签</div>' +
@@ -225,7 +225,7 @@
       '<div class="tp-presets">' + PRESETS.map(function (p, i) {
         return '<button type="button" class="tp-chip' + (i === 0 ? ' on' : '') + '" data-v="' + p.v + '">' + p.label + '<i>' + p.note + '</i></button>';
       }).join('') + '</div>' +
-      '<div class="tp-custom" id="tpCustom"><span style="font-size:12px;color:#8b9bb4">金额</span><input type="number" id="tpInput" min="0.01" step="0.01" placeholder="¥ 心意金额"><span style="font-size:11px;color:#5a6b84">元</span></div>' +
+      '<div class="tp-custom" id="tpCustom"><span style="font-size:12px;color:#5C6B86">金额</span><input type="number" id="tpInput" min="0.01" step="0.01" placeholder="¥ 心意金额"><span style="font-size:11px;color:#76869F">元</span></div>' +
       '<div class="tp-cap" id="tpCap">心意收到啦，真的不用这么多🙏 单笔最多 <b>¥10000</b>，已按 ¥10000 帮你算——超额的部分，就把好运留给下一个塔友吧。</div>' +
       '<div class="tp-qrbox">' +
       '<div class="tp-tabs"><button type="button" class="tp-tab on" data-p="wx">微信</button><button type="button" class="tp-tab" data-p="ali">支付宝</button></div>' +
@@ -234,7 +234,7 @@
       '<div class="tp-amount">扫码后请手动输入 <b id="tpAmt">¥5.2</b>（金额随心）</div>' +
       '</div>' +
       '<button type="button" class="tp-bless" id="tpBless">' + (lucky ? '🕯 已点亮 · 今日 🍀' : '🕯 随喜并点亮（留名 + 好运）') + '</button>' +
-      (TIP_URL ? '<div class="tp-foot"><a href="' + esc(TIP_URL) + '" target="_blank" rel="noopener" style="color:#22d3ee">去爱发电支持 →</a></div>' : '') +
+      (TIP_URL ? '<div class="tp-foot"><a href="' + esc(TIP_URL) + '" target="_blank" rel="noopener" style="color:#3A729B">去爱发电支持 →</a></div>' : '') +
       '</div></div>' +
       '<div class="tp-foot">求签永远免费 · 好运不设付费墙 · 六爻无随机，卦卦有来处 ✦</div>' +
       '</div>';

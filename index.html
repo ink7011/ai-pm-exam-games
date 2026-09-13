@@ -3,20 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#07090f">
+<meta name="theme-color" content="#F5F3EE">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="icon.svg">
 <title>SHUAMONE 耍门 · Play the decisions. Learn the career.</title>
+<link rel="stylesheet" href="shared/theme.css?v=2">
 <style>
-:root{
-  --bg:#07090f; --panel:#0e131d; --panel2:#121926; --line:#1e2836;
-  --cyan:#22d3ee; --green:#34d399; --red:#f87171; --amber:#fbbf24;
-  --violet:#a78bfa; --ink:#dbe4f0; --dim:#8b9bb4;
-  --mono:ui-monospace,'SF Mono','Cascadia Code',Menlo,Consolas,monospace;
-}
 *{box-sizing:border-box;margin:0;padding:0}
 body{
-  background:var(--bg);color:var(--ink);min-height:100vh;
+  background:linear-gradient(180deg,#F5F3EE 0%,#F7F6F2 35%,#F1F4F0 100%);color:var(--ink);min-height:100vh;
   font:14px/1.7 -apple-system,BlinkMacSystemFont,'PingFang SC','Segoe UI','Microsoft YaHei',sans-serif;
 }
 body::before{
@@ -26,8 +21,8 @@ body::before{
 body::after{
   content:'';position:fixed;inset:-20%;pointer-events:none;z-index:0;
   background:
-    radial-gradient(38% 32% at 18% 12%,rgba(34,211,238,.07),transparent 70%),
-    radial-gradient(34% 30% at 84% 82%,rgba(167,139,250,.065),transparent 70%);
+    radial-gradient(38% 32% at 18% 12%,rgba(78,143,181,.07),transparent 70%),
+    radial-gradient(34% 30% at 84% 82%,rgba(172,156,200,.065),transparent 70%);
 }
 /* 交互粒子画布 */
 #fx{position:fixed;inset:0;z-index:1;pointer-events:none}
@@ -46,13 +41,13 @@ section.block{animation:fadeUp .6s .68s both}
 .top{text-align:center;margin-bottom:14px}
 .kicker{font-family:var(--mono);font-size:11px;letter-spacing:3px;color:var(--dim)}
 h1{font-size:30px;margin:10px 0 4px;letter-spacing:1px}
-h1 b{color:var(--cyan);text-shadow:0 0 30px rgba(34,211,238,.55);animation:glowPulse 3.2s ease-in-out 2}
-@keyframes glowPulse{0%,100%{text-shadow:0 0 22px rgba(34,211,238,.4)}50%{text-shadow:0 0 40px rgba(34,211,238,.75)}}
+h1 b{color:var(--cyan);text-shadow:0 0 30px rgba(78,143,181,.55);animation:glowPulse 3.2s ease-in-out 2}
+@keyframes glowPulse{0%,100%{text-shadow:0 0 22px rgba(78,143,181,.4)}50%{text-shadow:0 0 40px rgba(78,143,181,.75)}}
 .sub{color:var(--cyan);font-family:var(--mono);font-size:13px;letter-spacing:2px;min-height:22px}
 .sub .cursor{display:inline-block;width:8px;background:var(--cyan);animation:blink 1s steps(2) infinite;margin-left:2px}
 @keyframes blink{50%{opacity:0}}
 .sub2{color:var(--dim);font-size:13px;margin-top:10px}
-.langnote{display:inline-block;margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--amber);border:1px dashed rgba(251,191,36,.5);border-radius:6px;padding:3px 10px}
+.langnote{display:inline-block;margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--amber);border:1px dashed rgba(201,150,46,.5);border-radius:6px;padding:3px 10px}
 .hook{margin:22px auto 0;max-width:640px;color:var(--ink);font-size:14.5px;line-height:2}
 .hook b{color:var(--cyan)}
 .hook .en{display:block;color:var(--dim);font-size:12px;margin-top:4px}
@@ -61,8 +56,8 @@ h1 b{color:var(--cyan);text-shadow:0 0 30px rgba(34,211,238,.55);animation:glowP
 .worlds{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:stretch;margin-top:26px;animation:fadeUp .6s .48s both}
 .w{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px 16px;transition:.2s}
 .w:hover{transform:translateY(-2px)}
-.w.wt{border-color:rgba(251,191,36,.4)} .w.wt:hover{border-color:rgba(251,191,36,.75)}
-.w.wr{border-color:rgba(34,211,238,.4)} .w.wr:hover{border-color:rgba(34,211,238,.75)}
+.w.wt{border-color:rgba(201,150,46,.4)} .w.wt:hover{border-color:rgba(201,150,46,.75)}
+.w.wr{border-color:rgba(78,143,181,.4)} .w.wr:hover{border-color:rgba(78,143,181,.75)}
 .wi{font-size:22px}
 .wt-t{font-weight:700;margin-top:5px}
 .w.wt .wt-t{color:var(--amber)} .w.wr .wt-t{color:var(--cyan)}
@@ -73,30 +68,37 @@ h1 b{color:var(--cyan);text-shadow:0 0 30px rgba(34,211,238,.55);animation:glowP
 .games{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:30px}
 @media(max-width:760px){.games{grid-template-columns:1fr}}
 .game{
-  background:linear-gradient(160deg,var(--panel),#0b0f1a);border:1px solid #26324a;border-radius:16px;
+  background:linear-gradient(160deg,var(--panel),#FAF8F4);border:1px solid #EAF2F7;border-radius:16px;
   padding:22px 22px 20px;position:relative;overflow:hidden;
   transition:transform .25s cubic-bezier(.2,.8,.3,1.1),border-color .25s,box-shadow .25s;
 }
-.game::after{content:'';position:absolute;inset:0;border-radius:16px;pointer-events:none;box-shadow:inset 0 0 40px rgba(34,211,238,.04);transition:box-shadow .3s}
+.game::after{content:'';position:absolute;inset:0;border-radius:16px;pointer-events:none;box-shadow:inset 0 0 40px rgba(78,143,181,.04);transition:box-shadow .3s}
 .game::before{
   content:'';position:absolute;top:0;left:8%;right:8%;height:1px;
   background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:0;transition:opacity .3s;
 }
 .game:hover{transform:translateY(-5px)}
-.game.g1:hover{border-color:rgba(34,211,238,.8);box-shadow:0 14px 40px rgba(34,211,238,.13)}
-.game.g2:hover{border-color:rgba(251,191,36,.8);box-shadow:0 14px 40px rgba(251,191,36,.12)}
+.game.g1:hover{border-color:rgba(78,143,181,.8);box-shadow:0 14px 40px rgba(78,143,181,.13)}
+.game.g2:hover{border-color:rgba(201,150,46,.8);box-shadow:0 14px 40px rgba(201,150,46,.12)}
 .game:hover::before{opacity:1}
-.game:hover::after{box-shadow:inset 0 0 56px rgba(34,211,238,.07)}
+.game:hover::after{box-shadow:inset 0 0 56px rgba(78,143,181,.07)}
+.g-arch{
+  width:58px;height:66px;margin:2px 0 14px;display:flex;align-items:flex-start;justify-content:center;
+  border-radius:999px 999px 12px 12px;padding-top:15px;font-size:24px;
+  border:1px solid var(--line);box-shadow:inset 0 -8px 16px rgba(170,200,225,.18),var(--shadow);
+}
+.game.g1 .g-arch{background:linear-gradient(180deg,rgba(184,216,232,.32),rgba(255,255,255,.4))}
+.game.g2 .g-arch{background:linear-gradient(180deg,rgba(240,222,168,.32),rgba(255,255,255,.4))}
 .game .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:2px}
-.game.g1{border-color:rgba(34,211,238,.45)} .game.g1 .tag{color:var(--cyan)}
-.game.g2{border-color:rgba(251,191,36,.45)} .game.g2 .tag{color:var(--amber)}
+.game.g1{border-color:rgba(78,143,181,.45)} .game.g1 .tag{color:var(--cyan)}
+.game.g2{border-color:rgba(201,150,46,.45)} .game.g2 .tag{color:var(--amber)}
 .game h2{font-size:20px;margin:6px 0 2px}
 .game .en{color:var(--dim);font-size:12px;font-family:var(--mono)}
 .game .desc{font-size:13px;color:var(--ink);margin:12px 0 4px;line-height:1.8}
 .game .desc .en{display:block;margin-top:6px;font-family:inherit;font-size:12px;line-height:1.7}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 16px}
 .chip{
-  font-family:var(--mono);font-size:10.5px;border:1px solid var(--line);border-radius:5px;padding:2px 8px;
+  font-family:var(--mono);font-size:10.5px;border:1px solid var(--line);border-radius:999px;padding:3px 11px;
   color:var(--dim);background:var(--panel2);transition:.18s;animation:chipIn .35s both;
 }
 .chip:nth-child(1){animation-delay:.6s}.chip:nth-child(2){animation-delay:.64s}.chip:nth-child(3){animation-delay:.68s}
@@ -106,7 +108,7 @@ h1 b{color:var(--cyan);text-shadow:0 0 30px rgba(34,211,238,.55);animation:glowP
 .chip:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-1px)}
 .play{
   display:block;text-align:center;font:700 14px var(--mono);letter-spacing:2px;text-decoration:none;
-  border-radius:9px;padding:12px 0;transition:.2s;position:relative;overflow:hidden;
+  border-radius:999px;padding:12px 0;transition:.2s;position:relative;overflow:hidden;
 }
 .play::after{
   content:'';position:absolute;top:0;left:-70%;width:45%;height:100%;
@@ -114,9 +116,9 @@ h1 b{color:var(--cyan);text-shadow:0 0 30px rgba(34,211,238,.55);animation:glowP
   transform:skewX(-20deg);transition:left .5s ease;
 }
 .play:hover::after{left:125%}
-.game.g1 .play{background:linear-gradient(90deg,var(--cyan),var(--violet));color:#05070c}
-.game.g2 .play{background:linear-gradient(90deg,var(--amber),#fb7185);color:#05070c}
-.play:hover{filter:brightness(1.15);transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,0,0,.35)}
+.game.g1 .play{background:linear-gradient(90deg,var(--cyan),var(--violet));color:#FFFFFF}
+.game.g2 .play{background:linear-gradient(90deg,var(--amber),#B85A45);color:#FFFFFF}
+.play:hover{filter:brightness(1.15);transform:translateY(-2px);box-shadow:0 8px 22px rgba(78,143,181,.35)}
 .play:active{transform:translateY(0) scale(.985)}
 
 /* ===== 画廊 ===== */
@@ -124,12 +126,12 @@ h1 b{color:var(--cyan);text-shadow:0 0 30px rgba(34,211,238,.55);animation:glowP
 .shot-col{display:flex;flex-direction:column;gap:12px}
 @media(max-width:640px){.shots{grid-template-columns:1fr}}
 .shots a{display:block;border:1px solid var(--line);border-radius:10px;overflow:hidden;position:relative;transition:.22s;background:var(--panel)}
-.shots a:hover{border-color:var(--cyan);transform:translateY(-3px);box-shadow:0 10px 28px rgba(34,211,238,.12)}
+.shots a:hover{border-color:var(--cyan);transform:translateY(-3px);box-shadow:0 10px 28px rgba(78,143,181,.12)}
 .shots img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top;opacity:.88;transition:.25s}
 .shots a:hover img{opacity:1;transform:scale(1.045)}
 .shots .cap{
   position:absolute;left:0;right:0;bottom:0;padding:16px 10px 7px;font-family:var(--mono);font-size:10.5px;
-  color:var(--ink);background:linear-gradient(180deg,transparent,rgba(5,8,14,.88));letter-spacing:1px;
+  color:#FFFFFF;background:linear-gradient(180deg,transparent,rgba(58,72,98,.85));letter-spacing:1px;
 }
 
 /* ===== 通用横滑区（故事线 / 角色图鉴） ===== */
@@ -149,10 +151,10 @@ section.block{margin-top:44px}
 .hstrip.dragging *{pointer-events:none}
 .arr{
   position:absolute;top:38%;z-index:3;width:34px;height:34px;border-radius:50%;
-  background:rgba(13,20,32,.9);border:1px solid var(--line);color:var(--cyan);font:16px var(--mono);
+  background:rgba(255,255,255,.9);border:1px solid var(--line);color:var(--cyan);font:16px var(--mono);
   cursor:pointer;transition:.18s;display:flex;align-items:center;justify-content:center;
 }
-.arr:hover{border-color:var(--cyan);box-shadow:0 0 14px rgba(34,211,238,.3)}
+.arr:hover{border-color:var(--cyan);box-shadow:0 0 14px rgba(78,143,181,.3)}
 .arr.l{left:-12px}.arr.r{right:-12px}
 
 /* 十周故事线卡 */
@@ -162,18 +164,18 @@ section.block{margin-top:44px}
 }
 .tcard:hover{border-color:var(--cyan);transform:translateY(-3px)}
 .tcard .wk{font-family:var(--mono);font-size:10px;color:var(--cyan);letter-spacing:2px}
-.tcard .ic{font-size:20px;margin:6px 0 4px}
+.tcard .ic{font-size:19px;margin:8px 0 6px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:linear-gradient(160deg,#FFFFFF,#EDF4F8);box-shadow:inset 0 0 0 2px rgba(255,255,255,.9),inset 0 -5px 12px rgba(170,200,225,.26),var(--shadow)}
 .tcard .tt{font-size:13px;font-weight:700;line-height:1.5;min-height:40px}
 .tcard .ds{color:var(--dim);font-size:11px;margin-top:5px;line-height:1.6}
-.tcard.now{border-color:rgba(34,211,238,.6);background:linear-gradient(160deg,rgba(34,211,238,.08),var(--panel2))}
+.tcard.now{border-color:rgba(78,143,181,.6);background:linear-gradient(160deg,rgba(78,143,181,.08),var(--panel2))}
 .tcard.bossc{
-  flex:0 0 232px;border-color:rgba(248,113,113,.55);
-  background:linear-gradient(160deg,rgba(248,113,113,.1),#140a0c);
+  flex:0 0 232px;border-color:rgba(204,107,107,.55);
+  background:linear-gradient(160deg,rgba(204,107,107,.1),#FBF1EC);
 }
-.tcard.bossc:hover{border-color:var(--red);box-shadow:0 10px 30px rgba(248,113,113,.18)}
+.tcard.bossc:hover{border-color:var(--red);box-shadow:0 10px 30px rgba(204,107,107,.18)}
 .tcard.bossc .wk{color:var(--red)}
 .tcard.bossc .tt{color:var(--ink);font-size:14px}
-.tcard.bossc .boss-art-mini{margin-top:8px;border-radius:8px;overflow:hidden;border:1px solid rgba(248,113,113,.4)}
+.tcard.bossc .boss-art-mini{margin-top:8px;border-radius:8px;overflow:hidden;border:1px solid rgba(204,107,107,.4)}
 .tcard.bossc .boss-art-mini svg{display:block;width:100%;height:auto}
 
 /* 角色图鉴卡 */
@@ -184,43 +186,43 @@ section.block{margin-top:44px}
 .ccard:hover{transform:translateY(-4px)}
 .ccard .cav{width:96px;height:96px;margin:0 auto;display:block;transition:.25s}
 .ccard:hover .cav{transform:scale(1.06)}
-.ccard .cav svg{width:100%;height:100%;border-radius:16px}
+.ccard .cav svg{width:100%;height:100%;border-radius:50%;box-shadow:inset 0 0 0 2px rgba(255,255,255,.9),inset 0 -6px 14px rgba(170,200,225,.28),0 4px 24px rgba(150,175,205,.14)}
 .ccard .cn{text-align:center;font-weight:700;font-size:14px;margin-top:8px}
 .ccard .cr{text-align:center;font-size:10.5px;color:var(--dim);font-family:var(--mono);margin-top:2px;min-height:30px;line-height:1.5}
 .ccard .cq{
-  margin-top:8px;padding:8px 9px;border-radius:8px;background:rgba(255,255,255,.03);
+  margin-top:8px;padding:8px 9px;border-radius:8px;background:rgba(234,242,247,.55);
   font-size:11px;color:var(--ink);line-height:1.7;opacity:0;max-height:0;overflow:hidden;
   transition:.28s;border-left:2px solid var(--violet);
 }
 .ccard:hover .cq{opacity:1;max-height:110px}
-.ccard.you{border-color:rgba(125,216,232,.5)}
-.ccard.bosscc{flex:0 0 210px;border-color:rgba(248,113,113,.5)}
-.ccard.bosscc .cav-boss{border-radius:12px;overflow:hidden;border:1px solid rgba(248,113,113,.4)}
+.ccard.you{border-color:rgba(124,184,212,.5)}
+.ccard.bosscc{flex:0 0 210px;border-color:rgba(204,107,107,.5)}
+.ccard.bosscc .cav-boss{border-radius:12px;overflow:hidden;border:1px solid rgba(204,107,107,.4)}
 .ccard.bosscc .cav-boss svg{display:block;width:100%;height:auto}
 
 .pos{margin-top:44px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
 .pos table{width:100%;border-collapse:collapse;font-size:13px}
 .pos th{font-family:var(--mono);font-size:11px;letter-spacing:1px;color:var(--dim);text-align:left;padding:10px 14px;background:var(--panel);border-bottom:1px solid var(--line)}
-.pos td{padding:11px 14px;border-bottom:1px solid #151d2c;vertical-align:top;transition:background .2s}
-.pos tr:hover td{background:rgba(34,211,238,.025)}
+.pos td{padding:11px 14px;border-bottom:1px solid #EAF2F7;vertical-align:top;transition:background .2s}
+.pos tr:hover td{background:rgba(78,143,181,.025)}
 .pos tr:last-child td{border-bottom:none}
 .pos td:first-child{white-space:nowrap;font-weight:700}
 .pos .c{color:var(--cyan)} .pos .a{color:var(--amber)}
 .coverage{margin-top:44px}
 .coverage h3{font-family:var(--mono);font-size:12px;letter-spacing:2px;color:var(--dim);margin-bottom:10px}
 .mods{display:flex;flex-wrap:wrap;gap:7px}
-.mods span{font-family:var(--mono);font-size:11px;border:1px solid #2a3550;border-radius:6px;padding:3px 10px;background:var(--panel2);color:var(--ink);transition:.18s;cursor:default}
+.mods span{font-family:var(--mono);font-size:11px;border:1px solid #DDD8CE;border-radius:6px;padding:3px 10px;background:var(--panel2);color:var(--ink);transition:.18s;cursor:default}
 .mods span:hover{border-color:var(--violet);color:var(--violet);transform:translateY(-1px)}
 .how{margin-top:44px;font-size:12.5px;color:var(--dim);line-height:2}
 .how b{color:var(--ink)}
-.starcta{margin-top:48px;border:1px solid rgba(251,191,36,.3);border-radius:18px;padding:26px 20px;text-align:center;background:rgba(251,191,36,.04)}
-.starcta .sc-t{font-size:20px;font-weight:800;color:#fbbf24;letter-spacing:2px;margin-bottom:10px}
-.starcta .sc-p{font-size:13px;color:#8b9bb4;line-height:1.9;margin:0 auto 16px;max-width:480px}
-.starcta .sc-btn{display:inline-block;font-family:var(--mono);font-size:14px;color:#fde68a;border:1.5px solid rgba(251,191,36,.5);border-radius:10px;padding:11px 22px;text-decoration:none;transition:all .15s}
-.starcta .sc-btn:hover{background:rgba(251,191,36,.12);text-shadow:0 0 12px rgba(251,191,36,.5);transform:translateY(-2px)}
+.starcta{margin-top:48px;border:1px solid rgba(201,150,46,.3);border-radius:18px;padding:26px 20px;text-align:center;background:rgba(201,150,46,.04)}
+.starcta .sc-t{font-size:20px;font-weight:800;color:var(--amber);letter-spacing:2px;margin-bottom:10px}
+.starcta .sc-p{font-size:13px;color:#5C6B86;line-height:1.9;margin:0 auto 16px;max-width:480px}
+.starcta .sc-btn{display:inline-block;font-family:var(--mono);font-size:14px;color:#87671B;border:1.5px solid rgba(143,106,30,.45);border-radius:999px;padding:11px 22px;text-decoration:none;transition:all .15s}
+.starcta .sc-btn:hover{background:rgba(201,150,46,.12);text-shadow:0 0 12px rgba(201,150,46,.5);transform:translateY(-2px)}
 .footer{margin-top:44px;text-align:center;color:var(--dim);font-size:11.5px;font-family:var(--mono);line-height:2}
 .footer a{color:var(--cyan);text-decoration:none}
-.footer a:hover{text-shadow:0 0 12px rgba(34,211,238,.6)}
+.footer a:hover{text-shadow:0 0 12px rgba(78,143,181,.6)}
 
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none !important;transition:none !important}
@@ -229,6 +231,11 @@ section.block{margin-top:44px}
 </style>
 </head>
 <body>
+
+<i class="sh-star s1"></i>
+<i class="sh-star s2"></i>
+<i class="sh-star s3"></i>
+<i class="sh-star s4"></i>
 <canvas id="fx"></canvas>
 <div class="wrap">
   <div class="top">
@@ -252,6 +259,7 @@ section.block{margin-top:44px}
 
   <div class="games">
     <div class="game g1">
+      <div class="g-arch">🧭</div>
       <div class="tag">MODE 01 · 判断力训练 / DECISION TRAINING</div>
       <h2>AI PRODUCT RPG</h2>
       <div class="en">Build. Break. Fix. Ship. — Learn AI by running an AI company.</div>
@@ -260,6 +268,7 @@ section.block{margin-top:44px}
       <a class="play" href="rpg/">▶ 开始职业生涯 / START CAREER</a>
     </div>
     <div class="game g2">
+      <div class="g-arch">🗼</div>
       <div class="tag">MODE 02 · 知识覆盖与记忆 / KNOWLEDGE & RETENTION</div>
       <h2>概念试炼塔 · Concept Tower</h2>
       <div class="en">245 free questions · 6 company-style towers · 335 total · every option explained.</div>
@@ -322,12 +331,12 @@ section.block{margin-top:44px}
   </div>
 
 
-  <div style="margin-top:48px;border:1px dashed rgba(251,191,36,.35);border-radius:18px;padding:26px 22px;text-align:center;max-width:520px;margin-left:auto;margin-right:auto">
+  <div style="margin-top:48px;border:1px dashed rgba(201,150,46,.35);border-radius:18px;padding:26px 22px;text-align:center;max-width:520px;margin-left:auto;margin-right:auto">
     <div style="font-family:var(--mono);font-size:10px;letter-spacing:4px;color:var(--amber);margin-bottom:8px">IN DEVELOPMENT // COMING SOON</div>
     <div style="font-size:18px;font-weight:800;color:var(--amber);margin-bottom:8px">🚀 SHUAMONE OPC · One-Person Company</div>
     <div style="font-size:12.5px;color:var(--dim);line-height:1.8">10 个决策节点 · 社区 / 竞对 / 个人生活 / 路演 / 融资<br>一个人 · 一台电脑 · 几个 AI Agent · $0 收入<br>
     你能在 Runway 耗尽之前赚到第一个 $1,000 MRR 吗？<br>
-    <span style="color:var(--faint);font-size:11px">内测中 · <a href="opc/" style="color:var(--amber)">直接试玩 ▸</a></span></div>
+    <span style="color:var(--dim);font-size:11px">内测中 · <a href="opc/" style="color:var(--cyan)">直接试玩 ▸</a></span></div>
   </div>
   <section class="starcta">
     <div class="sc-t">⭐ 给它一颗星</div>
@@ -344,8 +353,8 @@ section.block{margin-top:44px}
 <script src="shared/sfx.js?v=1"></script>
 <script src="shared/bgm-portal.js?v=1"></script>
 <script src="shared/learner.js?v=5"></script>
-<script src="shared/learner-ui.js?v=4"></script>
-<script src="rpg/js/cast.js?v=2"></script>
+<script src="shared/learner-ui.js?v=7"></script>
+<script src="rpg/js/cast.js?v=3"></script>
 <script>
 (function () {
   'use strict';
@@ -355,7 +364,7 @@ section.block{margin-top:44px}
   var cv = document.getElementById('fx'), ctx = cv.getContext('2d');
   var W = 0, H = 0, DPR = 1, P = [], RIPS = [];
   var mouse = { x: -9e3, y: -9e3 };
-  var COLORS = ['#22d3ee', '#a78bfa', '#34d399', '#fbbf24'];
+  var COLORS = ['#4E8FB5', '#AC9CC8', '#3E9B7E', '#C9962E'];
   var GLYPHS = ['▸', '✦', '·', '0', '1'];
 
   function resize() {
@@ -411,7 +420,7 @@ section.block{margin-top:44px}
         if (d2 < 5625) {
           var base = (1 - Math.sqrt(d2) / 75) * .12;
           var boost = (nearMouse ? .22 : 0);
-          ctx.strokeStyle = 'rgba(34,211,238,' + (base + boost).toFixed(3) + ')';
+          ctx.strokeStyle = 'rgba(78,143,181,' + (base + boost).toFixed(3) + ')';
           ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
         }
       }
@@ -435,7 +444,7 @@ section.block{margin-top:44px}
       var rp = RIPS[i];
       rp.r += 2.6; rp.a *= .94;
       if (rp.a < .02) { RIPS.splice(i, 1); continue; }
-      ctx.strokeStyle = 'rgba(34,211,238,' + rp.a.toFixed(3) + ')';
+      ctx.strokeStyle = 'rgba(78,143,181,' + rp.a.toFixed(3) + ')';
       ctx.lineWidth = 1.5;
       ctx.beginPath(); ctx.arc(rp.x, rp.y, rp.r, 0, 6.283); ctx.stroke();
     }

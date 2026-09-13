@@ -6,8 +6,8 @@
     if (document.getElementById('nvDock')) return;
     var css = document.createElement('style');
     css.textContent = '#nvDock{position:fixed;right:14px;bottom:14px;display:flex;flex-direction:column;gap:8px;z-index:800}' +
-      '#nvDock button{width:52px;height:52px;border-radius:14px;border:1px solid #26324a;background:rgba(10,15,26,.86);backdrop-filter:blur(6px);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;color:#8b9bb4;font-size:10px;font-family:inherit;transition:border-color .15s,color .15s,transform .15s;box-shadow:0 4px 14px rgba(0,0,0,.4)}' +
-      '#nvDock button:hover{border-color:#22d3ee;color:#22d3ee;transform:translateY(-2px)}' +
+      '#nvDock button{width:52px;height:52px;border-radius:14px;border:1px solid rgba(170,200,225,.5);background:rgba(255,255,255,.92);backdrop-filter:blur(10px);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;color:#5C6B86;font-size:10px;font-family:inherit;transition:border-color .15s,color .15s,transform .15s;box-shadow:0 4px 16px rgba(150,175,205,.25)}' +
+      '#nvDock button:hover{border-color:#3A729B;color:#3A729B;transform:translateY(-2px)}' +
       '#nvDock button:active{transform:translateY(0)}' +
       '#nvDock button i{font-style:normal;font-size:20px;line-height:1}' +
       '@media (max-width:720px){#nvDock button{width:46px;height:46px}#nvDock button i{font-size:17px}}';

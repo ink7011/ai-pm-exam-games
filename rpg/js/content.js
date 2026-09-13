@@ -58,14 +58,14 @@ window.CONTENT = (function () {
 
   /* ---------- NPC ---------- */
   const NPCS = {
-    you:   { name: '你', color: '#22d3ee' },
-    victor:{ name: 'Victor · CEO', color: '#fbbf24', role: 'CEO' },
-    lin:   { name: '林博士 · CTO', color: '#a78bfa', role: 'CTO' },
-    kai:   { name: 'Kai · ML 工程师', color: '#34d399', role: 'ML' },
-    maya:  { name: 'Maya · Growth', color: '#f472b6', role: 'Growth' },
-    raj:   { name: 'Raj · 客服负责人', color: '#fb923c', role: 'Support' },
-    dana:  { name: 'Dana · 企业销售', color: '#60a5fa', role: 'Sales' },
-    sys:   { name: 'NOVA 终端', color: '#7c8ba1', role: 'SYSTEM' }
+    you:   { name: '你', color: '#7CB8D4' },
+    victor:{ name: 'Victor · CEO', color: '#C9962E', role: 'CEO' },
+    lin:   { name: '林博士 · CTO', color: '#AC9CC8', role: 'CTO' },
+    kai:   { name: 'Kai · ML 工程师', color: '#6FC0A4', role: 'ML' },
+    maya:  { name: 'Maya · Growth', color: '#C96A9E', role: 'Growth' },
+    raj:   { name: 'Raj · 客服负责人', color: '#CC7440', role: 'Support' },
+    dana:  { name: 'Dana · 企业销售', color: '#4A7EC0', role: 'Sales' },
+    sys:   { name: 'NOVA 终端', color: '#8A94A8', role: 'SYSTEM' }
   };
 
   /* ---------- 技能树（Season 1 节点） ---------- */

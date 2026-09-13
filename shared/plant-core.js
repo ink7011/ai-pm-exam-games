@@ -56,7 +56,7 @@
       var y2 = 40 - Math.cos(ang) * len;
       var cx = 32 + Math.sin(ang) * len * 0.55 + (spread[i] >= 0 ? 4 : -4);
       var cy = 40 - Math.cos(ang) * len * 0.6;
-      fronds += '<path d="M32,40 Q' + cx.toFixed(1) + ',' + cy.toFixed(1) + ' ' + x2.toFixed(1) + ',' + y2.toFixed(1) + '" stroke="' + (i % 2 ? '#34d399' : '#22d3ee') + '" stroke-width="2.2" fill="none" stroke-linecap="round"/>';
+      fronds += '<path d="M32,40 Q' + cx.toFixed(1) + ',' + cy.toFixed(1) + ' ' + x2.toFixed(1) + ',' + y2.toFixed(1) + '" stroke="' + (i % 2 ? '#6FC0A4' : '#7CB8D4') + '" stroke-width="2.2" fill="none" stroke-linecap="round"/>';
     }
     if (n === 0) fronds = '<circle cx="32" cy="36" r="2.4" fill="#8b9bb4"/>';
     var badges = (info.vUnlocked ? '<text x="50" y="16" font-size="11">⭐</text>' : '') + (info.bUnlocked ? '<text x="10" y="16" font-size="11">🔔</text>' : '');

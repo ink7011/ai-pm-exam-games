@@ -3,60 +3,60 @@
 (function () {
   'use strict';
   var css = '' +
-    '.lj-panel{position:relative;background:linear-gradient(150deg,rgba(14,19,29,.92),rgba(10,14,24,.96));border:1px solid #26324a;border-radius:22px;padding:26px 30px;margin:26px 0 8px;overflow:hidden}' +
-    '.lj-panel::before{content:"";position:absolute;inset:0;background:radial-gradient(600px 200px at 85% -10%,rgba(34,211,238,.10),transparent 60%),radial-gradient(400px 180px at 0% 110%,rgba(167,139,250,.08),transparent 60%);pointer-events:none}' +
-    '.lj-kicker{font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:4px;color:#22d3ee;margin-bottom:12px}' +
+    '.lj-panel{position:relative;background:linear-gradient(150deg,rgba(14,19,29,.92),rgba(10,14,24,.96));border:1px solid #EAF2F7;border-radius:22px;padding:26px 30px;margin:26px 0 8px;overflow:hidden}' +
+    '.lj-panel::before{content:"";position:absolute;inset:0;background:radial-gradient(600px 200px at 85% -10%,rgba(58,114,155,.10),transparent 60%),radial-gradient(400px 180px at 0% 110%,rgba(172,156,200,.08),transparent 60%);pointer-events:none}' +
+    '.lj-kicker{font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:4px;color:#3A729B;margin-bottom:12px}' +
     '.lj-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}' +
-    '.lj-name{font-size:26px;font-weight:900;color:#e8f0fb}' +
-    '.lj-role{font-size:13px;color:#8b9bb4}' +
-    '.lj-lv{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#fbbf24;border:1px solid rgba(251,191,36,.4);border-radius:8px;padding:3px 10px}' +
+    '.lj-name{font-size:26px;font-weight:900;color:#5A6B8C}' +
+    '.lj-role{font-size:13px;color:#5C6B86}' +
+    '.lj-lv{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#8F6A1E;border:1px solid rgba(143,106,30,.4);border-radius:8px;padding:3px 10px}' +
     '.lj-meta{display:flex;gap:26px;flex-wrap:wrap;margin:14px 0 6px}' +
-    '.lj-meta b{display:block;font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:3px;color:#5a6b84;margin-bottom:3px;font-weight:400}' +
-    '.lj-meta span{font-size:14.5px;color:#dbe4f0}' +
+    '.lj-meta b{display:block;font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:3px;color:#76869F;margin-bottom:3px;font-weight:400}' +
+    '.lj-meta span{font-size:14.5px;color:#5A6B8C}' +
     '.lj-bars{margin:16px 0 6px;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px 22px}' +
     '.lj-bar{display:flex;align-items:center;gap:10px;font-size:12.5px}' +
-    '.lj-bar .lb{width:118px;color:#8b9bb4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
-    '.lj-bar .lt{flex:1;height:7px;background:#131a2b;border-radius:4px;overflow:hidden;position:relative}' +
-    '.lj-bar .lf{height:100%;background:linear-gradient(90deg,#0e7490,#22d3ee);border-radius:4px;transition:width .5s}' +
-    '.lj-bar .lv{width:26px;text-align:right;font-family:ui-monospace,Menlo,monospace;color:#67e8f9;font-size:11.5px}' +
+    '.lj-bar .lb{width:118px;color:#5C6B86;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
+    '.lj-bar .lt{flex:1;height:7px;background:#EAF2F7;border-radius:4px;overflow:hidden;position:relative}' +
+    '.lj-bar .lf{height:100%;background:linear-gradient(90deg,#3E7CA3,#4E8FB5);border-radius:4px;transition:width .5s}' +
+    '.lj-bar .lv{width:26px;text-align:right;font-family:ui-monospace,Menlo,monospace;color:#7CB8D4;font-size:11.5px}' +
     '.lj-chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 2px}' +
-    '.lj-chip{font-size:11.5px;padding:4px 12px;border-radius:999px;border:1px solid #26324a;color:#8b9bb4}' +
-    '.lj-chip.up{color:#34d399;border-color:rgba(52,211,153,.45)}' +
-    '.lj-chip.grow{color:#fbbf24;border-color:rgba(251,191,36,.45)}' +
-    '.lj-quest{margin-top:16px;border:1px solid rgba(34,211,238,.35);background:rgba(34,211,238,.05);border-radius:16px;padding:16px 20px}' +
-    '.lj-quest .qt{font-size:15px;font-weight:800;color:#e8f0fb}' +
-    '.lj-quest .qs{font-size:13px;color:#8b9bb4;margin:6px 0 8px;line-height:1.6}' +
-    '.lj-quest .qw{font-size:12px;color:#67e8f9}' +
-    '.lj-quest .qa{display:inline-block;margin-top:12px;font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:2px;color:#04141a;background:linear-gradient(90deg,#22d3ee,#67e8f9);padding:9px 20px;border-radius:10px;text-decoration:none;font-weight:700}' +
+    '.lj-chip{font-size:11.5px;padding:4px 12px;border-radius:999px;border:1px solid #EAF2F7;color:#5C6B86}' +
+    '.lj-chip.up{color:#3E9B7E;border-color:rgba(62,155,126,.45)}' +
+    '.lj-chip.grow{color:#8F6A1E;border-color:rgba(143,106,30,.45)}' +
+    '.lj-quest{margin-top:16px;border:1px solid rgba(58,114,155,.35);background:rgba(58,114,155,.05);border-radius:16px;padding:16px 20px}' +
+    '.lj-quest .qt{font-size:15px;font-weight:800;color:#5A6B8C}' +
+    '.lj-quest .qs{font-size:13px;color:#5C6B86;margin:6px 0 8px;line-height:1.6}' +
+    '.lj-quest .qw{font-size:12px;color:#7CB8D4}' +
+    '.lj-quest .qa{display:inline-block;margin-top:12px;font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:2px;color:#3A729B;background:linear-gradient(90deg,#3A729B,#32648C);padding:9px 20px;border-radius:10px;text-decoration:none;font-weight:700}' +
     '.lj-links{margin-top:14px;display:flex;gap:18px;font-size:12.5px}' +
-    '.lj-links a{color:#8b9bb4;text-decoration:none;border-bottom:1px dashed #33405c;padding-bottom:2px}' +
-    '.lj-links a:hover{color:#22d3ee}' +
-    '.lj-empty{margin:26px 0 8px;border:1px dashed #26324a;border-radius:22px;padding:30px;text-align:center;color:#8b9bb4;background:rgba(14,19,29,.6)}' +
-    '.lj-empty .big{font-size:19px;font-weight:800;color:#dbe4f0;margin-bottom:8px}' +
-    '.lj-empty a{display:inline-block;margin-top:14px;color:#04141a;background:linear-gradient(90deg,#22d3ee,#67e8f9);padding:10px 24px;border-radius:10px;text-decoration:none;font-weight:700;font-size:13px}' +
+    '.lj-links a{color:#5C6B86;text-decoration:none;border-bottom:1px dashed rgba(170,200,225,0.5);padding-bottom:2px}' +
+    '.lj-links a:hover{color:#3A729B}' +
+    '.lj-empty{margin:26px 0 8px;border:1.5px dashed rgba(124,184,212,.55);border-radius:22px;padding:30px;text-align:center;color:#5C6B86;background:rgba(255,255,255,.55)}' +
+    '.lj-empty .big{font-size:19px;font-weight:800;color:#5A6B8C;margin-bottom:8px}' +
+    '.lj-empty a{display:inline-block;margin-top:14px;color:#3A729B;background:linear-gradient(90deg,#3A729B,#32648C);padding:10px 24px;border-radius:999px;text-decoration:none;font-weight:700;font-size:13px;color:#FFFFFF}' +
     /* onboarding 覆盖层 */
-    '.lj-ob{position:fixed;inset:0;z-index:9999;background:rgba(4,7,15,.86);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px}' +
-    '.lj-obc{width:min(560px,94vw);background:linear-gradient(160deg,#0e131d,#0a0f1c);border:1px solid #26324a;border-radius:24px;padding:34px 36px;position:relative;overflow:hidden}' +
-    '.lj-obc::before{content:"";position:absolute;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(34,211,238,.14),transparent 65%);top:-120px;right:-100px}' +
-    '.lj-step{font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:4px;color:#22d3ee;margin-bottom:10px}' +
-    '.lj-q{font-size:21px;font-weight:900;color:#e8f0fb;margin-bottom:4px}' +
-    '.lj-sub{font-size:12.5px;color:#5a6b84;margin-bottom:18px}' +
+    '.lj-ob{position:fixed;inset:0;z-index:9999;background:rgba(245,243,238,.9);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px}' +
+    '.lj-obc{width:min(560px,94vw);background:linear-gradient(160deg,#FFFFFF,#FAF8F4);border:1px solid #EAF2F7;border-radius:24px;padding:34px 36px;position:relative;overflow:hidden}' +
+    '.lj-obc::before{content:"";position:absolute;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(58,114,155,.14),transparent 65%);top:-120px;right:-100px}' +
+    '.lj-step{font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:4px;color:#3A729B;margin-bottom:10px}' +
+    '.lj-q{font-size:21px;font-weight:900;color:#5A6B8C;margin-bottom:4px}' +
+    '.lj-sub{font-size:12.5px;color:#76869F;margin-bottom:18px}' +
     '.lj-opts{display:flex;flex-direction:column;gap:9px}' +
-    '.lj-opt{text-align:left;padding:13px 18px;border:1px solid #26324a;border-radius:13px;background:#101827;color:#dbe4f0;font-size:14.5px;cursor:pointer;transition:all .15s;display:flex;justify-content:space-between;align-items:center}' +
-    '.lj-opt small{color:#5a6b84;font-size:11.5px}' +
-    '.lj-opt:hover{border-color:rgba(34,211,238,.6);background:#12203a;transform:translateX(3px)}' +
-    '.lj-opt.on{border-color:#22d3ee;background:rgba(34,211,238,.10)}' +
-    '.lj-next{margin-top:20px;width:100%;padding:13px;border:none;border-radius:12px;background:linear-gradient(90deg,#22d3ee,#67e8f9);color:#04141a;font-weight:800;font-size:14.5px;cursor:pointer;letter-spacing:1px}' +
+    '.lj-opt{text-align:left;padding:13px 18px;border:1px solid #EAF2F7;border-radius:13px;background:#FAF8F4;color:#5A6B8C;font-size:14.5px;cursor:pointer;transition:all .15s;display:flex;justify-content:space-between;align-items:center}' +
+    '.lj-opt small{color:#76869F;font-size:11.5px}' +
+    '.lj-opt:hover{border-color:rgba(58,114,155,.6);background:#12203a;transform:translateX(3px)}' +
+    '.lj-opt.on{border-color:#3A729B;background:rgba(58,114,155,.10)}' +
+    '.lj-next{margin-top:20px;width:100%;padding:13px;border:none;border-radius:12px;background:linear-gradient(90deg,#3A729B,#32648C);color:#3A729B;font-weight:800;font-size:14.5px;cursor:pointer;letter-spacing:1px}' +
     '.lj-next:disabled{opacity:.35;cursor:not-allowed}' +
-    '.lj-skip{position:absolute;top:16px;right:20px;font-size:11.5px;color:#5a6b84;cursor:pointer;text-decoration:none}' +
-    '.lj-skip:hover{color:#8b9bb4}' +
+    '.lj-skip{position:absolute;top:16px;right:20px;font-size:11.5px;color:#76869F;cursor:pointer;text-decoration:none}' +
+    '.lj-skip:hover{color:#5C6B86}' +
     '.lj-dots{display:flex;gap:6px;margin-top:16px;justify-content:center}' +
-    '.lj-dot{width:22px;height:3px;border-radius:2px;background:#26324a}' +
-    '.lj-dot.on{background:#22d3ee}' +
+    '.lj-dot{width:22px;height:3px;border-radius:2px;background:#EAF2F7}' +
+    '.lj-dot.on{background:#4E8FB5}' +
     '.lj-ready{text-align:center;padding:16px 0 4px}' +
-    '.lj-ready .r1{font-family:ui-monospace,Menlo,monospace;color:#22d3ee;letter-spacing:5px;font-size:13px;margin-bottom:10px}' +
-    '.lj-ready .r2{font-size:24px;font-weight:900;color:#e8f0fb;margin-bottom:8px}' +
-    '.lj-ready .r3{font-size:13px;color:#8b9bb4}';
+    '.lj-ready .r1{font-family:ui-monospace,Menlo,monospace;color:#3A729B;letter-spacing:5px;font-size:13px;margin-bottom:10px}' +
+    '.lj-ready .r2{font-size:24px;font-weight:900;color:#5A6B8C;margin-bottom:8px}' +
+    '.lj-ready .r3{font-size:13px;color:#5C6B86}';
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]; }); }
   function fmtTime(t) { if (!t) return ''; var d = new Date(t); return (d.getMonth() + 1) + '/' + d.getDate(); }
@@ -156,7 +156,7 @@
     if (q) {
       var href = q.kind === 'rpg' ? 'rpg/' : 'tower/?quest=' + q.id;
       var label = q.kind === 'rpg' ? '▸ 进入 AI PRODUCT RPG' : '▸ 接受任务 ENTER QUEST';
-      questHtml = '<div class="lj-quest"><div style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:3px;color:#fbbf24;margin-bottom:6px">' + (S.questHistory.length ? "TODAY'S QUEST" : 'FIRST QUEST') + ' · ' + esc(q.zh) + '</div>' +
+      questHtml = '<div class="lj-quest"><div style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:3px;color:#8F6A1E;margin-bottom:6px">' + (S.questHistory.length ? "TODAY'S QUEST" : 'FIRST QUEST') + ' · ' + esc(q.zh) + '</div>' +
         '<div class="qt">' + esc(q.title) + '</div><div class="qs">' + esc(q.story) + '</div>' +
         '<div class="qw">Why this, why now — ' + esc(LE.questWhy(q)) + '</div>' +
         '<a class="qa" href="' + href + '">' + label + '</a></div>';

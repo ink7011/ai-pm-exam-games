@@ -5,48 +5,53 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Skill Map · SHUAMONE</title>
 <link rel="icon" href="../icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../shared/theme.css?v=2">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#07090f;--panel:#0e131d;--panel2:#121926;--line:#26324a;--ink:#dbe4f0;--dim:#8b9bb4;--faint:#5a6b84;--cyan:#22d3ee;--violet:#a78bfa;--amber:#fbbf24;--green:#34d399;--mono:ui-monospace,Menlo,monospace}
-body{background:var(--bg);color:var(--ink);font-family:-apple-system,'PingFang SC','Noto Sans SC',sans-serif;min-height:100vh}
-body::before{content:"";position:fixed;inset:0;background:radial-gradient(900px 500px at 80% -10%,rgba(34,211,238,.06),transparent 60%),radial-gradient(700px 400px at 0% 110%,rgba(167,139,250,.05),transparent 60%);pointer-events:none}
+body{background:linear-gradient(180deg,#F5F3EE 0%,#F7F6F2 35%,#F1F4F0 100%);color:var(--ink);font-family:-apple-system,'PingFang SC','Noto Sans SC',sans-serif;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(900px 500px at 80% -10%,rgba(78,143,181,.06),transparent 60%),radial-gradient(700px 400px at 0% 110%,rgba(172,156,200,.05),transparent 60%);pointer-events:none}
 .wrap{max-width:860px;margin:0 auto;padding:40px 22px 80px}
 .kicker{font-family:var(--mono);font-size:11px;letter-spacing:4px;color:var(--cyan);margin-bottom:8px}
 h1{font-size:26px;font-weight:900;margin-bottom:2px}
-.sub{font-size:12.5px;color:var(--faint);margin-bottom:26px}
+.sub{font-size:12.5px;color:var(--dim);margin-bottom:26px}
 .topbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
 .back{font-family:var(--mono);font-size:12px;color:var(--dim);text-decoration:none;border:1px solid var(--line);padding:7px 14px;border-radius:9px}
 .back:hover{color:var(--cyan);border-color:var(--cyan)}
 .head{display:flex;gap:16px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px 24px;margin-bottom:18px}
 .h-name{font-size:19px;font-weight:900}
 .h-role{font-size:12.5px;color:var(--dim)}
-.h-lv{margin-left:auto;font-family:var(--mono);font-size:11.5px;color:var(--amber);border:1px solid rgba(251,191,36,.4);border-radius:8px;padding:4px 11px;white-space:nowrap}
+.h-lv{margin-left:auto;font-family:var(--mono);font-size:11.5px;color:var(--amber);border:1px solid rgba(201,150,46,.4);border-radius:8px;padding:4px 11px;white-space:nowrap}
 .grid{display:grid;grid-template-columns:1fr;gap:14px}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 24px}
-.card h3{font-family:var(--mono);font-size:11px;letter-spacing:3px;color:var(--faint);margin-bottom:14px;font-weight:400}
-.srow{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid #151d2c}
+.card h3{font-family:var(--mono);font-size:11px;letter-spacing:3px;color:var(--dim);margin-bottom:14px;font-weight:400}
+.srow{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid #EAF2F7}
 .srow:last-child{border-bottom:none}
 .sname{width:170px;font-size:13.5px}
 .sname small{display:block;color:var(--faint);font-size:11px}
-.strack{flex:1;height:9px;background:#131a2b;border-radius:5px;overflow:hidden;position:relative}
-.sfill{height:100%;border-radius:5px;background:linear-gradient(90deg,#0e7490,var(--cyan));transition:width .6s}
+.strack{flex:1;height:9px;background:#EAF2F7;border-radius:5px;overflow:hidden;position:relative}
+.sfill{height:100%;border-radius:5px;background:linear-gradient(90deg,#3E7CA3,var(--cyan));transition:width .6s}
 .sfill.low{background:linear-gradient(90deg,#92400e,var(--amber))}
-.sval{width:34px;text-align:right;font-family:var(--mono);font-size:12.5px;color:#67e8f9}
+.sval{width:34px;text-align:right;font-family:var(--mono);font-size:12.5px;color:#7CB8D4}
 .starget{position:absolute;top:-3px;width:2px;height:15px;background:rgba(219,228,240,.35)}
 .chips{display:flex;gap:9px;flex-wrap:wrap}
 .chip{font-size:12.5px;padding:7px 15px;border-radius:999px;border:1px solid var(--line);color:var(--dim)}
-.chip.up{color:var(--green);border-color:rgba(52,211,153,.45)}
-.chip.grow{color:var(--amber);border-color:rgba(251,191,36,.45)}
-.quest{border:1px solid rgba(34,211,238,.35);background:rgba(34,211,238,.05);border-radius:13px;padding:15px 18px;margin-top:4px}
+.chip.up{color:var(--green);border-color:rgba(62,155,126,.45)}
+.chip.grow{color:var(--amber);border-color:rgba(201,150,46,.45)}
+.quest{border:1px solid rgba(78,143,181,.35);background:rgba(78,143,181,.05);border-radius:13px;padding:15px 18px;margin-top:4px}
 .quest .qt{font-weight:800;font-size:15px}
 .quest .qs{font-size:12.5px;color:var(--dim);margin:5px 0 7px;line-height:1.6}
-.quest .qw{font-size:12px;color:#67e8f9}
-.quest a{display:inline-block;margin-top:10px;font-family:var(--mono);font-size:11.5px;letter-spacing:2px;color:#04141a;background:linear-gradient(90deg,var(--cyan),#67e8f9);padding:8px 18px;border-radius:9px;text-decoration:none;font-weight:700}
-.footnote{margin-top:22px;font-size:11.5px;color:var(--faint);line-height:1.9;font-family:var(--mono)}
+.quest .qw{font-size:12px;color:#7CB8D4}
+.quest a{display:inline-block;margin-top:10px;font-family:var(--mono);font-size:11.5px;letter-spacing:2px;color:#4E8FB5;background:linear-gradient(90deg,var(--cyan),#7CB8D4);padding:8px 18px;border-radius:9px;text-decoration:none;font-weight:700}
+.footnote{margin-top:22px;font-size:11.5px;color:var(--dim);line-height:1.9;font-family:var(--mono)}
 @media(max-width:640px){.sname{width:120px}.h-name{font-size:16px}}
 </style>
 </head>
 <body>
+
+<i class="sh-star s1"></i>
+<i class="sh-star s2"></i>
+<i class="sh-star s3"></i>
+<i class="sh-star s4"></i>
 <div class="wrap">
   <div class="topbar">
     <div>
