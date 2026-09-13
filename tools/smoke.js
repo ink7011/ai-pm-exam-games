@@ -650,7 +650,7 @@ async function main() {
   try {
     const bt = fs.readFileSync(path.join(ROOT, 'tower/js/bgm.js'), 'utf8');
     ok('塔BGM 文件存在且为 TBGM', bt.indexOf('window.TBGM') !== -1);
-    ok('塔BGM 92BPM 更进击', bt.indexOf('92') !== -1 && bt.indexOf('kick') !== -1 && bt.indexOf('clap') !== -1);
+    ok('塔BGM synthwave v3（100BPM 多层混响曲式）', bt.indexOf('100') !== -1 && bt.indexOf('kick') !== -1 && bt.indexOf('reverb') !== -1 && bt.indexOf('sawPad') !== -1);
     ok('塔BGM 独立偏好键', bt.indexOf('novaTower.bgm') !== -1);
     const ti2 = fs.readFileSync(path.join(ROOT, 'tower/index.html'), 'utf8');
     ok('塔页加载 bgm+leaderboard', ti2.indexOf('js/bgm.js') !== -1 && ti2.indexOf('leaderboard.js') !== -1);
