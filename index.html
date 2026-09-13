@@ -228,6 +228,13 @@ section.block{margin-top:44px}
   *,*::before,*::after{animation:none !important;transition:none !important}
   .hstrip{scroll-behavior:auto}
 }
+
+/* 氛围光斑缓慢漂移 */
+body::before{animation:shDriftA 90s ease-in-out infinite alternate}
+body::after{animation:shDriftB 110s ease-in-out infinite alternate}
+@keyframes shDriftA{to{transform:translate(-70px,50px) scale(1.12)}}
+@keyframes shDriftB{to{transform:translate(60px,-40px) scale(1.08)}}
+@media (prefers-reduced-motion: reduce){body::before,body::after{animation:none}}
 </style>
 </head>
 <body>
@@ -280,6 +287,7 @@ section.block{margin-top:44px}
 
   <div class="shots">
     <div class="shot-col">
+      <a href="rpg/"><img src="docs/images/rpg-cinematic.png" alt="RPG 梦幻过场动画"><div class="cap">RPG · ✦ 梦幻过场动画</div></a>
       <a href="rpg/"><img src="docs/images/rpg-gameplay.png" alt="RPG 剧情决策"><div class="cap">RPG · 剧情决策</div></a>
       <a href="rpg/"><img src="docs/images/rpg-ending-legend.png" alt="天选之人结算"><div class="cap">RPG · 👑 天选之人结算</div></a>
     </div>

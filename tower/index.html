@@ -354,6 +354,13 @@ kbd{font-family:var(--mono);font-size:10.5px;background:#EAF2F7;border:1px solid
 .pl-track i{display:block;height:100%;background:linear-gradient(90deg,#3E9B7E,#4E8FB5)}
 .pl-bar b{font-family:var(--mono);font-size:12px;color:var(--amber)}
 .pl-tip{margin-top:8px;font-size:12px;color:var(--dim);line-height:1.8}
+
+/* 氛围光斑缓慢漂移 */
+body::before{animation:shDriftA 90s ease-in-out infinite alternate}
+body::after{animation:shDriftB 110s ease-in-out infinite alternate}
+@keyframes shDriftA{to{transform:translate(-70px,50px) scale(1.12)}}
+@keyframes shDriftB{to{transform:translate(60px,-40px) scale(1.08)}}
+@media (prefers-reduced-motion: reduce){body::before,body::after{animation:none}}
 </style>
 </head>
 <body>
@@ -396,9 +403,9 @@ kbd{font-family:var(--mono);font-size:10.5px;background:#EAF2F7;border:1px solid
 </div>
 <div id="modalRoot"></div>
 <div id="toastRoot"></div>
-<script src="../shared/cinematic.js?v=4"></script>
+<script src="../shared/cinematic.js?v=5"></script>
 <script src="../shared/leaderboard.js?v=3"></script>
-<script src="../shared/plant-core.js?v=4"></script>
+<script src="../shared/plant-core.js?v=5"></script>
 <script src="js/bgm.js?v=3"></script>
 <script src="../shared/achievements.js?v=1"></script>
 <script src="js/deck-data.js?v=8"></script>

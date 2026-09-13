@@ -193,13 +193,13 @@
     const box = $('metrics'); box.innerHTML = '';
     METRIC_DEFS.forEach(([key, label, rev]) => {
       const v = S.company[key];
-      const color = rev ? (v > 65 ? 'var(--red)' : v < 30 ? 'var(--green)' : 'var(--amber)')
-                        : (v >= 70 ? 'var(--green)' : v < 35 ? 'var(--red)' : 'var(--cyan)');
+      const cls = rev ? (v > 65 ? 'c-bad' : v < 30 ? 'c-good' : 'c-amber')
+                     : (v >= 70 ? 'c-good' : v < 35 ? 'c-bad' : '');
       const d = lastDeltas[key];
       const dHtml = d ? '<span class="delta ' + (d > 0 ? 'up' : 'down') + '">' + (d > 0 ? '+' : '') + d + '</span>' : '';
       const m = h('div', 'metric');
       m.innerHTML = '<div class="m-head"><span>' + label + dHtml + '</span><b>' + v + '</b></div>' +
-        '<div class="bar' + (rev ? ' rev' : '') + '"><i style="width:' + v + '%;background:' + color + '" class="' + (d ? 'flash' : '') + '"></i></div>';
+        '<div class="bar"><i style="width:' + v + '%;" class="' + cls + (d ? ' flash' : '') + '"></i></div>';
       box.appendChild(m);
     });
     lastDeltas = {};

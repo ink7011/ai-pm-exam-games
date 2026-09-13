@@ -14,15 +14,15 @@ window.CINEMA = (function () {
     var st = document.createElement('style');
     st.id = 'cinemaStyles';
     st.textContent =
-      '#cinemaOverlay{position:fixed;inset:0;z-index:900;display:none;flex-direction:column;justify-content:center;align-items:center;background:rgba(245,243,238,.97);cursor:pointer;font-family:ui-monospace,\'SF Mono\',Menlo,Consolas,monospace;user-select:none}' +
+      '#cinemaOverlay{position:fixed;inset:0;z-index:900;display:none;flex-direction:column;justify-content:center;align-items:center;background:linear-gradient(180deg,#F5F3EE 0%,#EDF2F7 55%,#E7EEF5 100%);cursor:pointer;font-family:ui-monospace,\'SF Mono\',Menlo,Consolas,monospace;user-select:none}' +
       '#cinemaOverlay.show{display:flex;animation:cinFade .35s both}' +
       '@keyframes cinFade{from{opacity:0}to{opacity:1}}' +
-      '.cin-bar{position:absolute;left:0;right:0;height:11%;background:#020407;z-index:2}' +
+      '.cin-bar{position:absolute;left:0;right:0;height:11%;background:#2E3D52;z-index:2}' +
       '.cin-bar.t{top:0;animation:cinBarT .5s cubic-bezier(.2,.8,.3,1) both}' +
       '.cin-bar.b{bottom:0;animation:cinBarB .5s cubic-bezier(.2,.8,.3,1) both}' +
       '@keyframes cinBarT{from{transform:translateY(-100%)}to{transform:none}}' +
       '@keyframes cinBarB{from{transform:translateY(100%)}to{transform:none}}' +
-      '.cin-stage{max-width:640px;width:88%;min-height:200px;position:relative;z-index:1}' +
+      '.cin-stage{max-width:640px;width:88%;min-height:200px;position:relative;z-index:1;background:rgba(255,255,255,.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(151,178,205,.55);border-radius:26px;padding:32px 36px;box-shadow:0 14px 44px rgba(148,176,204,.26)}.cin-scenebg{position:absolute;inset:0;overflow:hidden;z-index:0;pointer-events:none}.cin-moon{position:absolute;top:10%;right:11%;width:84px;height:84px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#FFF7E0,#F5E3B0 62%,#EDD89A);box-shadow:0 0 44px rgba(224,179,60,.42),inset -9px -11px 22px rgba(214,178,94,.35);animation:cinMoon 7s ease-in-out infinite}@keyframes cinMoon{50%{transform:translateY(9px)}}.cin-cloud{position:absolute;border-radius:999px;filter:blur(13px);background:rgba(255,255,255,.78)}.cin-cloud.k1{width:230px;height:54px;top:17%;left:0;animation:cinDrift 48s linear infinite}.cin-cloud.k2{width:160px;height:40px;top:31%;right:0;animation:cinDrift 66s linear infinite reverse;background:rgba(184,216,232,.5)}.cin-cloud.k3{width:270px;height:62px;bottom:17%;left:26%;animation:cinDrift 84s linear infinite;background:rgba(201,190,224,.45)}@keyframes cinDrift{from{transform:translateX(-160px)}to{transform:translateX(105vw)}}.cin-fx{position:absolute;color:#E0B33C;font-size:15px;animation:cinTwinkle 3.2s ease-in-out infinite;font-style:normal}.cin-fx.f1{top:21%;left:22%}.cin-fx.f2{top:14%;left:64%;color:#AC9CC8;animation-delay:1.2s}.cin-fx.f3{top:39%;left:7%;color:#6FC0A4;font-size:11px;animation-delay:2.1s}@keyframes cinTwinkle{0%,100%{opacity:.75;transform:scale(1)}50%{opacity:.25;transform:scale(.8)}}@media (prefers-reduced-motion: reduce){.cin-moon,.cin-cloud,.cin-fx{animation:none}}' +
       '.cin-scene{animation:cinScene .4s both}' +
       '@keyframes cinScene{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}' +
       '.cin-h{color:#3A729B;font-size:13px;letter-spacing:3px;margin-bottom:14px;text-shadow:0 0 16px rgba(58,114,155,.4)}' +
@@ -34,7 +34,7 @@ window.CINEMA = (function () {
       '.cin-h.danger{color:#CC6B6B;text-shadow:0 0 22px rgba(204,107,107,.5)}' +
       '.cin-skip{position:absolute;bottom:13%;right:5%;z-index:3;color:#5C6B86;font-size:11px;letter-spacing:2px;animation:cinFade .6s 1s both}' +
       '.cin-progress{position:absolute;bottom:13%;left:5%;z-index:3;display:flex;gap:6px}' +
-      '.cin-progress i{width:16px;height:2px;background:#233048;border-radius:1px;transition:.3s}' +
+      '.cin-progress i{width:16px;height:2px;background:#C9D6E2;border-radius:1px;transition:.3s}' +
       '.cin-progress i.on{background:#3A729B;box-shadow:0 0 8px rgba(58,114,155,.6)}' +
       '@media(max-width:640px){.cin-line{font-size:14px}.cin-h.slam{font-size:19px}}';
     document.head.appendChild(st);
@@ -46,7 +46,11 @@ window.CINEMA = (function () {
     if (!ov) {
       ov = document.createElement('div');
       ov.id = 'cinemaOverlay';
-      ov.innerHTML = '<div class="cin-bar t"></div><div class="cin-bar b"></div>' +
+      ov.innerHTML = '<div class="cin-scenebg">' +
+        '<div class="cin-cloud k1"></div><div class="cin-cloud k2"></div><div class="cin-cloud k3"></div>' +
+        '<i class="cin-fx f1">✦</i><i class="cin-fx f2">✦</i><i class="cin-fx f3">✦</i>' +
+        '<div class="cin-moon"></div></div>' +
+        '<div class="cin-bar t"></div><div class="cin-bar b"></div>' +
         '<div class="cin-stage"></div>' +
         '<div class="cin-progress"></div>' +
         '<div class="cin-skip">点击任意处跳过 ▸</div>';

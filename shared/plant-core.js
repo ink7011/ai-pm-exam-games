@@ -44,10 +44,12 @@
       human: humanTime(min)
     };
   }
-  /* 左下角迷你盆栽（塔用）：文竹枝数 = 累计时长，铃/星解锁挂小角标 */
+  /* 左下角迷你盆栽（塔用）：文竹枝数 = 累计时长，铃/星解锁挂小角标
+     画法：陶盆 + 光晕 + 弧形茎 + 沿茎水滴叶（梦幻浅色系） */
   function miniSvg(info) {
     var n = info.a || 0;
     var spread = [-50, 48, -30, 28, -12, 8, -42, 38];
+    var quad = function (a, b, c, t) { return (1 - t) * (1 - t) * a + 2 * (1 - t) * t * b + t * t * c; };
     var fronds = '';
     for (var i = 0; i < n; i++) {
       var ang = spread[i] * Math.PI / 180;
@@ -56,14 +58,37 @@
       var y2 = 40 - Math.cos(ang) * len;
       var cx = 32 + Math.sin(ang) * len * 0.55 + (spread[i] >= 0 ? 4 : -4);
       var cy = 40 - Math.cos(ang) * len * 0.6;
-      fronds += '<path d="M32,40 Q' + cx.toFixed(1) + ',' + cy.toFixed(1) + ' ' + x2.toFixed(1) + ',' + y2.toFixed(1) + '" stroke="' + (i % 2 ? '#3E9B7E' : '#4E8FB5') + '" stroke-width="2.2" fill="none" stroke-linecap="round"/>';
+      var stem = (i % 2 ? '#3E9B7E' : '#4E8FB5');
+      var leaf = (i % 2 ? '#6FC0A4' : '#7CB8D4');
+      fronds += '<path d="M32,40 Q' + cx.toFixed(1) + ',' + cy.toFixed(1) + ' ' + x2.toFixed(1) + ',' + y2.toFixed(1) + '" stroke="' + stem + '" stroke-width="1.7" fill="none" stroke-linecap="round"/>';
+      /* 沿茎三片水滴叶，随切线方向旋转 */
+      for (var t = 0.38; t <= 0.82; t += 0.22) {
+        var px = quad(32, cx, x2, t), py = quad(40, cy, y2, t);
+        var tx = 2 * (1 - t) * (cx - 32) + 2 * t * (x2 - cx);
+        var ty = 2 * (1 - t) * (cy - 40) + 2 * t * (y2 - cy);
+        var deg = Math.atan2(ty, tx) * 180 / Math.PI + 90;
+        fronds += '<ellipse cx="' + px.toFixed(1) + '" cy="' + (py - 1.6).toFixed(1) + '" rx="1.7" ry="3.1" fill="' + leaf + '" transform="rotate(' + deg.toFixed(0) + ' ' + px.toFixed(1) + ' ' + py.toFixed(1) + ')"/>';
+      }
+      /* 最高一枝尖端挂金星 */
+      if (i === n - 1 && n >= 3) {
+        fronds += '<path d="M' + x2.toFixed(1) + ',' + (y2 - 5).toFixed(1) + ' l1,2 2,.3 -1.5,1.4 .4,2 -1.9-1 -1.9,1 .4-2 -1.5-1.4 2-.3 Z" fill="#E0B33C" opacity=".9"/>';
+      }
     }
-    if (n === 0) fronds = '<circle cx="32" cy="36" r="2.4" fill="#64748F"/>';
+    if (n === 0) {
+      fronds = '<path d="M32,40 Q32,37 32,34.5" stroke="#3E9B7E" stroke-width="1.6" fill="none" stroke-linecap="round"/>' +
+        '<ellipse cx="28.8" cy="32" rx="2.6" ry="4.2" fill="#6FC0A4" transform="rotate(-30 28.8 32)"/>' +
+        '<ellipse cx="35.2" cy="32" rx="2.6" ry="4.2" fill="#7CB8D4" transform="rotate(30 35.2 32)"/>';
+    }
     var badges = (info.vUnlocked ? '<text x="50" y="16" font-size="11">⭐</text>' : '') + (info.bUnlocked ? '<text x="10" y="16" font-size="11">🔔</text>' : '');
     return '<svg viewBox="0 0 64 64" width="60" height="60">' +
-      badges + fronds +
-      '<path d="M20,40 L24,52 Q32,55 40,52 L44,40 Z" fill="#334155" stroke="#475569"/>' +
-      '<rect x="19" y="37" width="26" height="4" rx="2" fill="#475569"/>' +
+      badges +
+      '<circle cx="32" cy="28" r="17" fill="rgba(184,216,232,.16)"/>' +
+      '<ellipse cx="32" cy="56.5" rx="13" ry="2.4" fill="rgba(148,176,204,.35)"/>' +
+      fronds +
+      /* 陶盆：梯形圆底 + 高光 + 盆沿 */
+      '<path d="M23,41 L25.5,52 Q32,55 38.5,52 L41,41 Z" fill="#E8A87C" stroke="#C9855C" stroke-width="1"/>' +
+      '<path d="M25.5,42.5 L27,50" stroke="#F5CDA8" stroke-width="1.6" opacity=".85" fill="none" stroke-linecap="round"/>' +
+      '<rect x="21.5" y="37.8" width="21" height="4.6" rx="2.3" fill="#D98E62" stroke="#C9855C" stroke-width="1"/>' +
       '</svg>';
   }
 
