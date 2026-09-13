@@ -7,7 +7,7 @@
 <link rel="manifest" href="../manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="../icon.svg">
 <title>AI PRODUCT RPG — Build. Break. Fix. Ship.</title>
-<link rel="stylesheet" href="../shared/theme.css?v=2">
+<link rel="stylesheet" href="../shared/theme.css?v=3">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
@@ -65,7 +65,7 @@ body::after{
 
 /* ===== 3-column layout ===== */
 #layout{display:grid;grid-template-columns:250px 1fr 270px;gap:12px;padding:12px;flex:1;min-height:0}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:0 2px 10px rgba(148,176,204,.14)}
 .panel h3{
   font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:2px;
   text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;
@@ -293,12 +293,12 @@ svg.av-svg{flex:0 0 34px;width:34px;height:34px;border-radius:8px}
 .pot+.pot{margin-left:-8px}
 .pot.locked{filter:grayscale(.8) brightness(.55);opacity:.6}
 .pot:hover{transform:translateY(-2px)}
-.pl-stem{fill:none;stroke:#5f8f7a;stroke-width:1.4;stroke-linecap:round}
-.pl-branch{fill:none;stroke:#6da189;stroke-width:1;opacity:.9}
-.pl-leaf{fill:#8fc7a9}
-.pl-leaf2{fill:#6da189;opacity:.85}
+.pl-stem{fill:none;stroke:#3E7A5F;stroke-width:1.4;stroke-linecap:round}
+.pl-branch{fill:none;stroke:#4E9070;stroke-width:1;opacity:.9}
+.pl-leaf{fill:#5FAE8A}
+.pl-leaf2{fill:#4E9070;opacity:.85}
 .pl-seed{fill:#4a5a4e}
-.pl-soil{fill:#E8DCC8}
+.pl-soil{fill:#C9A87E}
 .pl-pot{fill:#2a3546;stroke:#3d4a5f;stroke-width:1}
 .pl-potrim{fill:#34425a}
 .pl-frond{transform-origin:50px 64px;animation:plSway 7s ease-in-out infinite}
@@ -465,7 +465,7 @@ svg.av-svg{flex:0 0 34px;width:34px;height:34px;border-radius:8px}
 <div id="toastRoot"></div>
 <script src="../shared/sfx.js?v=1"></script>
 <script src="../shared/learner.js?v=5"></script>
-<script src="js/cast.js?v=3"></script>
+<script src="js/cast.js?v=4"></script>
 <script src="js/glossary.js?v=2"></script>
 <script src="js/bgm.js?v=2"></script>
 <script src="js/plant.js?v=6"></script>
@@ -482,6 +482,13 @@ svg.av-svg{flex:0 0 34px;width:34px;height:34px;border-radius:8px}
 if ('serviceWorker' in navigator &&
     (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
   window.addEventListener('load', function () {
+    // 已有老 SW 在跑时，新版本接管后自动刷新一次（部署自愈）
+    if (navigator.serviceWorker.controller) {
+      var __reloaded = false;
+      navigator.serviceWorker.addEventListener('controllerchange', function () {
+        if (!__reloaded) { __reloaded = true; location.reload(); }
+      });
+    }
     navigator.serviceWorker.register('../sw.js').catch(function () {});
   });
 }

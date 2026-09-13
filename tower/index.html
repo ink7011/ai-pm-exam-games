@@ -7,7 +7,7 @@
 <link rel="manifest" href="../manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="../icon.svg">
 <title>SHUAMONE 概念试炼塔 — AI Concept Tower</title>
-<link rel="stylesheet" href="../shared/theme.css?v=2">
+<link rel="stylesheet" href="../shared/theme.css?v=3">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
@@ -57,7 +57,7 @@ body::after{
 
 /* ===== layout ===== */
 #layout{display:grid;grid-template-columns:240px 1fr 250px;gap:12px;padding:12px;flex:1;min-height:0}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:0 2px 10px rgba(148,176,204,.14)}
 .panel h3{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:2px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
 .panel h3::before{content:'▸';color:var(--cyan)}
 #left,#right{display:flex;flex-direction:column;gap:12px;min-height:0;overflow-y:auto}
@@ -125,8 +125,8 @@ body::after{
 /* tower select */
 .towergrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-top:12px}
 .tower{
-  text-align:left;background:var(--panel2);border:1px solid var(--line);border-radius:10px;
-  color:var(--ink);padding:13px 15px;cursor:pointer;transition:.18s;font:13px inherit;
+  text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  color:var(--ink);padding:13px 15px;cursor:pointer;transition:.18s;font:13px inherit;box-shadow:0 1px 6px rgba(148,176,204,.16)
   animation:fadeUp .4s both;position:relative;
 }
 .tower:nth-child(1){animation-delay:.02s}.tower:nth-child(2){animation-delay:.05s}.tower:nth-child(3){animation-delay:.08s}
@@ -398,7 +398,7 @@ kbd{font-family:var(--mono);font-size:10.5px;background:#EAF2F7;border:1px solid
 <div id="toastRoot"></div>
 <script src="../shared/cinematic.js?v=4"></script>
 <script src="../shared/leaderboard.js?v=3"></script>
-<script src="../shared/plant-core.js?v=3"></script>
+<script src="../shared/plant-core.js?v=4"></script>
 <script src="js/bgm.js?v=3"></script>
 <script src="../shared/achievements.js?v=1"></script>
 <script src="js/deck-data.js?v=8"></script>
@@ -415,6 +415,13 @@ kbd{font-family:var(--mono);font-size:10.5px;background:#EAF2F7;border:1px solid
 if ('serviceWorker' in navigator &&
     (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
   window.addEventListener('load', function () {
+    // 已有老 SW 在跑时，新版本接管后自动刷新一次（部署自愈）
+    if (navigator.serviceWorker.controller) {
+      var __reloaded = false;
+      navigator.serviceWorker.addEventListener('controllerchange', function () {
+        if (!__reloaded) { __reloaded = true; location.reload(); }
+      });
+    }
     navigator.serviceWorker.register('../sw.js').catch(function () {});
   });
 }

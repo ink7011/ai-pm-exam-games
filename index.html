@@ -7,7 +7,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="icon.svg">
 <title>SHUAMONE 耍门 · Play the decisions. Learn the career.</title>
-<link rel="stylesheet" href="shared/theme.css?v=2">
+<link rel="stylesheet" href="shared/theme.css?v=3">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{
@@ -354,7 +354,7 @@ section.block{margin-top:44px}
 <script src="shared/bgm-portal.js?v=1"></script>
 <script src="shared/learner.js?v=5"></script>
 <script src="shared/learner-ui.js?v=7"></script>
-<script src="rpg/js/cast.js?v=3"></script>
+<script src="rpg/js/cast.js?v=4"></script>
 <script>
 (function () {
   'use strict';
@@ -534,6 +534,13 @@ section.block{margin-top:44px}
 if ('serviceWorker' in navigator &&
     (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
   window.addEventListener('load', function () {
+    // 已有老 SW 在跑时，新版本接管后自动刷新一次（部署自愈）
+    if (navigator.serviceWorker.controller) {
+      var __reloaded = false;
+      navigator.serviceWorker.addEventListener('controllerchange', function () {
+        if (!__reloaded) { __reloaded = true; location.reload(); }
+      });
+    }
     navigator.serviceWorker.register('sw.js').catch(function () {});
   });
 }
