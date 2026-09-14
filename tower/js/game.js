@@ -210,6 +210,42 @@
     } catch (e) { return false; }
   }
   function towerLocked(t) { return !!(t && t.group === 'company' && t.price && !P.paid[t.id]); }
+  /* 付费塔试玩样题（明文，每塔 1 道；正式题库仍是兑换码加密，样题不泄题） */
+  const SAMPLER = {
+    meituan: { k: '本地生活 · 供需调度', q: '外卖平台晚高峰爆单、准时率下滑，PM 的第一杠杆通常是？', opts: ['大量新增骑手运力', '优化 ETA 预估与调度分配算法', '给用户发迟到补偿券', '强制压缩商家出餐时长'], ans: 1, expl: '爆单的本质是供需时空错配。调度与 ETA 是平台可控的核心杠杆，能在不加成本的前提下提升匹配效率；加运力成本高、补偿券是事后体验补丁、出餐时长非平台强可控（属供给侧治理，次优先）。' },
+    didi: { k: '出行 · 动态定价', q: '网约车早高峰供不应求，动态调价机制最应平衡的是？', opts: ['司机收入最大化', '乘客打车成本最低', '成交率与等待时长的平衡', '平台抽成最大化'], ans: 2, expl: '动态定价的目标函数是匹配效率：成交率（call 完成）与双边等待体验的平衡。单边最大化都会损害另一侧留存——这正是"双边市场定价"考点的标准口径。' },
+    xiaohongshu: { k: '社区 · 生态护城河', q: '小红书这类内容社区最被认可的核心护城河是？', opts: ['推荐算法技术领先', '真实有用的 UGC 生态与信任关系', '更高的广告加载率', '更大的用户规模'], ans: 1, expl: '算法与规模都可被追赶，"真人真实经验 + 有用性心智"形成的信任关系与创作生态最难复制——社区产品的护城河在生态与心智，不在单点技术。' },
+    tencent: { k: '社交 · 关系链内容化', q: '微信"看一看"增长乏力，最根本的解释是？', opts: ['产品入口埋得太深', '强关系链里用户偏好维护关系而非消费关系内容', '推荐算法精度不足', '缺少创作者补贴'], ans: 1, expl: '看一看的瓶颈是动机不是触达：熟人内容消费存在社交压力与兴趣错配。这是"社交资本 vs 内容消费"经典考点——关系链强度与内容消费意愿天然存在张力。' },
+    alibaba: { k: '电商 · 货匹配效率', q: '大促前 PM 想提升整体转化率，优先级最高的是？', opts: ['首页视觉改版', '搜索与推荐的货品匹配效率', '扩充客服人力', '升级会员积分体系'], ans: 1, expl: '电商转化的主战场在"人找货/货找人"的匹配链路：搜索推荐的相关性直接决定成交效率；改版是体验层，客服与会员是留存层——供给侧匹配优先。' },
+    bytedance: { k: '推荐增长 · A/B 实验', q: '信息流改版实验：人均时长 +2%、次日留存 -0.5%，正确决策是？', optAlias: 0, opts: ['时长是北极星指标，直接全量', '先迭代观察长期留存与生态指标再定', '效果矛盾说明实验失败，放弃', '无视留存，分城市灰度上线'], ans: 1, expl: '单指标上涨 + 留存下跌是典型的"指标挤压"信号：时长可能靠刺激性强内容 borrowed 未来的留存。正确姿势是看长期与生态指标（创作者供给、内容多样性）再决策——单一北极星也会骗人。' }
+  };
+  function trialModal(t) {
+    const s = SAMPLER[t.id];
+    if (!s) { paywallModal(t); return; }
+    let html =
+      '<div style="border:1px solid rgba(167,139,250,.45);border-radius:12px;padding:14px 16px;background:var(--panel2)">' +
+      '<div class="b-head"><span class="chip elite">🎬 试玩样题</span><span class="chip">' + esc(s.k) + '</span><span class="chip">★1</span></div>' +
+      '<div class="qtext" style="font-size:14.5px">' + esc(s.q) + '</div><div class="opts" id="trialOpts"></div>' +
+      '<div id="trialVerdict"></div></div>' +
+      '<div class="pw-tip">样题风格与正式题库一致（正式塔每题均带解析与暗影复仇机制）</div>';
+    openModal(t.name + ' · 试玩', html, '');
+    const box = $('trialOpts');
+    s.opts.forEach((txt, i) => {
+      const o = H('button', 'opt', '<span class="ol">' + 'ABCD'[i] + '</span><span>' + esc(txt) + '</span>');
+      o.onclick = () => {
+        box.querySelectorAll('.opt').forEach(el => { el.disabled = true; });
+        const ok = i === s.ans;
+        o.classList.add(ok ? 'right' : 'wrongpick');
+        if (!ok) box.querySelectorAll('.opt')[s.ans].classList.add('right');
+        $('trialVerdict').innerHTML =
+          '<div class="verdict ' + (ok ? 'good' : 'bad') + '"><span class="v-tag">' + (ok ? '✓ 答对了' : '✗ 正确答案是 ' + 'ABCD'[s.ans]) + '</span>' +
+          '考点：【' + esc(s.k) + '】<span class="expl-line"><span class="el-tag">解析</span>' + esc(s.expl) + '</span></div>' +
+          '<button class="pw-btn" id="trialGo">🔓 这就是我要练的，解锁整座塔（¥' + t.price + '）</button>';
+        $('trialGo').onclick = () => { $('modalRoot').innerHTML = ''; paywallModal(t); };
+      };
+      box.appendChild(o);
+    });
+  }
   function paywallModal(t) {
     const pd = paidData(t);
     const n = P.paid[t.id] ? poolOf(t).length : (pd ? pd.q : poolOf(t).length);
@@ -223,6 +259,7 @@
         ? '<a class="pw-buy" href="' + buyUrl + '" target="_blank" rel="noopener">🛒 去平台购买 · 付款自动发码，秒到账</a>' +
           '<div class="pw-qr-note">购买页支持微信 / 支付宝付款，完成后把收到的兑换码（NOVA-XXXXXX）填到下面即可</div>'
         : '') +
+      '<button class="pw-btn" id="trialBtn" style="background:linear-gradient(90deg,var(--violet),var(--cyan))">🎬 先试玩一道样题（免费）</button>' +
       '<input id="codeInput" placeholder="输入兑换码（如 NOVA-XXXXXX）" autocomplete="off">' +
       '<button class="pw-btn" id="applyCode">🔓 验证并解锁</button>' +
       '<div class="pw-tip">兑换码一次解锁永久有效，跟随存档码跨设备<br>本塔为原创模拟题：考点整理自公开渠道（面经/官方JD/报道），无内部资料；「鹅厂/猫厂/宇宙厂/开水团/桔厂/薯厂」为社区外号，仅示考点风格，与对应公司无关联</div>' +
@@ -239,6 +276,8 @@
         renderSelect();
       } else { toast('兑换码无效，请检查大小写与连字符', 'err'); }
     };
+    const tb = $('trialBtn');
+    if (tb) tb.onclick = () => trialModal(t);
   }
   function seededShuffle(arr, rng) {
     const r = arr.slice();
@@ -853,6 +892,23 @@
         '<span class="mbar"><i style="width:' + pct + '%;background:' + color + '"></i></span><b>' + pct + '%</b></div>';
     });
     const r = rankInfo();
+    /* 转化 · 情绪峰值 upsell：高光时刻（高连击/登顶）且有未解锁进阶塔时，给个性化推荐 */
+    let upsellHtml = '';
+    const lockedTs = TOWERS.filter(x => towerLocked(x)).sort((a, b) => (a.price - b.price));
+    if (lockedTs.length && (R.maxCombo >= 8 || (won && R.asked >= 8))) {
+      let weakMod = null, weakPct = 100;
+      Object.keys(R.modRun).forEach(m => {
+        const s2 = R.modRun[m]; const tot2 = s2.right + s2.wrong;
+        if (tot2 >= 2) { const p2 = Math.round(s2.right / tot2 * 100); if (p2 < weakPct) { weakPct = p2; weakMod = m; } }
+      });
+      const lt = lockedTs[0];
+      const hook = weakMod
+        ? '你在【' + weakMod + '】失血最多（' + weakPct + '%）。进阶实战塔专治这种"感觉会了但选错"——每题带解析，错题同样变暗影复仇。'
+        : (R.maxCombo >= 8 ? '刚打出 ' + R.maxCombo + ' 连击的你，免费的塔已经快关不住你了。' : '登顶了？下一座进阶实战塔的 Boss 在等你。');
+      upsellHtml = '<div style="border:1px solid rgba(251,191,36,.5);background:rgba(251,191,36,.06);border-radius:12px;padding:12px 16px;margin-top:12px;font-size:13px;line-height:1.7">' +
+        '<b style="color:var(--amber)">🏢 下一步：' + esc(lt.name) + '（¥' + lt.price + ' · 一次解锁永久有效）</b><br>' + esc(hook) +
+        '<div style="margin-top:8px"><button class="pw-btn" id="upsellBtn" style="margin:0">🚀 去看看这座塔</button></div></div>';
+    }
     const wrap = H('div', 'card');
     const rep = H('div', 'battle' + (won ? '' : ''));
     const towerName = (TOWERS.find(t => t.id === R.towerId) || {}).name || (R.daily ? '每日挑战' : '');
@@ -868,17 +924,102 @@
       '<h3 style="font-family:var(--mono);font-size:12px;color:var(--dim);letter-spacing:2px;margin:8px 0 6px">▸ 本局模块战报</h3>' +
       '<div class="modacc">' + (modHtml || '<div style="color:var(--dim)">无作答记录</div>') + '</div>' +
       '<div class="weak-tip" style="margin-top:12px">段位：<b>' + r.cur[1] + '</b>' + (r.next ? ' · 距 ' + r.next[1] + ' 还差 ' + (r.next[0] - P.lifetime) + ' 分' : ' · 已至顶点') + '</div>' +
+      upsellHtml +
       '<div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">' +
       '<button class="nextbtn" id="againBtn">再爬一次 ▸</button>' +
       '<button class="retrybtn" id="backSel">换一座塔</button>' +
-      '<button class="retrybtn" id="reviewWrong">复盘错题</button></div>';
+      '<button class="retrybtn" id="reviewWrong">复盘错题</button>' +
+      '<button class="retrybtn" id="shareBtn" style="border-color:rgba(34,211,238,.55);color:var(--cyan)">🖼 生成战绩分享图</button></div>';
     wrap.appendChild(rep);
     $('screen').innerHTML = ''; $('screen').appendChild(wrap);
     $('againBtn').onclick = () => R.daily ? startDaily() : (R.questId ? startQuestRun(R.questId) : startRun(R.towerId));
     $('backSel').onclick = () => renderSelect();
     $('reviewWrong').onclick = () => modalWrong();
+    const upBtn = $('upsellBtn');
+    if (upBtn) upBtn.onclick = () => { const lt2 = TOWERS.filter(x => towerLocked(x)).sort((a, b) => (a.price - b.price))[0]; if (lt2) paywallModal(lt2); };
+    $('shareBtn').onclick = () => shareCard(won, acc, towerName, r);
   }
   function rcell(v, k) { return '<div class="rcell"><div class="rv">' + v + '</div><div class="rk">' + k + '</div></div>'; }
+
+  /* ---------------- 战绩分享图（Canvas 生成，可下载/发小红书）· 梦幻浅色品牌风 ---------------- */
+  function shareCard(won, acc, towerName, r) {
+    const W = 1080, Hpx = 1440;
+    const cv = document.createElement('canvas'); cv.width = W; cv.height = Hpx;
+    const c = cv.getContext('2d');
+    /* 背景：奶油白 + 雾蓝/淡紫氛围光斑（品牌浅色系） */
+    const bgGrad = c.createLinearGradient(0, 0, 0, Hpx);
+    bgGrad.addColorStop(0, '#F5F3EE'); bgGrad.addColorStop(.5, '#F7F6F2'); bgGrad.addColorStop(1, '#F1F4F0');
+    c.fillStyle = bgGrad; c.fillRect(0, 0, W, Hpx);
+    let g = c.createRadialGradient(920, 150, 40, 920, 150, 640);
+    g.addColorStop(0, 'rgba(184,216,232,.4)'); g.addColorStop(1, 'rgba(184,216,232,0)');
+    c.fillStyle = g; c.fillRect(0, 0, W, Hpx);
+    g = c.createRadialGradient(140, 1300, 40, 140, 1300, 640);
+    g.addColorStop(0, 'rgba(201,190,224,.35)'); g.addColorStop(1, 'rgba(201,190,224,0)');
+    c.fillStyle = g; c.fillRect(0, 0, W, Hpx);
+    const MONO = "ui-monospace,'SF Mono',Menlo,monospace", SANS = "'PingFang SC','Microsoft YaHei',sans-serif";
+    /* 星光点缀：四角星 */
+    const star4 = (x, y, R, color, alpha) => {
+      c.save(); c.translate(x, y); c.globalAlpha = alpha; c.fillStyle = color;
+      c.beginPath();
+      for (let k = 0; k < 4; k++) {
+        c.rotate(Math.PI / 2);
+        c.moveTo(0, 0); c.quadraticCurveTo(R * .16, R * .16, 0, R); c.quadraticCurveTo(-R * .16, R * .16, 0, 0);
+      }
+      c.fill(); c.restore();
+    };
+    star4(180, 210, 22, '#E0B33C', .85); star4(880, 330, 15, '#AC9CC8', .8);
+    star4(905, 1060, 18, '#6FC0A4', .75); star4(215, 860, 12, '#7CB8D4', .8);
+    /* 月亮（右上，发光） */
+    g = c.createRadialGradient(880, 200, 10, 880, 200, 150);
+    g.addColorStop(0, 'rgba(224,179,60,.5)'); g.addColorStop(1, 'rgba(224,179,60,0)');
+    c.fillStyle = g; c.fillRect(700, 20, 380, 380);
+    c.fillStyle = '#F5E3B0'; c.beginPath(); c.arc(880, 200, 56, 0, Math.PI * 2); c.fill();
+    c.fillStyle = '#EDD89A'; c.beginPath(); c.arc(862, 214, 10, 0, Math.PI * 2); c.arc(898, 184, 6, 0, Math.PI * 2); c.fill();
+    /* 顶部 */
+    c.fillStyle = '#3A729B'; c.font = '26px ' + MONO; c.textAlign = 'center';
+    c.fillText('S H U A M O N E · 耍 门 · 概 念 试 炼 塔', W / 2, 140);
+    /* 结果章 */
+    c.font = '900 96px ' + SANS;
+    c.fillStyle = won ? '#2E7D62' : '#B35050';
+    c.shadowColor = won ? 'rgba(46,125,98,.3)' : 'rgba(179,80,80,.3)'; c.shadowBlur = 34;
+    c.fillText(won ? '登 顶 成 功' : '血 尽 而 止', W / 2, 300);
+    c.shadowBlur = 0;
+    /* 塔名 + 分数 */
+    c.fillStyle = '#5A6B8C'; c.font = '700 44px ' + SANS;
+    c.fillText(towerName || '概念试炼塔', W / 2, 390);
+    c.fillStyle = '#3A729B'; c.font = '900 220px ' + MONO; c.shadowColor = 'rgba(58,114,155,.3)'; c.shadowBlur = 44;
+    c.fillText(String(R.score), W / 2, 640); c.shadowBlur = 0;
+    c.fillStyle = '#76869F'; c.font = '26px ' + MONO; c.fillText('本 局 得 分', W / 2, 700);
+    /* 数据格：白玻璃卡 */
+    const stats = [
+      ['首答正确率', acc + '%'], ['最高连击', String(R.maxCombo)],
+      ['段位', r.cur[1]], ['生涯积分', String(P.lifetime)]
+    ];
+    stats.forEach((s2, i) => {
+      const bx = 120 + (i % 2) * 440, by = 800 + Math.floor(i / 2) * 240;
+      c.fillStyle = 'rgba(255,255,255,.78)';
+      c.beginPath(); c.roundRect(bx, by, 400, 200, 26); c.fill();
+      c.strokeStyle = 'rgba(151,178,205,.6)'; c.lineWidth = 2;
+      c.beginPath(); c.roundRect(bx, by, 400, 200, 26); c.stroke();
+      c.fillStyle = '#8F6A1E'; c.font = '900 64px ' + MONO; c.textAlign = 'center';
+      c.fillText(s2[1], bx + 200, by + 108);
+      c.fillStyle = '#5C6B86'; c.font = '24px ' + SANS;
+      c.fillText(s2[0], bx + 200, by + 160);
+    });
+    /* 暗影梗 */
+    c.fillStyle = '#B35050'; c.font = '600 30px ' + SANS;
+    c.fillText('答错的题没有消失——它们正在成为暗影，等我回去复仇。', W / 2, 1330);
+    /* 底部入口 */
+    c.fillStyle = '#76869F'; c.font = '24px ' + MONO;
+    c.fillText('免注册直接玩 · ink7011.github.io/ai-pm-exam-games', W / 2, 1395);
+    /* 弹窗预览 + 下载 */
+    const dataUrl = cv.toDataURL('image/png');
+    openModal('🖼 战绩分享图', '<div style="text-align:center"><img src="' + dataUrl + '" style="max-width:100%;border:1px solid var(--line);border-radius:12px" alt="战绩卡">' +
+      '<div style="margin-top:12px;color:var(--dim);font-size:12.5px;line-height:1.7">保存后可发小红书/朋友圈/群——右上角更多→发送图片也行<br>发出来记得带 #SHUAMONE耍门，我想看看谁在爬塔</div></div>', '');
+    const dl = H('button', 'pw-btn', '⬇ 保存图片');
+    dl.onclick = () => { const a = document.createElement('a'); a.href = dataUrl; a.download = 'shuamone-战绩-' + Date.now() + '.png'; a.click(); };
+    document.querySelector('#modalRoot .modal').appendChild(dl);
+  }
 
   /* ---------------- modals ---------------- */
   function openModal(title, bodyHtml, foot) {
