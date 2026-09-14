@@ -327,6 +327,22 @@ kbd{font-family:var(--mono);font-size:10.5px;background:#EAF2F7;border:1px solid
   body{overflow:auto}
 }
 .dexp{margin-top:8px;display:flex;flex-direction:column;gap:4px}
+/* 收藏按钮（战斗题卡右上） */
+.bm-btn{margin-left:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:1px;color:var(--dim);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px 12px;cursor:pointer;transition:.18s}
+.bm-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.bm-btn.on{color:#8F6A1E;border-color:rgba(143,106,30,.5);background:rgba(224,179,60,.12)}
+/* 笔记本条目 */
+.nt-item{padding:12px 14px}
+.nt-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.nt-del,.nt-go{font-size:10.5px;font-family:var(--mono);border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:2px 10px;cursor:pointer;color:var(--dim)}
+.nt-del:hover{border-color:var(--red);color:var(--red)}
+.nt-go{margin-left:auto;color:var(--cyan)}
+.nt-go:hover{border-color:var(--cyan)}
+.nt-q{margin:8px 0 6px;font-size:13.5px;font-weight:700;color:var(--ink);line-height:1.6}
+.nt-opt{font-size:12px;color:var(--dim);padding:3px 8px;border-left:2px solid var(--line);margin:2px 0;line-height:1.5}
+.nt-opt.ok{color:#2E7D62;border-left-color:#2E7D62;background:rgba(46,125,98,.06);border-radius:0 6px 6px 0}
+.nt-ok{color:#2E7D62;font-weight:700}
+#gq:focus{border-color:var(--blue)}
 .dopt{font-size:12px;line-height:1.6;color:#B35050;padding:4px 8px;background:rgba(239,68,68,.06);border-left:2px solid rgba(239,68,68,.45);border-radius:0 4px 4px 0}
 .dopt b{font-family:var(--mono);margin-right:8px;color:#B35050}
 .dopt.ok{color:#86efac;background:rgba(62,155,126,.07);border-left-color:rgba(62,155,126,.5)}
@@ -375,6 +391,8 @@ body::after{animation:shDriftB 110s ease-in-out infinite alternate}
     <span id="subrank">—</span>
     <div class="top-actions">
       <button data-modal="codex">图鉴</button>
+      <button data-modal="gloss">术语表</button>
+      <button data-modal="notes">笔记本<span class="badge" id="nBadge" style="display:none">0</span></button>
       <button data-modal="wrong">错题本<span class="badge" id="wBadge" style="display:none">0</span></button>
       <button data-modal="stats">战报</button>
       <button data-modal="settings">系统</button>
@@ -411,12 +429,13 @@ body::after{animation:shDriftB 110s ease-in-out infinite alternate}
 <script src="js/deck-data.js?v=8"></script>
 <script src="js/deck-paid.js?v=2"></script>
 <script src="../shared/paid-crypto.js?v=1"></script>
+<script src="../rpg/js/glossary.js?v=2"></script>
 <script src="../shared/sfx.js?v=1"></script>
 <script src="../shared/learner.js?v=5"></script>
 <script src="../shared/feedback.js?v=8"></script>
 <script src="../shared/dock.js?v=7"></script>
 <script src="../shared/tip.js?v=10"></script>
-<script src="js/game.js?v=43"></script>
+<script src="js/game.js?v=44"></script>
 <script>
 /* PWA：仅 https / localhost 下注册 Service Worker（file:// 与 http 内网不注册） */
 if ('serviceWorker' in navigator &&

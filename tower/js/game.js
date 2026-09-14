@@ -40,7 +40,7 @@
   let P = loadP();
   if (!P.paid) P.paid = {};   // 付费解锁 {towerId: 1}
   function freshP() {
-    return { v: 2, lifetime: 0, best: {}, clear: {}, codex: {}, wrong: {}, modStats: {}, sound: true, ach: {}, daily: {}, floors: 0 };
+    return { v: 2, lifetime: 0, best: {}, clear: {}, codex: {}, wrong: {}, notes: {}, modStats: {}, sound: true, ach: {}, daily: {}, floors: 0 };
   }
   // T6：v1 → v2 迁移（本轮为空实现 + 默认字段占位；后续结构变更在此追加）
   function migrateTower(p) {
@@ -542,6 +542,7 @@
           (locked
             ? '<div class="lock-tag">🔒 解锁 ¥' + t.price + '</div>'
             : (P.best[t.id] ? '<div class="best">最佳：' + P.best[t.id] + ' 分</div>' : '')));
+        b.dataset.tw = t.id;
         b.onclick = () => { beep(660, 0.08); startRun(t.id); };
         grid.appendChild(b);
       });
@@ -618,12 +619,15 @@
       '<div class="b-head">' + kindChips(kind) +
       '<span class="chip">' + esc(it.modName) + '</span>' +
       '<span class="chip">' + '★'.repeat(it.diff || 1) + '</span>' +
-      '<span class="chip">P' + (it.pri || 0) + '</span></div>' +
+      '<span class="chip">P' + (it.pri || 0) + '</span>' +
+      '<button class="bm-btn' + (P.notes[it.id] ? ' on' : '') + '" id="bmBtn" title="收藏到笔记本（做对的题也可以收）">🔖 收藏</button></div>' +
       '<div class="qtext">' + esc(it.q) + '</div>' +
       '<div class="opts" id="opts"></div>' +
       '<div id="hintzone"></div><div id="vzone"></div>';
     battle.appendChild(b);
     $('screen').innerHTML = ''; $('screen').appendChild(battle);
+    const bmBtn = b.querySelector('#bmBtn');
+    if (bmBtn) bmBtn.onclick = () => toggleNote(it.id, bmBtn);
     const opts = b.querySelector('#opts');
     it.opts.forEach((t, i) => {
       const o = H('button', 'opt', '<span class="ol">' + 'ABCD'[i] + '</span><span>' + esc(t) + '</span>');
@@ -1071,6 +1075,66 @@
     ).join('') + '</div>';
     openModal('概念图鉴 · CODEX', html, '每张卡都是考卷上的一道真题考点。');
   }
+  /* ---------------- 笔记本 · 收藏题（做对的也可收） ---------------- */
+  function toggleNote(id, btn) {
+    if (P.notes[id]) { delete P.notes[id]; if (btn) btn.classList.remove('on'); btn && (btn.textContent = '🔖 收藏'); toast('已移出笔记本'); }
+    else { P.notes[id] = Date.now(); if (btn) btn.classList.add('on'); btn && (btn.textContent = '🔖 已收藏'); toast('已收藏到笔记本', 'ok'); }
+    save(); renderBadge();
+  }
+  function modalNotes() {
+    const ids = Object.keys(P.notes).sort((a, b) => P.notes[b] - P.notes[a]);
+    renderBadge();
+    const html = ids.length
+      ? '<div class="klist">' + ids.map(id => {
+          const it = item(id);
+          if (!it) return '';
+          const opts = it.opts.map((t, i) =>
+            '<div class="nt-opt' + (i === it.ans ? ' ok' : '') + '"><b>' + 'ABCD'[i] + '</b> ' + esc(t) + (i === it.ans ? ' <span class="nt-ok">✓</span>' : '') + '</div>').join('');
+          return '<div class="kitem nt-item"><div class="nt-bar"><b>' + esc(it.k) + '</b> <span class="st">[' + esc(it.modName) + ']</span>' +
+            '<button class="nt-del" data-del="' + esc(id) + '">移除</button></div>' +
+            '<p class="nt-q">' + esc(it.q) + '</p>' + opts + '<p>' + esc(it.expl) + '</p></div>';
+        }).join('') + '</div>' +
+        '<button class="retrybtn" id="clrNotes" style="width:100%;margin-top:10px">清空笔记本</button>'
+      : '<div style="color:var(--dim)">还没收藏任何题。爬塔时点题目右上角的「🔖 收藏」——做对的题、值得重看的题都可以收进来。</div>';
+    openModal('笔记本 · 收藏题', html, '错题本记的是伤疤，笔记本存的是好题。');
+    document.querySelectorAll('.nt-del').forEach(b2 => b2.onclick = () => {
+      delete P.notes[b2.dataset.del]; save(); renderBadge(); modalNotes();
+    });
+    const cb = $('clrNotes');
+    if (cb) cb.onclick = () => { if (confirm('清空全部收藏？')) { P.notes = {}; save(); renderBadge(); modalNotes(); } };
+  }
+
+  /* ---------------- 术语表（复用 RPG 词典数据） ---------------- */
+  function modalGloss() {
+    const G = window.GLOSSARY;
+    if (!G || !G.entries) { openModal('术语表', '<div style="color:var(--dim)">词典加载失败，请刷新重试</div>', ''); return; }
+    const input = '<input id="gq" placeholder="搜索术语 / 英文缩写…" style="width:100%;box-sizing:border-box;background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:13px;outline:none;margin-bottom:10px;color:var(--ink)">';
+    openModal('术语表 · GLOSSARY', input + '<div id="glist" class="klist"></div>', '共 ' + G.entries.length + ' 词 · 一句人话 + 一个小例子');
+    const jump = () => {
+      document.querySelectorAll('.nt-go').forEach(b2 => b2.onclick = () => {
+        const tw = b2.dataset.tw;
+        $('modalRoot').innerHTML = '';
+        renderSelect();
+        setTimeout(() => {
+          const card = [...document.querySelectorAll('.tower')].find(x => x.dataset.tw === tw);
+          if (card) { card.scrollIntoView({ block: 'center', behavior: 'smooth' }); card.style.boxShadow = '0 0 0 3px rgba(58,114,155,.4)'; setTimeout(() => card.style.boxShadow = '', 2400); }
+        }, 60);
+      });
+    };
+    const render = (kw) => {
+      const k = (kw || '').trim().toLowerCase();
+      const es = G.entries.filter(e => !k || e.t.toLowerCase().includes(k) || (e.en || '').toLowerCase().includes(k) || e.keys.some(x => x.toLowerCase().includes(k)));
+      $('glist').innerHTML = es.length ? es.map(e =>
+        '<div class="kitem"><b>' + esc(e.t) + '</b>' + (e.en ? ' <span class="st">' + esc(e.en) + '</span>' : '') +
+        (e.m ? ' <button class="nt-go" data-tw="' + esc(e.m) + '">去专项塔练 →</button>' : '') +
+        '<p>' + esc(e.d) + '</p></div>').join('') : '<div style="color:var(--dim)">没有匹配的术语</div>';
+      jump();
+    };
+    render('');
+    const qi = $('gq');
+    if (qi) { qi.oninput = () => render(qi.value); qi.focus(); }
+  }
+
   function modalWrong() {
     const ids = Object.keys(P.wrong);
     renderBadge();
@@ -1144,6 +1208,8 @@
       if (m === 'codex') modalCodex();
       else if (m === 'wrong') modalWrong();
       else if (m === 'stats') modalStats();
+      else if (m === 'notes') modalNotes();
+      else if (m === 'gloss') modalGloss();
       else modalSettings();
     };
   });
@@ -1212,6 +1278,8 @@
     const b = $('wBadge');
     b.style.display = n ? '' : 'none';
     b.textContent = n;
+    const nb = $('nBadge');
+    if (nb) { const m = Object.keys(P.notes).length; nb.style.display = m ? '' : 'none'; nb.textContent = m; }
   }
 
   /* ---------------- boot ---------------- */
