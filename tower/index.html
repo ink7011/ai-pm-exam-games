@@ -353,6 +353,16 @@ kbd{font-family:var(--mono);font-size:10.5px;background:#EAF2F7;border:1px solid
 .nt-opt.ok{color:#2E7D62;border-left-color:#2E7D62;background:rgba(46,125,98,.06);border-radius:0 6px 6px 0}
 .nt-ok{color:#2E7D62;font-weight:700}
 #gq:focus{border-color:var(--blue)}
+.gl-item{padding:10px 12px}
+.gl-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;cursor:pointer}
+.gl-bar:hover b{color:var(--cyan)}
+.gl-n{font-family:var(--mono);font-size:10.5px;color:var(--faint)}
+.gl-kk{font-size:10px;font-family:var(--mono);color:#8F6A1E;border:1px solid rgba(143,106,30,.45);border-radius:999px;padding:0 8px;line-height:16px}
+.gl-def{margin:6px 0 0;font-size:12.5px;color:var(--dim);line-height:1.7}
+.gl-qs{margin-top:8px;border-top:1px dashed var(--line);padding-top:8px}
+.gl-q{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink);padding:4px 0;line-height:1.5}
+.gl-go{margin-left:auto;flex-shrink:0;font-size:10.5px;font-family:var(--mono);border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:2px 10px;cursor:pointer;color:var(--cyan)}
+.gl-go:hover{border-color:var(--cyan)}
 .dopt{font-size:12px;line-height:1.6;color:#B35050;padding:4px 8px;background:rgba(239,68,68,.06);border-left:2px solid rgba(239,68,68,.45);border-radius:0 4px 4px 0}
 .dopt b{font-family:var(--mono);margin-right:8px;color:#B35050}
 .dopt.ok{color:#86efac;background:rgba(62,155,126,.07);border-left-color:rgba(62,155,126,.5)}
@@ -444,7 +454,7 @@ body::after{animation:shDriftB 110s ease-in-out infinite alternate}
 <script src="../shared/feedback.js?v=8"></script>
 <script src="../shared/dock.js?v=7"></script>
 <script src="../shared/tip.js?v=10"></script>
-<script src="js/game.js?v=45"></script>
+<script src="js/game.js?v=46"></script>
 <script>
 /* PWA：仅 https / localhost 下注册 Service Worker（file:// 与 http 内网不注册） */
 if ('serviceWorker' in navigator &&

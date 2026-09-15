@@ -1128,31 +1128,107 @@
     document.querySelectorAll('.nt-tab').forEach(b2 => b2.onclick = () => modalNotes(b2.dataset.tab));
   }
 
-  /* ---------------- 术语表（复用 RPG 词典数据） ---------------- */
-  function modalGloss() {
-    const G = window.GLOSSARY;
-    if (!G || !G.entries) { openModal('术语表', '<div style="color:var(--dim)">词典加载失败，请刷新重试</div>', ''); return; }
-    const input = '<input id="gq" placeholder="搜索术语 / 英文缩写…" style="width:100%;box-sizing:border-box;background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:13px;outline:none;margin-bottom:10px;color:var(--ink)">';
-    openModal('术语表 · GLOSSARY', input + '<div id="glist" class="klist"></div>', '共 ' + G.entries.length + ' 词 · 一句人话 + 一个小例子');
-    const jump = () => {
-      document.querySelectorAll('.nt-go').forEach(b2 => b2.onclick = () => {
-        const tw = b2.dataset.tw;
-        $('modalRoot').innerHTML = '';
-        renderSelect();
-        setTimeout(() => {
-          const card = [...document.querySelectorAll('.tower')].find(x => x.dataset.tw === tw);
-          if (card) { card.scrollIntoView({ block: 'center', behavior: 'smooth' }); card.style.boxShadow = '0 0 0 3px rgba(58,114,155,.4)'; setTimeout(() => card.style.boxShadow = '', 2400); }
-        }, 60);
-      });
+  /* ---------------- 术语表：试炼塔自身术语检索库（运行时从题库构建） ----------------
+     主键 = 每题考点(k) + 从题干/解析/选项抽取的英文词与词组（≥2 题或考点直录）；
+     释义优先取 RPG 词典（人工撰写），否则展示塔内相关题目做检索锚点。 */
+  const GLOSS_STOP = new Set(('the,a,an,of,to,in,on,for,and,or,not,with,by,as,at,be,are,was,is,it,its,this,that,' +
+    'from,into,can,will,would,should,could,more,most,less,than,then,they,their,there,when,what,which,who,how,why,' +
+    'all,any,such,no,nor,only,own,same,so,too,very,just,also,may,might,must,shall,do,does,did,done,has,have,had,' +
+    'use,used,using,user,users,new,non,per,pre,vs,etc,if,up,out,over,under,both,each,few,some,other,one,two,three,' +
+    'example,examples,like,make,makes,made,get,gets,let,lets,see,seen,way,ways,case,cases,based,needs,need,want').split(','));
+  function towerGlossaryData() {
+    const items = D.items.slice();
+    TOWERS.forEach(t => {
+      if (t.group === 'company' && P.paid[t.id]) {
+        const pd = paidData(t);
+        if (pd && pd.items) items.push.apply(items, pd.items);
+      }
+    });
+    const glIdx = {};
+    ((window.GLOSSARY && window.GLOSSARY.entries) || []).forEach(e => {
+      glIdx[e.t.toLowerCase()] = e;
+      (e.keys || []).forEach(k2 => { glIdx[k2.toLowerCase()] = e; });
+    });
+    const terms = {};
+    const addTerm = (name, it, byK) => {
+      const key = name.toLowerCase();
+      if (!terms[key]) terms[key] = { t: name, mods: {}, qs: [], n: 0, byK: false, g: null };
+      const T = terms[key];
+      T.mods[it.modName] = true;
+      if (byK) T.byK = true;
+      if (!T.qs.includes(it.id)) T.qs.push(it.id);
+      if (name === name.toUpperCase() && /[A-Z]/.test(name) && name.length <= 10) T.t = name;
     };
+    items.forEach(it => {
+      if (it.k) addTerm(it.k, it, true);
+      const text = [it.q, it.expl || ''].concat(it.opts || []).join(' ');
+      /* 英文词组（1-3 词，不含停用词） */
+      const spans = text.match(/[A-Za-z][A-Za-z0-9+#./&-]*(?:[ ][A-Za-z0-9+#./&-]+){0,2}/g) || [];
+      const seen = {};
+      spans.forEach(sp => {
+        const words = sp.split(' ');
+        const clean = [];
+        words.forEach(w => {
+          const wl = w.toLowerCase().replace(/[.+#/&-]+$/, '');
+          if (GLOSS_STOP.has(wl) || wl.length < 2 || /^\d+$/.test(wl)) { clean.length = 0; return; }
+          clean.push(w);
+        });
+        if (!clean.length) return;
+        const phrase = clean.join(' ');
+        if (phrase.length > 34 || seen[phrase.toLowerCase()]) return;
+        seen[phrase.toLowerCase()] = 1;
+        addTerm(phrase, it, false);
+      });
+    });
+    const out = [];
+    Object.keys(terms).forEach(key => {
+      const T = terms[key];
+      if (!T.byK && T.qs.length < 2) return;           /* 非考点术语至少出现 2 题 */
+      T.g = glIdx[key] || null;
+      out.push(T);
+    });
+    out.sort((a, b) => b.qs.length - a.qs.length || a.t.localeCompare(b.t, 'zh'));
+    return { terms: out, qCount: items.length };
+  }
+  function glossJump(mod) {
+    const tw = TOWERS.find(t => t.mods && t.mods.includes(mod)) || TOWERS.find(t => t.mods && t.mods.some(m2 => mod && mod.startsWith(m2)));
+    $('modalRoot').innerHTML = '';
+    renderSelect();
+    setTimeout(() => {
+      const card = tw && [...document.querySelectorAll('.tower')].find(x => x.dataset.tw === tw.id);
+      if (card) { card.scrollIntoView({ block: 'center', behavior: 'smooth' }); card.style.boxShadow = '0 0 0 3px rgba(58,114,155,.4)'; setTimeout(() => card.style.boxShadow = '', 2400); }
+    }, 60);
+  }
+  function modalGloss() {
+    const data = towerGlossaryData();
+    const input = '<input id="gq" placeholder="搜术语 / 英文缩写 / 模块…" style="width:100%;box-sizing:border-box;background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:13px;outline:none;margin-bottom:10px;color:var(--ink)">';
+    openModal('术语检索 · 塔内术语库', input + '<div id="glist" class="klist"></div>',
+      '索引自本塔 ' + data.qCount + ' 道可玩题：考点直录 + 高频英文术语 · 点词条看相关题目');
     const render = (kw) => {
       const k = (kw || '').trim().toLowerCase();
-      const es = G.entries.filter(e => !k || e.t.toLowerCase().includes(k) || (e.en || '').toLowerCase().includes(k) || e.keys.some(x => x.toLowerCase().includes(k)));
-      $('glist').innerHTML = es.length ? es.map(e =>
-        '<div class="kitem"><b>' + esc(e.t) + '</b>' + (e.en ? ' <span class="st">' + esc(e.en) + '</span>' : '') +
-        (e.m ? ' <button class="nt-go" data-tw="' + esc(e.m) + '">去专项塔练 →</button>' : '') +
-        '<p>' + esc(e.d) + '</p></div>').join('') : '<div style="color:var(--dim)">没有匹配的术语</div>';
-      jump();
+      const list = data.terms.filter(T => !k || T.t.toLowerCase().includes(k) ||
+        Object.keys(T.mods).some(m => m.toLowerCase().includes(k)) ||
+        (T.g && (T.g.t.toLowerCase().includes(k) || (T.g.en || '').toLowerCase().includes(k))));
+      $('glist').innerHTML = list.length ? list.slice(0, 120).map((T, i) => {
+        const mods = Object.keys(T.mods).map(m => '<span class="st">[' + esc(m) + ']</span>').join(' ');
+        const def = T.g ? esc(T.g.d) : '';
+        const qs = T.qs.slice(0, 12).map(id => {
+          const it = item(id); if (!it) return '';
+          return '<div class="gl-q">' + esc(it.q.slice(0, 64)) + (it.q.length > 64 ? '…' : '') +
+            '<button class="gl-go" data-mod="' + esc(it.mod) + '">练 →</button></div>';
+        }).join('');
+        return '<div class="kitem gl-item">' +
+          '<div class="gl-bar" data-gl="' + i + '"><b>' + esc(T.t) + '</b>' + (T.g && T.g.en ? ' <span class="st">' + esc(T.g.en) + '</span>' : '') + ' ' + mods +
+          '<span class="gl-n">' + T.qs.length + ' 题</span>' + (T.byK ? '<span class="gl-kk">考点</span>' : '') + '</div>' +
+          (def ? '<p class="gl-def">' + def + '</p>' : '') +
+          '<div class="gl-qs" style="display:none">' + qs + (T.qs.length > 12 ? '<div class="st">…共 ' + T.qs.length + ' 题</div>' : '') + '</div></div>';
+      }).join('') + (list.length > 120 ? '<div style="color:var(--faint);font-size:11px;text-align:center">还有 ' + (list.length - 120) + ' 个词条，输入关键词缩小范围</div>' : '')
+        : '<div style="color:var(--dim)">没有匹配的术语</div>';
+      document.querySelectorAll('.gl-bar').forEach(b2 => b2.onclick = () => {
+        const box = b2.parentElement.querySelector('.gl-qs');
+        if (box) box.style.display = box.style.display === 'none' ? '' : 'none';
+      });
+      document.querySelectorAll('.gl-go').forEach(b2 => b2.onclick = (ev) => { ev.stopPropagation(); glossJump(b2.dataset.mod); });
     };
     render('');
     const qi = $('gq');

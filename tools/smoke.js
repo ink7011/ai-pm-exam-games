@@ -421,6 +421,7 @@ async function main() {
   ok('塔：顶栏有术语表/笔记本入口 + nBadge', twH.includes('data-modal="gloss"') && twH.includes('data-modal="notes"') && twH.includes('id="nBadge"'));
   ok('塔：freshP 含 notes 档案', twG.includes('notes: {}'));
   ok('塔：收藏/笔记本/术语表函数在场', twG.includes('function toggleNote') && twG.includes('function modalNotes') && twG.includes('function modalGloss'));
+  ok('塔：术语库从题库构建（towerGlossaryData + 抽取器）', twG.includes('function towerGlossaryData') && twG.includes('GLOSS_STOP'));
   ok('塔：复用 RPG 词典（单一数据源）', twH.includes('rpg/js/glossary.js'));
   const gl = fs.readFileSync(path.join(ROOT, 'rpg/js/glossary.js'), 'utf8');
   ok('词典数据完整（entries 数组）', /entries\s*:\s*\[/.test(gl) && (gl.match(/\{ id: '/g) || []).length >= 90);
