@@ -331,6 +331,16 @@ kbd{font-family:var(--mono);font-size:10.5px;background:#EAF2F7;border:1px solid
 .bm-btn{margin-left:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:1px;color:var(--dim);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px 12px;cursor:pointer;transition:.18s}
 .bm-btn:hover{border-color:var(--cyan);color:var(--cyan)}
 .bm-btn.on{color:#8F6A1E;border-color:rgba(143,106,30,.5);background:rgba(224,179,60,.12)}
+/* 笔记本标签页 */
+.nt-tabs{display:flex;align-items:center;gap:8px;margin-bottom:12px;border-bottom:1px solid var(--line);padding-bottom:10px}
+.nt-tab{font-family:var(--mono);font-size:12px;letter-spacing:1px;color:var(--dim);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer;transition:.18s}
+.nt-tab:hover{border-color:var(--cyan);color:var(--cyan)}
+.nt-tab.on{color:#FFFFFF;border-color:transparent;background:linear-gradient(135deg,#3A729B,#32648C);font-weight:700}
+.nt-cnt{display:inline-block;margin-left:5px;font-size:10px;background:rgba(255,255,255,.25);border-radius:999px;padding:0 7px;line-height:16px}
+.nt-tab:not(.on) .nt-cnt{background:var(--track);color:var(--dim)}
+.nt-cnt.warn{background:rgba(179,80,80,.18);color:#B35050}
+.nt-hint{margin-left:auto;font-size:10.5px;color:var(--faint);letter-spacing:1px}
+.nt-mark{margin-left:auto}
 /* 笔记本条目 */
 .nt-item{padding:12px 14px}
 .nt-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -393,7 +403,6 @@ body::after{animation:shDriftB 110s ease-in-out infinite alternate}
       <button data-modal="codex">图鉴</button>
       <button data-modal="gloss">术语表</button>
       <button data-modal="notes">笔记本<span class="badge" id="nBadge" style="display:none">0</span></button>
-      <button data-modal="wrong">错题本<span class="badge" id="wBadge" style="display:none">0</span></button>
       <button data-modal="stats">战报</button>
       <button data-modal="settings">系统</button>
     </div>
@@ -435,7 +444,7 @@ body::after{animation:shDriftB 110s ease-in-out infinite alternate}
 <script src="../shared/feedback.js?v=8"></script>
 <script src="../shared/dock.js?v=7"></script>
 <script src="../shared/tip.js?v=10"></script>
-<script src="js/game.js?v=44"></script>
+<script src="js/game.js?v=45"></script>
 <script>
 /* PWA：仅 https / localhost 下注册 Service Worker（file:// 与 http 内网不注册） */
 if ('serviceWorker' in navigator &&

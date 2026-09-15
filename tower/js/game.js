@@ -1081,27 +1081,51 @@
     else { P.notes[id] = Date.now(); if (btn) btn.classList.add('on'); btn && (btn.textContent = '🔖 已收藏'); toast('已收藏到笔记本', 'ok'); }
     save(); renderBadge();
   }
-  function modalNotes() {
+  function modalNotes(tab) {
+    tab = tab || 'fav';
     const ids = Object.keys(P.notes).sort((a, b) => P.notes[b] - P.notes[a]);
+    const wids = Object.keys(P.wrong);
     renderBadge();
-    const html = ids.length
-      ? '<div class="klist">' + ids.map(id => {
-          const it = item(id);
-          if (!it) return '';
-          const opts = it.opts.map((t, i) =>
-            '<div class="nt-opt' + (i === it.ans ? ' ok' : '') + '"><b>' + 'ABCD'[i] + '</b> ' + esc(t) + (i === it.ans ? ' <span class="nt-ok">✓</span>' : '') + '</div>').join('');
-          return '<div class="kitem nt-item"><div class="nt-bar"><b>' + esc(it.k) + '</b> <span class="st">[' + esc(it.modName) + ']</span>' +
-            '<button class="nt-del" data-del="' + esc(id) + '">移除</button></div>' +
-            '<p class="nt-q">' + esc(it.q) + '</p>' + opts + '<p>' + esc(it.expl) + '</p></div>';
-        }).join('') + '</div>' +
-        '<button class="retrybtn" id="clrNotes" style="width:100%;margin-top:10px">清空笔记本</button>'
-      : '<div style="color:var(--dim)">还没收藏任何题。爬塔时点题目右上角的「🔖 收藏」——做对的题、值得重看的题都可以收进来。</div>';
-    openModal('笔记本 · 收藏题', html, '错题本记的是伤疤，笔记本存的是好题。');
-    document.querySelectorAll('.nt-del').forEach(b2 => b2.onclick = () => {
-      delete P.notes[b2.dataset.del]; save(); renderBadge(); modalNotes();
-    });
-    const cb = $('clrNotes');
-    if (cb) cb.onclick = () => { if (confirm('清空全部收藏？')) { P.notes = {}; save(); renderBadge(); modalNotes(); } };
+    const tabs = '<div class="nt-tabs">' +
+      '<button class="nt-tab' + (tab === 'fav' ? ' on' : '') + '" data-tab="fav">🔖 我的收藏<span class="nt-cnt">' + ids.length + '</span></button>' +
+      '<button class="nt-tab' + (tab === 'wrong' ? ' on' : '') + '" data-tab="wrong">👁 错题 · 暗影名录<span class="nt-cnt' + (wids.length ? ' warn' : '') + '">' + wids.length + '</span></button>' +
+      '<span class="nt-hint">' + (tab === 'fav' ? '手动收藏 · 做对的题也可以收' : '自动收录 · 答错即入册') + '</span></div>';
+    let body;
+    if (tab === 'wrong') {
+      body = wids.length
+        ? '<div class="klist">' + wids.map(id => {
+            const it = item(id); const w = P.wrong[id];
+            if (!it) return '';
+            return '<div class="kitem nt-item"><div class="nt-bar"><b>' + esc(it.k) + '</b> <span class="st">[' + esc(it.modName) + ']</span>' +
+              '<span class="st miss">累计答错 ' + w.miss + ' 次</span>' +
+              '<span class="st ' + (w.streak >= 1 ? 'ok' : 'miss') + '">' + (w.streak >= 1 ? ' · 净化中（' + w.streak + '/2）' : ' · 待净化') + '</span>' +
+              (P.notes[id] ? '<span class="st nt-mark">🔖</span>' : '') + '</div>' +
+              '<p>' + esc(it.expl) + '</p></div>';
+          }).join('') + '</div>'
+        : '<div style="color:var(--dim)">零错题。要么你很强，要么你还没爬过塔。</div>';
+      openModal('笔记本', tabs + body, '暗影在爬塔中随机复仇；连续两次答对同一暗影即净化。');
+    } else {
+      body = ids.length
+        ? '<div class="klist">' + ids.map(id => {
+            const it = item(id);
+            if (!it) return '';
+            const opts = it.opts.map((t, i) =>
+              '<div class="nt-opt' + (i === it.ans ? ' ok' : '') + '"><b>' + 'ABCD'[i] + '</b> ' + esc(t) + (i === it.ans ? ' <span class="nt-ok">✓</span>' : '') + '</div>').join('');
+            return '<div class="kitem nt-item"><div class="nt-bar"><b>' + esc(it.k) + '</b> <span class="st">[' + esc(it.modName) + ']</span>' +
+              (P.wrong[id] ? '<span class="st miss">👁 错过 ' + P.wrong[id].miss + ' 次</span>' : '') +
+              '<button class="nt-del" data-del="' + esc(id) + '">移除</button></div>' +
+              '<p class="nt-q">' + esc(it.q) + '</p>' + opts + '<p>' + esc(it.expl) + '</p></div>';
+          }).join('') + '</div>' +
+          '<button class="retrybtn" id="clrNotes" style="width:100%;margin-top:10px">清空收藏</button>'
+        : '<div style="color:var(--dim)">还没收藏任何题。爬塔时点题目右上角的「🔖 收藏」——做对的题、值得重看的题都可以收进来。</div>';
+      openModal('笔记本', tabs + body, '错题自动入册，好题手动收藏——两本账合在一个笔记本里。');
+      document.querySelectorAll('.nt-del').forEach(b2 => b2.onclick = () => {
+        delete P.notes[b2.dataset.del]; save(); renderBadge(); modalNotes('fav');
+      });
+      const cb = $('clrNotes');
+      if (cb) cb.onclick = () => { if (confirm('清空全部收藏？')) { P.notes = {}; save(); renderBadge(); modalNotes('fav'); } };
+    }
+    document.querySelectorAll('.nt-tab').forEach(b2 => b2.onclick = () => modalNotes(b2.dataset.tab));
   }
 
   /* ---------------- 术语表（复用 RPG 词典数据） ---------------- */
@@ -1135,21 +1159,8 @@
     if (qi) { qi.oninput = () => render(qi.value); qi.focus(); }
   }
 
-  function modalWrong() {
-    const ids = Object.keys(P.wrong);
-    renderBadge();
-    const html = ids.length
-      ? '<div class="klist">' + ids.map(id => {
-          const it = item(id); const w = P.wrong[id];
-          if (!it) return '';
-          return '<div class="kitem"><b>' + esc(it.k) + '</b> <span class="st">[' + esc(it.modName) + ']</span> ' +
-            '<span class="st miss">累计答错 ' + w.miss + ' 次</span>' +
-            '<span class="st ' + (w.streak >= 1 ? 'ok' : 'miss') + '">' + (w.streak >= 1 ? ' · 净化中（' + w.streak + '/2）' : ' · 待净化') + '</span>' +
-            '<p>' + esc(it.expl) + '</p></div>';
-        }).join('') + '</div>'
-      : '<div style="color:var(--dim)">零错题。要么你很强，要么你还没爬过塔。</div>';
-    openModal('错题本 · 暗影名录', html, '暗影在爬塔中随机复仇；连续两次答对同一暗影即净化。');
-  }
+  function modalWrong() { modalNotes('wrong'); }
+
   function modalStats() {
     let html = '<button class="nextbtn" id="achBtn" style="width:100%;margin-bottom:12px">🏆 成就墙 · ACHIEVEMENTS</button>' +
       '<div class="rgrid">' +
@@ -1274,12 +1285,8 @@
     onTip: openTip
   });
   function renderBadge() {
-    const n = Object.keys(P.wrong).length;
-    const b = $('wBadge');
-    b.style.display = n ? '' : 'none';
-    b.textContent = n;
     const nb = $('nBadge');
-    if (nb) { const m = Object.keys(P.notes).length; nb.style.display = m ? '' : 'none'; nb.textContent = m; }
+    if (nb) { const m = Object.keys(P.notes).length + Object.keys(P.wrong).length; nb.style.display = m ? '' : 'none'; nb.textContent = m; }
   }
 
   /* ---------------- boot ---------------- */
