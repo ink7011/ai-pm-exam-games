@@ -8,7 +8,7 @@
 [![Play Online](https://img.shields.io/badge/▶_在线玩_Play_Online-22d3ee?style=for-the-badge)](https://ink7011.github.io/ai-pm-exam-games/)
 [![Questions](https://img.shields.io/badge/免费题库-245_题-fbbf24.svg)](tower/js/deck-data.js)
 [![Status](https://img.shields.io/badge/status-early--stage_prototype-fbbf24.svg)](docs/CHANGELOG.md)
-[![Tests](https://img.shields.io/badge/smoke-209_断言-34d399.svg)](tools/smoke.js)
+[![Tests](https://img.shields.io/badge/smoke-218_断言-34d399.svg)](tools/smoke.js)
 [![License: MIT](https://img.shields.io/badge/License-MIT-34d399.svg)](LICENSE)
 
 **如果这个仓库帮到了你，点一个 ⭐ 让更多人看到。**
@@ -96,7 +96,7 @@ OPC 每节点 → Business+2, Judgment+1
 - **配置驱动引擎**: 每个模拟是一份 `SIM` 配置（指标/初始值/衰减/结局/角色/技能喂养），引擎通用
 - **类型契约**: `shared/types.js` 定义存档形状，`tsc --checkJs` 编译期检查字段匹配
 - **PWA 离线**: Service Worker 版本化缓存，断网可玩
-- **测试**: `node tools/smoke.js` — 209 条断言（语法/题库/引擎/安全边界/版本卫生）
+- **测试**: `node tools/smoke.js` — 218 条断言（语法/题库/引擎/安全边界/版本卫生/品牌令牌）
 
 ```bash
 # 本地运行
@@ -124,7 +124,7 @@ node tools/smoke.js
 
 ## Documentation
 
-- **[docs/CHANGELOG.md](docs/CHANGELOG.md)** — 迭代记录 v0.1 → v0.5
+- **[docs/CHANGELOG.md](docs/CHANGELOG.md)** — 迭代记录 v0.1 → v0.7
 - **[docs/DESIGN-DECISIONS.md](docs/DESIGN-DECISIONS.md)** — 10 条设计取舍（含被否掉的方案）
 - **[docs/WORLDVIEW.md](docs/WORLDVIEW.md)** — 世界观正典 · 编年史 · 过场动画
 - **[docs/WORKFLOW.md](docs/WORKFLOW.md)** — Builder/Reviewer 分离制 + Soul Review 宪章
