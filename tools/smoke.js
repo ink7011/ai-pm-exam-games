@@ -422,6 +422,10 @@ async function main() {
   ok('塔：freshP 含 notes 档案', twG.includes('notes: {}'));
   ok('塔：收藏/笔记本/术语表函数在场', twG.includes('function toggleNote') && twG.includes('function modalNotes') && twG.includes('function modalGloss'));
   ok('塔：术语库从题库构建（towerGlossaryData + 抽取器）', twG.includes('function towerGlossaryData') && twG.includes('GLOSS_STOP'));
+  const dd = fs.readFileSync(path.join(ROOT, 'tower/js/deck-data.js'), 'utf8');
+  const bgN = (dd.match(/"bg-pilot-check"/g) || []).length; // 占位不计数
+  const bgCount = (dd.match(/one: "/g) || []).length;
+  ok('塔：零基础图解试点 ≥10 题且渲染器在场', bgCount >= 10 && twG.includes('function beginnerHtml') && twG.includes('bg-card'));
   ok('塔：复用 RPG 词典（单一数据源）', twH.includes('rpg/js/glossary.js'));
   const gl = fs.readFileSync(path.join(ROOT, 'rpg/js/glossary.js'), 'utf8');
   ok('词典数据完整（entries 数组）', /entries\s*:\s*\[/.test(gl) && (gl.match(/\{ id: '/g) || []).length >= 90);

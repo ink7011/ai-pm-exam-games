@@ -353,6 +353,36 @@ kbd{font-family:var(--mono);font-size:10.5px;background:#EAF2F7;border:1px solid
 .nt-opt.ok{color:#2E7D62;border-left-color:#2E7D62;background:rgba(46,125,98,.06);border-radius:0 6px 6px 0}
 .nt-ok{color:#2E7D62;font-weight:700}
 #gq:focus{border-color:var(--blue)}
+/* 零基础图解（数据驱动：bar / flow / split） */
+.bg-card{margin-top:10px;border:1.5px solid rgba(46,125,98,.4);background:linear-gradient(135deg,rgba(143,212,188,.12),rgba(255,255,255,.55));border-radius:12px;overflow:hidden}
+.bg-head{display:flex;align-items:center;gap:8px;padding:9px 14px;cursor:pointer;font-family:var(--mono);font-size:11.5px;letter-spacing:2px;color:#2E7D62;user-select:none}
+.bg-head::after{content:'▸';margin-left:auto;transition:.2s}
+.bg-card.open .bg-head::after{transform:rotate(90deg)}
+.bg-tip{font-size:10px;color:var(--faint);letter-spacing:1px}
+.bg-body{display:none;padding:2px 14px 12px;border-top:1px dashed rgba(46,125,98,.3)}
+.bg-card.open .bg-body{display:block;animation:fadeUp .3s both}
+.bg-one{font-size:13.5px;font-weight:700;color:var(--ink);line-height:1.75;margin:8px 0 6px}
+.bg-ana{font-size:12.5px;color:var(--dim);line-height:1.8;padding:8px 12px;background:rgba(255,255,255,.6);border-radius:10px;margin-bottom:8px}
+.bg-atag{display:inline-block;font-family:var(--mono);font-size:10px;color:#8F6A1E;border:1px solid rgba(143,106,30,.4);border-radius:999px;padding:1px 9px;margin-right:8px}
+.bg-viz{margin-top:8px;padding:10px 12px;background:var(--panel);border:1px solid var(--line);border-radius:10px}
+.bg-vt{font-family:var(--mono);font-size:10.5px;color:var(--cyan);letter-spacing:2px;margin-bottom:8px}
+.bg-brow{display:flex;align-items:center;gap:8px;margin:6px 0}
+.bg-bk{flex:0 0 118px;font-size:11.5px;color:var(--dim)}
+.bg-btrack{flex:1;height:10px;background:var(--track);border-radius:999px;overflow:hidden}
+.bg-btrack i{display:block;height:100%;border-radius:999px;transition:width .6s}
+.bg-btrack i.ok{background:linear-gradient(90deg,#2E7D62,#6FC0A4)}
+.bg-btrack i.warn{background:linear-gradient(90deg,#8F6A1E,#E0B33C)}
+.bg-btrack i.bad{background:linear-gradient(90deg,#B35050,#DE8A74)}
+.bg-bv{flex:0 0 52px;text-align:right;font-family:var(--mono);font-size:11px;color:var(--ink)}
+.bg-note{margin-top:8px;font-size:11.5px;color:var(--dim);line-height:1.7}
+.bg-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.bg-step{font-size:11.5px;color:var(--ink);background:rgba(184,216,232,.14);border:1px solid rgba(58,114,155,.3);border-radius:999px;padding:4px 12px;line-height:1.5}
+.bg-arr{color:var(--faint)}
+.bg-split{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bg-half{background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.bg-half b{display:block;font-size:12px;color:var(--cyan);margin-bottom:4px}
+.bg-half p{font-size:11.5px;color:var(--dim);line-height:1.65}
+@media(max-width:640px){.bg-split{grid-template-columns:1fr}.bg-bk{flex-basis:92px;font-size:10.5px}}
 /* 答对后的知识点总结卡 */
 .kn-card{margin-top:10px;border:1.5px solid rgba(58,114,155,.4);background:linear-gradient(135deg,rgba(184,216,232,.12),rgba(255,255,255,.55));border-radius:12px;padding:10px 14px}
 .kn-h{font-family:var(--mono);font-size:11px;color:var(--cyan);letter-spacing:2px;margin-bottom:4px}
@@ -451,7 +481,7 @@ body::after{animation:shDriftB 110s ease-in-out infinite alternate}
 <script src="../shared/plant-core.js?v=5"></script>
 <script src="js/bgm.js?v=3"></script>
 <script src="../shared/achievements.js?v=1"></script>
-<script src="js/deck-data.js?v=8"></script>
+<script src="js/deck-data.js?v=9"></script>
 <script src="js/deck-paid.js?v=2"></script>
 <script src="../shared/paid-crypto.js?v=1"></script>
 <script src="../rpg/js/glossary.js?v=2"></script>
@@ -460,7 +490,7 @@ body::after{animation:shDriftB 110s ease-in-out infinite alternate}
 <script src="../shared/feedback.js?v=8"></script>
 <script src="../shared/dock.js?v=7"></script>
 <script src="../shared/tip.js?v=10"></script>
-<script src="js/game.js?v=47"></script>
+<script src="js/game.js?v=48"></script>
 <script>
 /* PWA：仅 https / localhost 下注册 Service Worker（file:// 与 http 内网不注册） */
 if ('serviceWorker' in navigator &&

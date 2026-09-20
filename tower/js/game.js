@@ -761,6 +761,36 @@
   }
 
   /* 知识点总结块：考点标题 + 完整解析 + 逐选项判词（exp/dexpl 数据缺省时回落 expl） */
+  /* 零基础图解块：人话 + 类比 + 简图（数据在题库 bg 字段） */
+  function beginnerHtml(it) {
+    if (!it || !it.bg) return '';
+    const b = it.bg;
+    let viz = '';
+    if (b.viz) {
+      const v = b.viz;
+      let inner = '';
+      if (v.t === 'bar') {
+        inner = v.items.map(x =>
+          '<div class="bg-brow"><span class="bg-bk">' + esc(x.k) + '</span>' +
+          '<span class="bg-btrack"><i class="' + (x.tone || '') + '" style="width:' + Math.max(4, Math.min(100, x.v)) + '%"></i></span>' +
+          '<span class="bg-bv">' + esc(x.label || (x.v + (v.unit || ''))) + '</span></div>').join('');
+      } else if (v.t === 'flow') {
+        inner = '<div class="bg-flow">' + v.steps.map((sp, i) =>
+          '<span class="bg-step">' + esc(sp) + '</span>' + (i < v.steps.length - 1 ? '<span class="bg-arr">→</span>' : '')).join('') + '</div>';
+      } else if (v.t === 'split') {
+        inner = '<div class="bg-split">' +
+          '<div class="bg-half"><b>' + esc(v.a.k) + '</b><p>' + esc(v.a.d) + '</p></div>' +
+          '<div class="bg-half"><b>' + esc(v.b.k) + '</b><p>' + esc(v.b.d) + '</p></div></div>';
+      }
+      viz = '<div class="bg-viz"><div class="bg-vt">' + esc(v.title) + '</div>' + inner +
+        (v.note ? '<div class="bg-note">' + esc(v.note) + '</div>' : '') + '</div>';
+    }
+    return '<div class="bg-card"><div class="bg-head">🌱 零基础图解 <span class="bg-tip">人话版 · 点开看</span></div>' +
+      '<div class="bg-body">' +
+      (b.one ? '<div class="bg-one">' + esc(b.one) + '</div>' : '') +
+      (b.ana ? '<div class="bg-ana"><span class="bg-atag">类比</span>' + esc(b.ana) + '</div>' : '') +
+      viz + '</div></div>';
+  }
   function knowledgeHtml(it, opts) {
     if (!it) return '';
     const dexpl = it.dexpl && (!opts || opts.withOpts)
@@ -768,7 +798,8 @@
           '<div class="dopt' + (i === it.ans ? ' ok' : '') + '"><b>' + 'ABCD'[i] + (i === it.ans ? ' ✓' : ' ✗') + '</b>' + esc(d) + '</div>').join('') + '</div>' : '';
     const body = it.exp || it.expl || '';
     return '<div class="kn-card"><div class="kn-h">💡 知识点' + (it.k ? ' · 【' + esc(it.k) + '】' : '') + '</div>' +
-      (body ? '<div class="expl-line"><span class="el-tag">📖 解析</span>' + esc(body) + '</div>' : '') + dexpl + '</div>';
+      (body ? '<div class="expl-line"><span class="el-tag">📖 解析</span>' + esc(body) + '</div>' : '') + dexpl +
+      beginnerHtml(it) + '</div>';
   }
   function verdict(type, tag, body, ansLine, retryMode) {
     const v = H('div', 'verdict ' + (type === 'good' ? 'good' : type === 'warn' ? 'bad' : 'bad'));
@@ -1115,7 +1146,7 @@
               '<div class="expl-line"><span class="el-tag">📖 解析</span>' + esc(it.exp || it.expl || '—') + '</div>' +
               (it.dexpl ? '<div class="dexp nt-dexp">' + it.dexpl.map((d, i2) =>
                 '<div class="dopt' + (i2 === it.ans ? ' ok' : '') + '"><b>' + 'ABCD'[i2] + (i2 === it.ans ? ' ✓' : ' ✗') + '</b>' + esc(d) + '</div>').join('') + '</div>' : '') +
-              '</div>';
+              beginnerHtml(it) + '</div>';
           }).join('') + '</div>'
         : '<div style="color:var(--dim)">零错题。要么你很强，要么你还没爬过塔。</div>';
       openModal('笔记本', tabs + body, '暗影在爬塔中随机复仇；连续两次答对同一暗影即净化。');
@@ -1133,7 +1164,7 @@
               '<div class="expl-line"><span class="el-tag">📖 解析</span>' + esc(it.exp || it.expl || '—') + '</div>' +
               (it.dexpl ? '<div class="dexp nt-dexp">' + it.dexpl.map((d, i2) =>
                 '<div class="dopt' + (i2 === it.ans ? ' ok' : '') + '"><b>' + 'ABCD'[i2] + (i2 === it.ans ? ' ✓' : ' ✗') + '</b>' + esc(d) + '</div>').join('') + '</div>' : '') +
-              '</div>';
+              beginnerHtml(it) + '</div>';
           }).join('') + '</div>' +
           '<button class="retrybtn" id="clrNotes" style="width:100%;margin-top:10px">清空收藏</button>'
         : '<div style="color:var(--dim)">还没收藏任何题。爬塔时点题目右上角的「🔖 收藏」——做对的题、值得重看的题都可以收进来。</div>';
@@ -1307,6 +1338,11 @@
       '<div class="baglist">' + rows + '</div>' +
       '<div class="bagtip">道具在对局内用金币购买（战斗界面下方道具栏，点击即用）。金币来自答题与连胜；背包只做统一查看。🧪 药水恢复生命、🔀 50/50 排除两个错误选项、💡 显示考点、🎟️ 答错免伤重答、⏳ 精英层限时+15秒。</div>');
   }
+  /* 零基础图解折叠（事件委托，知识卡/笔记本通用） */
+  document.addEventListener('click', function (e) {
+    const head = e.target.closest('.bg-head');
+    if (head) head.parentElement.classList.toggle('open');
+  });
   loadPaidCaches();
   document.querySelectorAll('.top-actions button').forEach(b => {
     b.onclick = () => {
