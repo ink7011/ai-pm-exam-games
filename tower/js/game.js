@@ -719,7 +719,7 @@
         else { purifyNote = ' · 暗影净化中（再答对 1 次根除）'; }
       }
       verdict('good', '✓ 击破 · +' + coinGain + ' 金币 · +' + scoreGain + ' 分' + (R.combo >= 3 ? ' · ' + R.combo + ' 连击!' : '') + purifyNote,
-        '【' + esc(it.k) + '】 ' + esc(it.expl), '正确答案：' + 'ABCD'[it.ans]);
+        '', '正确答案：' + 'ABCD'[it.ans]);
       renderPlayer(); renderFloors(); renderTop(); renderBadge(); save();
     } else {
       // 答错（含超时 i=-1）
@@ -760,18 +760,29 @@
     renderPlayer(); renderFloors(); renderTop(); save();
   }
 
+  /* 知识点总结块：考点标题 + 完整解析 + 逐选项判词（exp/dexpl 数据缺省时回落 expl） */
+  function knowledgeHtml(it, opts) {
+    if (!it) return '';
+    const dexpl = it.dexpl && (!opts || opts.withOpts)
+      ? '<div class="dexp">' + it.dexpl.map((d, i) =>
+          '<div class="dopt' + (i === it.ans ? ' ok' : '') + '"><b>' + 'ABCD'[i] + (i === it.ans ? ' ✓' : ' ✗') + '</b>' + esc(d) + '</div>').join('') + '</div>' : '';
+    const body = it.exp || it.expl || '';
+    return '<div class="kn-card"><div class="kn-h">💡 知识点' + (it.k ? ' · 【' + esc(it.k) + '】' : '') + '</div>' +
+      (body ? '<div class="expl-line"><span class="el-tag">📖 解析</span>' + esc(body) + '</div>' : '') + dexpl + '</div>';
+  }
   function verdict(type, tag, body, ansLine, retryMode) {
     const v = H('div', 'verdict ' + (type === 'good' ? 'good' : type === 'warn' ? 'bad' : 'bad'));
-    // 答题解析：答对/答错都显示（复查券模式不显示，避免重答前剧透）
-    const expHtml = (!retryMode && cur && cur.item.exp)
+    /* 答对 → 独立知识点总结卡（醒目）；答错 → 内联解析（原有形态） */
+    const knowHtml = (!retryMode && cur && cur.item)
+      ? (type === 'good' ? knowledgeHtml(cur.item, { withOpts: true }) : '') : '';
+    const expHtml = (!retryMode && cur && cur.item.exp && type !== 'good')
       ? '<div class="expl-line"><span class="el-tag">📖 解析</span>' + esc(cur.item.exp) + '</div>' : '';
-    // 逐选项解析：每个错误选项错在哪（数据有 dexpl 才显示）
-    const dexpHtml = (!retryMode && cur && cur.item.dexpl)
+    const dexpHtml = (!retryMode && cur && cur.item.dexpl && type !== 'good')
       ? '<div class="dexp">' + cur.item.dexpl.map((d, i) =>
           '<div class="dopt' + (i === cur.item.ans ? ' ok' : '') + '"><b>' + 'ABCD'[i] + (i === cur.item.ans ? ' ✓' : ' ✗') + '</b>' + esc(d) + '</div>').join('') + '</div>' : '';
     v.innerHTML = '<span class="v-tag">' + esc(tag) + '</span>' +
       (ansLine ? '<span class="kd">' + esc(ansLine) + '</span>' : '') +
-      '<div>' + body + '</div>' + expHtml + dexpHtml;
+      '<div>' + body + '</div>' + knowHtml + expHtml + dexpHtml;
     const zone = $('vzone'); zone.innerHTML = ''; zone.appendChild(v);
     if (retryMode) {
       const use = H('button', 'retrybtn', '🔁 使用复查券（免伤重答）');
@@ -1100,7 +1111,11 @@
               '<span class="st miss">累计答错 ' + w.miss + ' 次</span>' +
               '<span class="st ' + (w.streak >= 1 ? 'ok' : 'miss') + '">' + (w.streak >= 1 ? ' · 净化中（' + w.streak + '/2）' : ' · 待净化') + '</span>' +
               (P.notes[id] ? '<span class="st nt-mark">🔖</span>' : '') + '</div>' +
-              '<p>' + esc(it.expl) + '</p></div>';
+              '<p class="nt-q">' + esc(it.q) + '</p>' +
+              '<div class="expl-line"><span class="el-tag">📖 解析</span>' + esc(it.exp || it.expl || '—') + '</div>' +
+              (it.dexpl ? '<div class="dexp nt-dexp">' + it.dexpl.map((d, i2) =>
+                '<div class="dopt' + (i2 === it.ans ? ' ok' : '') + '"><b>' + 'ABCD'[i2] + (i2 === it.ans ? ' ✓' : ' ✗') + '</b>' + esc(d) + '</div>').join('') + '</div>' : '') +
+              '</div>';
           }).join('') + '</div>'
         : '<div style="color:var(--dim)">零错题。要么你很强，要么你还没爬过塔。</div>';
       openModal('笔记本', tabs + body, '暗影在爬塔中随机复仇；连续两次答对同一暗影即净化。');
@@ -1114,7 +1129,11 @@
             return '<div class="kitem nt-item"><div class="nt-bar"><b>' + esc(it.k) + '</b> <span class="st">[' + esc(it.modName) + ']</span>' +
               (P.wrong[id] ? '<span class="st miss">👁 错过 ' + P.wrong[id].miss + ' 次</span>' : '') +
               '<button class="nt-del" data-del="' + esc(id) + '">移除</button></div>' +
-              '<p class="nt-q">' + esc(it.q) + '</p>' + opts + '<p>' + esc(it.expl) + '</p></div>';
+              '<p class="nt-q">' + esc(it.q) + '</p>' + opts +
+              '<div class="expl-line"><span class="el-tag">📖 解析</span>' + esc(it.exp || it.expl || '—') + '</div>' +
+              (it.dexpl ? '<div class="dexp nt-dexp">' + it.dexpl.map((d, i2) =>
+                '<div class="dopt' + (i2 === it.ans ? ' ok' : '') + '"><b>' + 'ABCD'[i2] + (i2 === it.ans ? ' ✓' : ' ✗') + '</b>' + esc(d) + '</div>').join('') + '</div>' : '') +
+              '</div>';
           }).join('') + '</div>' +
           '<button class="retrybtn" id="clrNotes" style="width:100%;margin-top:10px">清空收藏</button>'
         : '<div style="color:var(--dim)">还没收藏任何题。爬塔时点题目右上角的「🔖 收藏」——做对的题、值得重看的题都可以收进来。</div>';

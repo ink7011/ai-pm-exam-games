@@ -353,6 +353,12 @@ kbd{font-family:var(--mono);font-size:10.5px;background:#EAF2F7;border:1px solid
 .nt-opt.ok{color:#2E7D62;border-left-color:#2E7D62;background:rgba(46,125,98,.06);border-radius:0 6px 6px 0}
 .nt-ok{color:#2E7D62;font-weight:700}
 #gq:focus{border-color:var(--blue)}
+/* 答对后的知识点总结卡 */
+.kn-card{margin-top:10px;border:1.5px solid rgba(58,114,155,.4);background:linear-gradient(135deg,rgba(184,216,232,.12),rgba(255,255,255,.55));border-radius:12px;padding:10px 14px}
+.kn-h{font-family:var(--mono);font-size:11px;color:var(--cyan);letter-spacing:2px;margin-bottom:4px}
+/* 笔记本内逐选项判词：中性色（战斗里红色警示不适用于复习） */
+.nt-dexp .dopt{color:var(--dim);border-left-color:var(--line)}
+.nt-dexp .dopt.ok{color:#2E7D62;border-left-color:#2E7D62;background:rgba(46,125,98,.06)}
 .gl-item{padding:10px 12px}
 .gl-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;cursor:pointer}
 .gl-bar:hover b{color:var(--cyan)}
@@ -454,7 +460,7 @@ body::after{animation:shDriftB 110s ease-in-out infinite alternate}
 <script src="../shared/feedback.js?v=8"></script>
 <script src="../shared/dock.js?v=7"></script>
 <script src="../shared/tip.js?v=10"></script>
-<script src="js/game.js?v=46"></script>
+<script src="js/game.js?v=47"></script>
 <script>
 /* PWA：仅 https / localhost 下注册 Service Worker（file:// 与 http 内网不注册） */
 if ('serviceWorker' in navigator &&
