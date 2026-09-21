@@ -626,6 +626,7 @@
       '<div id="hintzone"></div><div id="vzone"></div>';
     battle.appendChild(b);
     $('screen').innerHTML = ''; $('screen').appendChild(battle);
+    linkTerms(b);
     const bmBtn = b.querySelector('#bmBtn');
     if (bmBtn) bmBtn.onclick = () => toggleNote(it.id, bmBtn);
     const opts = b.querySelector('#opts');
@@ -824,6 +825,7 @@
       (ansLine ? '<span class="kd">' + esc(ansLine) + '</span>' : '') +
       '<div>' + body + '</div>' + knowHtml + expHtml + dexpHtml;
     const zone = $('vzone'); zone.innerHTML = ''; zone.appendChild(v);
+    linkTerms(v);
     if (retryMode) {
       const use = H('button', 'retrybtn', '🔁 使用复查券（免伤重答）');
       use.onclick = () => {
@@ -1189,9 +1191,91 @@
       const cb = $('clrNotes');
       if (cb) cb.onclick = () => { if (confirm('清空全部收藏？')) { P.notes = {}; save(); renderBadge(); modalNotes('fav'); } };
     }
+    linkTerms(document.getElementById('modalRoot'));
     document.querySelectorAll('.nt-tab').forEach(b2 => b2.onclick = () => modalNotes(b2.dataset.tab));
   }
 
+  /* ---------------- 题内术语即点即查（词源：RPG 词典 + 本塔考点） ----------------
+     题干/选项/解析渲染后自动给已知术语挂链接，点击当场弹释义卡。 */
+  let TERM_DICT = null;
+  function termDict() {
+    if (TERM_DICT) return TERM_DICT;
+    const m = {};
+    ((window.GLOSSARY && window.GLOSSARY.entries) || []).forEach(e => {
+      [e.t].concat(e.keys || []).forEach(n => { if (n && n.length >= 2 && !m[n.toLowerCase()]) m[n.toLowerCase()] = e; });
+    });
+    /* 本塔考点短语也入典（如「自主规划」这类词典外的题内关键词），释义取其题解析 */
+    const kMap = {};
+    D.items.forEach(function (it) {
+      if (it.k && it.k.length >= 3 && !m[it.k.toLowerCase()] && !kMap[it.k]) {
+        kMap[it.k] = { t: it.k, en: '', d: it.exp || it.expl || '', m: it.mod };
+      }
+    });
+    Object.keys(kMap).forEach(k => { m[k.toLowerCase()] = kMap[k]; });
+    TERM_DICT = Object.keys(m)
+      .sort((a, b) => b.length - a.length)
+      .map(k => ({
+        k: k,
+        re: /[a-z0-9]/i.test(k[0]) ? new RegExp('\\b' + k.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&') + '\\b', 'i') : null,
+        e: m[k]
+      }));
+    return TERM_DICT;
+  }
+  function escT(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function linkTerms(root) {
+    if (!root || !window.GLOSSARY || !window.DECK) return;
+    let dict = termDict();
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: n => (n.parentNode.closest('.tl, #tlPop, script, style, button .ol') ? NodeFilter.FILTER_REJECT : (n.textContent.trim().length >= 2 ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT))
+    });
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(node => {
+      const raw = node.textContent;
+      let html = escT(raw), linked = 0;
+      for (let i = 0; i < dict.length && linked < 3; i++) {
+        const d = dict[i];
+        if (d.re ? !d.re.test(html) : html.toLowerCase().indexOf(d.k) === -1) continue;
+        if (d.re) {
+          html = html.replace(d.re, function (mm) { linked++; return '<span class="tl" data-k="' + escT(d.k) + '">' + mm + '</span>'; });
+        } else {
+          const idx = html.toLowerCase().indexOf(d.k);
+          if (idx >= 0) { linked++; html = html.slice(0, idx) + '<span class="tl" data-k="' + escT(d.k) + '">' + html.slice(idx, idx + d.k.length) + '</span>' + html.slice(idx + d.k.length); }
+        }
+      }
+      if (linked) {
+        const span = document.createElement('span');
+        span.innerHTML = html;
+        node.parentNode.replaceChild(span, node);
+      }
+    });
+  }
+  function termPop(anchor, e) {
+    let pop = document.getElementById('tlPop');
+    if (!pop) {
+      pop = document.createElement('div');
+      pop.id = 'tlPop';
+      document.body.appendChild(pop);
+      document.addEventListener('click', function (ev) {
+        if (!ev.target.closest('#tlPop, .tl')) pop.classList.remove('show');
+      }, true);
+    }
+    pop.innerHTML = '<b>🌱 ' + escT(e.t) + (e.en ? ' <i>' + escT(e.en) + '</i>' : '') + '</b>' +
+      '<p>' + escT(e.d || '（暂无释义——去笔记本看这道题的完整解析）') + '</p>';
+    const r = anchor.getBoundingClientRect();
+    pop.style.left = Math.max(8, Math.min(window.innerWidth - 290, r.left)) + 'px';
+    pop.style.top = (r.bottom + 8 + window.scrollY) + 'px';
+    pop.classList.add('show');
+  }
+  /* 捕获阶段拦截：选项按钮内的术语点击只弹释义、不触发答题 */
+  document.addEventListener('click', function (ev) {
+    const tl = ev.target.closest('.tl');
+    if (!tl) return;
+    ev.stopPropagation();
+    ev.preventDefault();
+    const d = termDict().find(x => x.k === tl.dataset.k);
+    if (d) termPop(tl, d.e);
+  }, true);
   /* ---------------- 术语表：试炼塔自身术语检索库（运行时从题库构建） ----------------
      主键 = 每题考点(k) + 从题干/解析/选项抽取的英文词与词组（≥2 题或考点直录）；
      释义优先取 RPG 词典（人工撰写），否则展示塔内相关题目做检索锚点。 */
