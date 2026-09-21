@@ -427,7 +427,7 @@ async function main() {
   const bgCount = (dd.match(/one: "/g) || []).length;
   ok('塔：零基础图解 ≥80 题且渲染器在场', bgCount >= 80 && twG.includes('function beginnerHtml') && twG.includes('bg-card'));
   const wrCount = (dd.match(/s: "/g) || []).length;
-  ok('塔：门内视角（世界观层）≥30 且渲染器在场', wrCount >= 30 && twG.includes('function worldviewHtml') && twG.includes('wr-card'));
+  ok('塔：门内视角（世界观层）≥83 且渲染器在场', wrCount >= 83 && twG.includes('function worldviewHtml') && twG.includes('wr-card'));
   const rc = fs.readFileSync(path.join(ROOT, 'rpg/js/content.js'), 'utf8');
   const re = fs.readFileSync(path.join(ROOT, 'rpg/js/engine.js'), 'utf8');
   ok('RPG：全 round 人话层（≥19）+ 复盘渲染', (rc.match(/_\d": "/g) || []).length >= 19 || (rc.match(/": "/g)||[]).length > 50);

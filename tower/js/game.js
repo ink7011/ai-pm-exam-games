@@ -551,13 +551,13 @@
 
   /* 过场脚本（正典：docs/WORLDVIEW.md §7） */
   const CIN_TOWER_INTRO = [
-    { h: '[SHUAMONE 耍门]', lines: ['遗忘之潮吞噬世界的方式，不是大火，而是安静。', '被忘记的知识沉入塔底，化为暗影。'] },
-    { h: '', lines: ['你的每一次答错，都会喂养你的暗影。', '但规则同样公平——', '连续两次答对，暗影就被净化，化为星光。'] },
-    { h: '', lines: ['知识不会遗忘你——直到你掌握它。'] },
+    { h: '[SHUAMONE 耍门]', lines: ['遗忘之潮漫过世界的方式，不是大火，而是安静。', '一条知识被最后一个人忘记的那一刻，便沉了下去——沉进塔底，成为暗影。'] },
+    { h: '', lines: ['你每答错一次，暗影便重一分。', '但法则同样古老而公平——', '连续两次答对，它将化作星光，回到塔顶。'] },
+    { h: '', lines: ['知识不会遗忘你。', '直到你，掌握它。'] },
     { h: '[试炼塔 · 入塔]', slam: true, lines: [] }
   ];
   const CIN_BOSS_FLOOR = [
-    { h: '[BOSS FLOOR]', danger: true, slam: true, lines: ['塔在震动。这一层的暗影格外重。'] }
+    { h: '[BOSS FLOOR]', danger: true, slam: true, lines: ['塔在震动。这一层的暗影，比夜更重。'] }
   ];
   function startRun(towerId) {
     const t = TOWERS.find(x => x.id === towerId);
