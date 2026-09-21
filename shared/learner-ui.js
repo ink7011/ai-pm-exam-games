@@ -3,8 +3,8 @@
 (function () {
   'use strict';
   var css = '' +
-    '.lj-panel{position:relative;background:linear-gradient(150deg,rgba(14,19,29,.92),rgba(10,14,24,.96));border:1px solid #EAF2F7;border-radius:22px;padding:26px 30px;margin:26px 0 8px;overflow:hidden}' +
-    '.lj-panel::before{content:"";position:absolute;inset:0;background:radial-gradient(600px 200px at 85% -10%,rgba(58,114,155,.10),transparent 60%),radial-gradient(400px 180px at 0% 110%,rgba(172,156,200,.08),transparent 60%);pointer-events:none}' +
+    '.lj-panel{position:relative;background:radial-gradient(130% 70% at 50% 0%,rgba(255,255,255,.5),transparent 62%),linear-gradient(150deg,#F4EFE3,#EFE8D8);border:1px solid rgba(188,168,128,.38);border-radius:22px;padding:26px 30px;margin:26px 0 8px;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 4px 20px rgba(150,125,80,.10)}' +
+    '.lj-panel::before{content:"";position:absolute;inset:0;background:radial-gradient(600px 200px at 85% -10%,rgba(224,179,60,.13),transparent 60%),radial-gradient(400px 180px at 0% 110%,rgba(172,156,200,.10),transparent 60%);pointer-events:none}.lj-panel::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(120,96,52,.02) 0 1px,transparent 1px 4px)}' +
     '.lj-kicker{font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:4px;color:#3A729B;margin-bottom:12px}' +
     '.lj-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}' +
     '.lj-name{font-size:26px;font-weight:900;color:#5A6B8C}' +
@@ -44,9 +44,9 @@
     '.lj-opts{display:flex;flex-direction:column;gap:9px}' +
     '.lj-opt{text-align:left;padding:13px 18px;border:1px solid #EAF2F7;border-radius:13px;background:#FAF8F4;color:#5A6B8C;font-size:14.5px;cursor:pointer;transition:all .15s;display:flex;justify-content:space-between;align-items:center}' +
     '.lj-opt small{color:#76869F;font-size:11.5px}' +
-    '.lj-opt:hover{border-color:rgba(58,114,155,.6);background:#12203a;transform:translateX(3px)}' +
+    '.lj-opt:hover{border-color:rgba(58,114,155,.6);background:rgba(58,114,155,.08);transform:translateX(3px)}' +
     '.lj-opt.on{border-color:#3A729B;background:rgba(58,114,155,.10)}' +
-    '.lj-next{margin-top:20px;width:100%;padding:13px;border:none;border-radius:12px;background:linear-gradient(90deg,#3A729B,#32648C);color:#3A729B;font-weight:800;font-size:14.5px;cursor:pointer;letter-spacing:1px}' +
+    '.lj-next{margin-top:20px;width:100%;padding:13px;border:none;border-radius:12px;background:linear-gradient(90deg,#3A729B,#32648C);color:#FFFFFF;font-weight:800;font-size:14.5px;cursor:pointer;letter-spacing:1px}' +
     '.lj-next:disabled{opacity:.35;cursor:not-allowed}' +
     '.lj-skip{position:absolute;top:16px;right:20px;font-size:11.5px;color:#76869F;cursor:pointer;text-decoration:none}' +
     '.lj-skip:hover{color:#5C6B86}' +
