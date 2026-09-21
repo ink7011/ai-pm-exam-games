@@ -485,7 +485,8 @@
       beep(784, 0.1); setTimeout(() => beep(1046, 0.15), 110);
       const gained = (S.roundWrong === 0 && !S.revealed) ? 100 : 50;
       addVerdict('good', '✓ 决策正确' + (gained === 100 ? ' · 首答命中' : ' · 修正后命中'),
-        '<div><b>反馈：</b>' + fmt(op.fb) + '</div><div style="margin-top:6px;color:var(--dim)"><b>为什么：</b>' + fmt(op.why) + '</div>');
+        '<div><b>反馈：</b>' + fmt(op.fb) + '</div><div style="margin-top:6px;color:var(--dim)"><b>为什么：</b>' + fmt(op.why) + '</div>' +
+        (round.plain ? '<div style="margin-top:8px;padding:8px 12px;border:1.5px solid rgba(46,125,98,.4);background:rgba(143,212,188,.10);border-radius:10px;font-size:12.5px;line-height:1.8;color:var(--ink)"><b style="color:#2E7D62">🌱 人话：</b>' + esc(round.plain) + '</div>' : ''));
       addXp(gained, gained === 100 ? '首答正确' : '二次修正');
       unlockSkill(round.skill);
       roundDoneContinue();
@@ -506,7 +507,8 @@
         cards.forEach((b, idx) => { b.disabled = true; if (idx === rightIdx) b.classList.add('right'); });
         const right = round.options[rightIdx];
         addVerdict('teach', '◈ 林博士复盘 · 正确答案：' + 'ABCD'[rightIdx],
-          '<div>' + fmt(right.fb) + '</div><div style="margin-top:6px;color:var(--dim)"><b>为什么：</b>' + fmt(right.why) + '</div>');
+          '<div>' + fmt(right.fb) + '</div><div style="margin-top:6px;color:var(--dim)"><b>为什么：</b>' + fmt(right.why) + '</div>' +
+          (round.plain ? '<div style="margin-top:8px;padding:8px 12px;border:1.5px solid rgba(46,125,98,.4);background:rgba(143,212,188,.10);border-radius:10px;font-size:12.5px;line-height:1.8;color:var(--ink)"><b style="color:#2E7D62">🌱 人话：</b>' + esc(round.plain) + '</div>' : ''));
         unlockSkill(round.skill); // 学会了再走
         roundDoneContinue();
       } else {

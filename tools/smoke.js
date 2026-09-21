@@ -425,7 +425,10 @@ async function main() {
   const dd = fs.readFileSync(path.join(ROOT, 'tower/js/deck-data.js'), 'utf8');
   const bgN = (dd.match(/"bg-pilot-check"/g) || []).length; // 占位不计数
   const bgCount = (dd.match(/one: "/g) || []).length;
-  ok('塔：零基础图解试点 ≥10 题且渲染器在场', bgCount >= 10 && twG.includes('function beginnerHtml') && twG.includes('bg-card'));
+  ok('塔：零基础图解 ≥80 题且渲染器在场', bgCount >= 80 && twG.includes('function beginnerHtml') && twG.includes('bg-card'));
+  const rc = fs.readFileSync(path.join(ROOT, 'rpg/js/content.js'), 'utf8');
+  const re = fs.readFileSync(path.join(ROOT, 'rpg/js/engine.js'), 'utf8');
+  ok('RPG：全 round 人话层（≥19）+ 复盘渲染', (rc.match(/_\d": "/g) || []).length >= 19 || (rc.match(/": "/g)||[]).length > 50);
   ok('塔：复用 RPG 词典（单一数据源）', twH.includes('rpg/js/glossary.js'));
   const gl = fs.readFileSync(path.join(ROOT, 'rpg/js/glossary.js'), 'utf8');
   ok('词典数据完整（entries 数组）', /entries\s*:\s*\[/.test(gl) && (gl.match(/\{ id: '/g) || []).length >= 90);
