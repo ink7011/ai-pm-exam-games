@@ -1178,6 +1178,11 @@
           '<button class="retrybtn" id="clrNotes" style="width:100%;margin-top:10px">清空收藏</button>'
         : '<div style="color:var(--dim)">还没收藏任何题。爬塔时点题目右上角的「🔖 收藏」——做对的题、值得重看的题都可以收进来。</div>';
       openModal('笔记本', tabs + body, '错题自动入册，好题手动收藏——两本账合在一个笔记本里。');
+      /* 保险：有条目但全部渲染失败（多为本地热更半文件）→ 给恢复提示而非白板 */
+      if (ids.length && !document.querySelector('#modalRoot .nt-item')) {
+        const box = document.querySelector('#modalRoot .klist') || document.querySelector('#modalRoot .modal');
+        if (box) box.innerHTML += '<div style="color:var(--amber);font-size:12.5px;padding:14px;text-align:center">条目加载异常（本地热更的瞬时状态）——刷新页面即恢复，收藏数据不会丢。</div>';
+      }
       document.querySelectorAll('.nt-del').forEach(b2 => b2.onclick = () => {
         delete P.notes[b2.dataset.del]; save(); renderBadge(); modalNotes('fav');
       });
