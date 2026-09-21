@@ -27,7 +27,7 @@
     '.lj-quest .qt{font-size:15px;font-weight:800;color:#5A6B8C}' +
     '.lj-quest .qs{font-size:13px;color:#5C6B86;margin:6px 0 8px;line-height:1.6}' +
     '.lj-quest .qw{font-size:12px;color:#7CB8D4}' +
-    '.lj-quest .qa{display:inline-block;margin-top:12px;font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:2px;color:#3A729B;background:linear-gradient(90deg,#3A729B,#32648C);padding:9px 20px;border-radius:10px;text-decoration:none;font-weight:700}' +
+    '.lj-quest .qa{display:inline-block;margin-top:12px;font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:2px;color:#FFFFFF;background:linear-gradient(90deg,#3A729B,#32648C);padding:9px 20px;border-radius:10px;text-decoration:none;font-weight:700}' +
     '.lj-links{margin-top:14px;display:flex;gap:18px;font-size:12.5px}' +
     '.lj-links a{color:#5C6B86;text-decoration:none;border-bottom:1px dashed rgba(170,200,225,0.5);padding-bottom:2px}' +
     '.lj-links a:hover{color:#3A729B}' +
