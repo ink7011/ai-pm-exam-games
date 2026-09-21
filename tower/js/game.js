@@ -789,7 +789,16 @@
       '<div class="bg-body">' +
       (b.one ? '<div class="bg-one">' + esc(b.one) + '</div>' : '') +
       (b.ana ? '<div class="bg-ana"><span class="bg-atag">类比</span>' + esc(b.ana) + '</div>' : '') +
-      viz + '</div></div>';
+      viz + '</div></div>' + worldviewHtml(it);
+  }
+  /* 门内视角：世界观叙事 + 门内→现实映射（正典 docs/WORLDVIEW.md） */
+  function worldviewHtml(it) {
+    if (!it || !it.wr) return '';
+    return '<div class="wr-card"><div class="wr-head">✦ 门内视角 <span class="wr-tip">学院叙事 · 点开看</span></div>' +
+      '<div class="wr-body">' +
+      '<div class="wr-story">' + esc(it.wr.s) + '</div>' +
+      '<div class="wr-map"><span class="wr-mtag">门内 → 现实</span>' + esc(it.wr.m) + '</div>' +
+      '</div></div>';
   }
   function knowledgeHtml(it, opts) {
     if (!it) return '';
@@ -1340,7 +1349,7 @@
   }
   /* 零基础图解折叠（事件委托，知识卡/笔记本通用） */
   document.addEventListener('click', function (e) {
-    const head = e.target.closest('.bg-head');
+    const head = e.target.closest('.bg-head, .wr-head');
     if (head) head.parentElement.classList.toggle('open');
   });
   loadPaidCaches();
