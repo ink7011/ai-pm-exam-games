@@ -11,6 +11,17 @@
 [![Tests](https://img.shields.io/badge/smoke-218_断言-34d399.svg)](tools/smoke.js)
 [![License: MIT](https://img.shields.io/badge/License-MIT-34d399.svg)](LICENSE)
 
+## 🧭 两条入口，按需取用
+
+**🎯 我要备考（求职者入口）**
+直接开玩：245 道免费概念题爬塔 + 十周 AI 公司剧情 RPG。答错的题会变成暗影回来复仇——连对两次才能净化。
+→ [开始爬塔](https://ink7011.github.io/ai-pm-exam-games/tower/) ｜ [开始职业生涯](https://ink7011.github.io/ai-pm-exam-games/rpg/)
+
+**🔧 我在看 agent skill / 玩法设计（builder 入口）**
+本项目包含一个可直接安装的 Agent Skill（对话式刷题，`agent-skill/` 目录）与一套游戏化学习设计：暗影复仇 = 间隔重复、Career 面板 = 自适应诊断。付费塔解锁前可免费试玩样题，战绩一键生成分享图。
+
+---
+
 **如果这个仓库帮到了你，点一个 ⭐ 让更多人看到。**
 
 ---
