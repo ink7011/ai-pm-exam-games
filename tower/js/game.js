@@ -1509,17 +1509,25 @@
     };
   }
   function modalSettings() {
+    const bgmLabel = () => {
+      const np = window.TBGM && window.TBGM.nowPlaying ? window.TBGM.nowPlaying() : { name: '—', tag: '', bpm: '' };
+      return 'BGM · ' + np.name + '（' + np.tag + ' · ' + np.bpm + 'BPM）：' + (window.TBGM && window.TBGM.isOn() ? '开 ✓' : '关');
+    };
     const html = '<div style="display:flex;flex-direction:column;gap:10px">' +
       '<div style="font-family:var(--mono);font-size:11px;color:var(--dim);margin-bottom:6px">档案号 ' + (window.LEADERBOARD ? window.LEADERBOARD.pid() : '—') + ' · 存档在本地，跨设备请到 RPG 系统菜单导出存档码</div>' +
-      '<button class="retrybtn" id="bgmBtn">BGM（试炼版 · 92BPM）：' + (window.TBGM && window.TBGM.isOn() ? '开 ✓' : '关') + '</button>' +
+      '<div style="display:flex;gap:8px">' +
+      '<button class="retrybtn" id="bgmBtn" style="flex:1">' + bgmLabel() + '</button>' +
+      '<button class="retrybtn" id="bgmNext" style="flex:0 0 118px" title="曲库共 5 首，每首播 2 遍自动轮换">⏭ 换一首</button></div>' +
       '<button class="retrybtn" id="sndBtn">音效：' + (soundOn ? '开 ✓' : '关') + '</button>' +
       '<button class="retrybtn" id="rstBtn">重置全部进度</button>' +
       '<button class="retrybtn" id="fbBtn">📖 年鉴 · 留言</button>' +
-      '<div style="color:var(--dim);font-size:12px;line-height:1.8">NOVA 概念试炼塔 · Concept Tower<br>基础题库 245 题 · 进阶 6 塔按需解锁<br>与《AI PRODUCT RPG》同世界观：RPG 练判断，试炼塔练记忆。</div></div>';
+      '<div style="color:var(--dim);font-size:12px;line-height:1.8">NOVA 概念试炼塔 · Concept Tower<br>基础题库 245 题 · 进阶 7 塔按需解锁<br>与《AI PRODUCT RPG》同世界观：RPG 练判断，试炼塔练记忆。</div></div>';
     openModal('系统 · SYSTEM', html);
     $('sndBtn').onclick = () => { soundOn = !soundOn; P.sound = soundOn; save(); modalSettings(); };
     const bgmB = $('bgmBtn');
-    if (bgmB && window.TBGM) bgmB.onclick = () => { const on = window.TBGM.toggle(); bgmB.textContent = 'BGM（试炼版 · 92BPM）：' + (on ? '开 ✓' : '关'); };
+    if (bgmB && window.TBGM) bgmB.onclick = () => { window.TBGM.toggle(); bgmB.textContent = bgmLabel(); };
+    const bgmN = $('bgmNext');
+    if (bgmN && window.TBGM) bgmN.onclick = () => { window.TBGM.next(); bgmB.textContent = bgmLabel(); };
     $('rstBtn').onclick = () => { if (confirm('确定清空段位/图鉴/错题本？')) { P = freshP(); save(); location.reload(); } };
     const fb = $('fbBtn');
     if (fb && window.FEEDBACK) fb.onclick = () => { openYearbook(); };
