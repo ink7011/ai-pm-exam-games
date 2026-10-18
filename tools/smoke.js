@@ -422,6 +422,14 @@ async function main() {
   ok('塔：freshP 含 notes 档案', twG.includes('notes: {}'));
   ok('塔：收藏/笔记本/术语表函数在场', twG.includes('function toggleNote') && twG.includes('function modalNotes') && twG.includes('function modalGloss'));
   ok('塔：术语库从题库构建（towerGlossaryData + 抽取器）', twG.includes('function towerGlossaryData') && twG.includes('GLOSS_STOP'));
+  /* 追问试炼：数据 schema + 引擎在场 */
+  {
+    const fuItems = D.items.filter(i => Array.isArray(i.fu));
+    const schemaOk = fuItems.every(i => i.skel && i.fu.every(q => Array.isArray(q.opts) && q.opts.length === 4 && q.ans >= 0 && q.ans <= 3 && !!q.q && !!q.e));
+    ok('塔：追问试炼 ≥6 题且 schema 合法（q/opts4/ans/e/skel）', fuItems.length >= 6 && schemaOk, fuItems.length + ' items');
+    ok('塔：追问引擎在场（startFu/answerFu/finishFu + 骨架卡）', twG.includes('function startFu') && twG.includes('function answerFu') && twG.includes('function finishFu') && twG.includes('fu-skel'));
+    ok('塔：追问样式在场（.fu-card/.fu-opt）', fs.readFileSync(path.join(ROOT, 'tower/index.html'), 'utf8').includes('.fu-card{') && fs.readFileSync(path.join(ROOT, 'tower/index.html'), 'utf8').includes('.fu-opt{'));
+  }
   const dd = fs.readFileSync(path.join(ROOT, 'tower/js/deck-data.js'), 'utf8');
   const bgN = (dd.match(/"bg-pilot-check"/g) || []).length; // 占位不计数
   const bgCount = (dd.match(/one: "/g) || []).length;
@@ -538,6 +546,7 @@ async function main() {
     ok('全家桶码可解密全部六塔', ['meituan', 'didi', 'xiaohongshu', 'tencent', 'alibaba', 'bytedance'].every((k) => { try { const bk = PC.unwrapKey(bcode, PD[k].salt, PD[k].w[PD[k].h.indexOf(PC.fnv1a(bcode))]); return PC.decryptDeck(bk, PD[k].d).items.length === PD[k].q; } catch (e) { return false; } }));
     ok('checkCode：全家桶码对六塔全部通过', T11.TOWERS.filter(t => t.price).every(t => T11.checkCode(t, bcode)));
     ok('真实码可解密出腾讯塔 17 题', (() => { try { const k = PC.unwrapKey(code, PD.tencent.salt, PD.tencent.w[PD.tencent.h.indexOf(PC.fnv1a(code))]); return PC.decryptDeck(k, PD.tencent.d).items.length === 17; } catch (e) { return false; } })());
+    ok('老铁塔（快手）解密后 ≥4 题带追问链', (() => { try { const c2 = fs.readFileSync(path.join(ROOT, 'codes/kuaishou.txt'), 'utf8').split('\n')[0].trim(); const pk = PD.kuaishou; const k2 = PC.unwrapKey(c2, pk.salt, pk.w[pk.h.indexOf(PC.fnv1a(c2))]); return PC.decryptDeck(k2, pk.d).items.filter(i => Array.isArray(i.fu)).length >= 4; } catch (e) { return false; } })());
     const ttx = T11.TOWERS.find(t => t.id === 'tencent');
     const mtx = T11.TOWERS.find(t => t.id === 'meituan');
     ok('付费塔默认锁定', T11.towerLocked(ttx) === true);

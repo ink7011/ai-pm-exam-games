@@ -404,6 +404,35 @@ kbd{font-family:var(--mono);font-size:10.5px;background:#EAF2F7;border:1px solid
 /* 答对后的知识点总结卡 */
 .kn-card{margin-top:10px;border:1.5px solid rgba(58,114,155,.4);background:linear-gradient(135deg,rgba(184,216,232,.12),rgba(255,255,255,.55));border-radius:12px;padding:10px 14px}
 .kn-h{font-family:var(--mono);font-size:11px;color:var(--cyan);letter-spacing:2px;margin-bottom:4px}
+/* 追问试炼 · 暗影变形反扑（答对后的连环追问链） */
+.fu-card{margin-top:10px;border:1.5px solid rgba(118,99,170,.5);background:linear-gradient(150deg,rgba(222,214,240,.3),rgba(255,255,255,.7));border-radius:12px;padding:12px 14px;animation:fadeUp .35s both}
+.fu-head{font-family:var(--mono);font-size:11.5px;letter-spacing:2px;color:#7663AA;margin-bottom:3px}
+.fu-sub{font-size:10px;color:var(--faint);letter-spacing:1px;margin-left:6px}
+.fu-note{font-size:11px;color:var(--dim);line-height:1.7;margin-bottom:8px}
+.fu-hist{margin-bottom:8px}
+.fu-hrow{display:flex;justify-content:space-between;gap:10px;font-size:10.5px;color:var(--faint);padding:3px 8px;background:rgba(255,255,255,.5);border-radius:6px;margin-bottom:3px}
+.fu-hq{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fu-hr{flex:0 0 auto;font-family:var(--mono)}
+.fu-hr.ok{color:#2E7D62}
+.fu-hr.no{color:#B35050}
+.fu-prog{font-family:var(--mono);font-size:10px;color:var(--faint);letter-spacing:1px;margin-bottom:4px}
+.fu-q{font-size:14px;font-weight:600;color:var(--ink);line-height:1.75;margin-bottom:10px}
+.fu-opt{display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;background:rgba(255,255,255,.75);border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin-bottom:7px;font-size:13px;line-height:1.6;color:var(--body);cursor:pointer;transition:.15s}
+.fu-opt:hover:not(:disabled){border-color:#7663AA;background:#fff}
+.fu-opt .ol{flex:0 0 auto;font-family:var(--mono);font-size:11px;color:#7663AA;border:1px solid rgba(118,99,170,.4);border-radius:999px;padding:0 7px;margin-top:1px}
+.fu-opt.right{border-color:#2E7D62;background:rgba(46,125,98,.08)}
+.fu-opt.right .ol{color:#2E7D62;border-color:#2E7D62}
+.fu-opt.wrongpick{border-color:#B35050;background:rgba(179,80,80,.07)}
+.fu-verdict{font-size:12.5px;line-height:1.8;margin:4px 0 10px;padding:8px 12px;border-radius:10px}
+.fu-verdict.good{color:#2E7D62;background:rgba(46,125,98,.07);border-left:3px solid #2E7D62}
+.fu-verdict.bad{color:#8F6A1E;background:rgba(143,106,30,.07);border-left:3px solid #8F6A1E}
+.fu-e{color:var(--dim)}
+.fubtn{width:100%;padding:10px;border:none;border-radius:10px;background:linear-gradient(90deg,#7663AA,#3A729B);color:#fff;font-size:13px;cursor:pointer;letter-spacing:1px}
+.fu-skel{border:1px dashed rgba(143,106,30,.5);background:rgba(244,239,227,.8);border-radius:10px;padding:10px 14px;margin-bottom:8px}
+.fu-skelh{font-family:var(--mono);font-size:11px;color:#8F6A1E;letter-spacing:2px;margin-bottom:5px}
+.fu-skelf{font-family:var(--mono);font-size:12.5px;color:var(--ink);letter-spacing:1px;margin-bottom:5px}
+.fu-skeln{font-size:12px;color:var(--dim);line-height:1.8}
+.fu-bonus{font-family:var(--mono);font-size:11.5px;color:#7663AA;letter-spacing:1px;margin-bottom:8px}
 /* 笔记本内逐选项判词：中性色（战斗里红色警示不适用于复习） */
 .nt-dexp .dopt{color:var(--dim);border-left-color:var(--line)}
 .nt-dexp .dopt.ok{color:#2E7D62;border-left-color:#2E7D62;background:rgba(46,125,98,.06)}
@@ -499,8 +528,8 @@ body::after{animation:shDriftB 110s ease-in-out infinite alternate}
 <script src="../shared/plant-core.js?v=5"></script>
 <script src="js/bgm.js?v=3"></script>
 <script src="../shared/achievements.js?v=1"></script>
-<script src="js/deck-data.js?v=13"></script>
-<script src="js/deck-paid.js?v=3"></script>
+<script src="js/deck-data.js?v=14"></script>
+<script src="js/deck-paid.js?v=4"></script>
 <script src="../shared/paid-crypto.js?v=1"></script>
 <script src="../rpg/js/glossary.js?v=2"></script>
 <script src="../shared/sfx.js?v=1"></script>
@@ -508,7 +537,7 @@ body::after{animation:shDriftB 110s ease-in-out infinite alternate}
 <script src="../shared/feedback.js?v=8"></script>
 <script src="../shared/dock.js?v=7"></script>
 <script src="../shared/tip.js?v=10"></script>
-<script src="js/game.js?v=54"></script>
+<script src="js/game.js?v=56"></script>
 <script>
 /* PWA：仅 https / localhost 下注册 Service Worker（file:// 与 http 内网不注册） */
 if ('serviceWorker' in navigator &&

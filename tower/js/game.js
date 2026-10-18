@@ -33,7 +33,7 @@
     { id: 'tencent', name: '鹅厂模式塔', desc: '素质测评风格 · 社交AI生态实战', mods: ['tencent'], group: 'company', price: 19.9 },
     { id: 'alibaba', name: '猫厂模式塔', desc: '电商 AI · 导购/搜索 · 价值观情景', mods: ['alibaba'], group: 'company', price: 19.9 },
     { id: 'bytedance', name: '宇宙厂模式塔', desc: '数据驱动 · 对话AI/低代码/实验文化', mods: ['bytedance'], group: 'company', price: 19.9 },
-    { id: 'kuaishou', name: '铁厂模式塔', desc: '视频生成AI · 可灵/数字人 · 社区增长', mods: ['kuaishou'], group: 'company', price: 19.9 }
+    { id: 'kuaishou', name: '老铁模式塔', desc: '快手风 · 视频生成AI/可灵 · 增长实战', mods: ['kuaishou'], group: 'company', price: 19.9 }
   ];
   const RANKS = [[0, '见习生'], [1000, 'Product Associate'], [3000, 'AI Product Manager'], [7000, 'Senior AI PM'], [15000, 'Head of AI Product']];
 
@@ -264,7 +264,7 @@
       '<button class="pw-btn" id="trialBtn" style="background:linear-gradient(90deg,var(--violet),var(--cyan))">🎬 先试玩一道样题（免费）</button>' +
       '<input id="codeInput" placeholder="输入兑换码（如 NOVA-XXXXXX）" autocomplete="off">' +
       '<button class="pw-btn" id="applyCode">🔓 验证并解锁</button>' +
-      '<div class="pw-tip">兑换码一次解锁永久有效，跟随存档码跨设备<br>本塔为原创模拟题：考点整理自公开渠道（面经/官方JD/报道），无内部资料；「鹅厂/猫厂/宇宙厂/开水团/桔厂/薯厂/铁厂」为社区外号，仅示考点风格，与对应公司无关联</div>' +
+      '<div class="pw-tip">兑换码一次解锁永久有效，跟随存档码跨设备<br>本塔为原创模拟题：考点整理自公开渠道（面经/官方JD/报道），无内部资料；「鹅厂/猫厂/宇宙厂/开水团/桔厂/薯厂/老铁」为社区外号，仅示考点风格，与对应公司无关联</div>' +
       '</div>';
     openModal('大厂实战塔 · 解锁', html, '兑换码与本地存档绑定；更换设备请用存档码迁移。');
     const btn = $('applyCode');
@@ -841,13 +841,101 @@
       zone.appendChild(decline);
     }
     if (!retryMode) {
-      const nx = H('button', 'nextbtn', R.hp <= 0 ? '查看结算 ▸' : nextLabel());
-      nx.id = 'nextBtn';
-      nx.onclick = advance;
-      zone.appendChild(nx);
-      nx.focus();
+      /* 追问试炼：答对且该题带追问链 → 暗影「变形反扑」，先接完连环问再放行下一层 */
+      if (type === 'good' && cur && cur.item && cur.item.fu && cur.item.fu.length) {
+        startFu();
+      } else {
+        const nx = H('button', 'nextbtn', R.hp <= 0 ? '查看结算 ▸' : nextLabel());
+        nx.id = 'nextBtn';
+        nx.onclick = advance;
+        zone.appendChild(nx);
+        nx.focus();
+      }
     }
     v.scrollIntoView({ block: 'end' });
+  }
+  /* ---------------- 追问试炼 · 暗影变形反扑 ----------------
+     答对后触发：暗影换一个角度连环再考（每问在上一问情境上加码约束）。
+     考的是「约束变了，骨架不变」——练 AI 测评里的连续追问。
+     规则：不扣血不断连击；全对 +8 金币；上一问的回答保持可见（模拟真实面试的上下文压力）。 */
+  const FU_SKEL = '目标 → 约束 → 拆解 → 方案 → 指标 → 风险';
+  function startFu() {
+    const it = cur.item;
+    cur.fu = { idx: 0, right: 0, log: [] };
+    const card = H('div', 'fu-card');
+    card.id = 'fuCard';
+    card.innerHTML =
+      '<div class="fu-head">🌀 追问试炼 <span class="fu-sub">暗影变形反扑 · 连环 ' + it.fu.length + ' 问</span></div>' +
+      '<div class="fu-note">每一问都会改变约束——正如 AI 测评里的连续追问。骨架不变，只是条件在变。</div>' +
+      '<div class="fu-hist" id="fuHist"></div>' +
+      '<div id="fuBody"></div>';
+    $('vzone').appendChild(card);
+    renderFu();
+    card.scrollIntoView({ block: 'end', behavior: 'smooth' });
+  }
+  function renderFu() {
+    const it = cur.item, f = cur.fu;
+    const q = it.fu[f.idx];
+    const body = $('fuBody');
+    body.innerHTML =
+      '<div class="fu-prog">第 ' + (f.idx + 1) + ' / ' + it.fu.length + ' 问</div>' +
+      '<div class="fu-q">' + esc(q.q) + '</div>' +
+      '<div class="fu-opts" id="fuOpts">' + q.opts.map((t, i) =>
+        '<button class="fu-opt" data-i="' + i + '"><span class="ol">' + 'ABCD'[i] + '</span><span>' + esc(t) + '</span></button>').join('') + '</div>' +
+      '<div id="fuZone"></div>';
+    linkTerms(body);
+    body.querySelectorAll('.fu-opt').forEach(o => { o.onclick = () => answerFu(+o.dataset.i); });
+  }
+  function answerFu(i) {
+    const it = cur.item, f = cur.fu;
+    const q = it.fu[f.idx];
+    const ok = i === q.ans;
+    if (ok) f.right++;
+    f.log.push({ q: q.q, pick: i, ok: ok });
+    const opts = document.querySelectorAll('#fuOpts .fu-opt');
+    opts.forEach(el => { el.disabled = true; if (+el.dataset.i === q.ans) el.classList.add('right'); });
+    if (!ok) opts[i].classList.add('wrongpick');
+    beep(ok ? 784 : 262, 0.12);
+    $('fuZone').innerHTML =
+      '<div class="fu-verdict ' + (ok ? 'good' : 'bad') + '">' + (ok ? '✓ 接住' : '✗ 正确是 ' + 'ABCD'[q.ans]) + ' <span class="fu-e">' + esc(q.e) + '</span></div>';
+    /* 历史可见：上一问 + 你的接法（上下文压力） */
+    $('fuHist').innerHTML = f.log.map(l =>
+      '<div class="fu-hrow"><span class="fu-hq">' + esc(l.q.slice(0, 42)) + (l.q.length > 42 ? '…' : '') + '</span><span class="fu-hr ' + (l.ok ? 'ok' : 'no') + '">' + (l.ok ? '✓' : '✗ ' + 'ABCD'[l.pick]) + '</span></div>').join('');
+    const last = f.idx === it.fu.length - 1;
+    const btn = H('button', 'fubtn', last ? '🦴 拆它的骨架 ▸' : '接下一问 ▸');
+    btn.id = 'fuNext';
+    btn.onclick = () => {
+      f.idx++;
+      if (f.idx < it.fu.length) renderFu();
+      else finishFu();
+    };
+    $('fuZone').appendChild(btn);
+    btn.focus();
+  }
+  function finishFu() {
+    const it = cur.item, f = cur.fu;
+    const all = f.right === it.fu.length;
+    let bonusLine = '';
+    if (all) {
+      const bonus = 8;
+      R.coins += bonus;
+      bonusLine = '<div class="fu-bonus">🌀 追问全破 · +' + bonus + ' 金币</div>';
+      toast('追问全破：约束三变，骨架未破', 'ok');
+      beep(659, 0.1); setTimeout(() => beep(988, 0.16), 110);
+      renderPlayer(); save();
+    }
+    $('fuBody').innerHTML =
+      '<div class="fu-skel"><div class="fu-skelh">🦴 答题骨架 · 三问共用一条</div>' +
+      '<div class="fu-skelf">' + FU_SKEL + '</div>' +
+      (it.skel ? '<div class="fu-skeln">' + esc(it.skel) + '</div>' : '') +
+      (f.right + ' / ' + it.fu.length + ' 接住') + '</div>' + bonusLine;
+    $('fuHist').innerHTML = '';
+    const nx = H('button', 'nextbtn', R.hp <= 0 ? '查看结算 ▸' : nextLabel());
+    nx.id = 'nextBtn';
+    nx.onclick = advance;
+    $('fuBody').appendChild(nx);
+    nx.focus();
+    $('fuCard').scrollIntoView({ block: 'end', behavior: 'smooth' });
   }
   function nextLabel() {
     if (cur.kind === 'boss') return '登顶结算 ▸';
@@ -1104,6 +1192,18 @@
         if (el && !el.disabled) answer(map[k]);
       }
     } else if (ph === 'battle' && cur && cur.answered) {
+      /* 追问试炼进行中：字母键接当前追问，Enter 走追问的「下一问」 */
+      if (cur.fu && cur.fu.idx < (cur.item.fu || []).length) {
+        const map = { a: 0, b: 1, c: 2, d: 3, '1': 0, '2': 1, '3': 2, '4': 3 };
+        const k = e.key.toLowerCase();
+        const fuNext = $('fuNext');
+        if (e.key === 'Enter' && fuNext) { fuNext.click(); return; }
+        if (k in map) {
+          const el = document.querySelectorAll('#fuOpts .fu-opt')[map[k]];
+          if (el && !el.disabled) el.click();
+        }
+        return;
+      }
       if (e.key === 'Enter') { const nb = $('nextBtn'); if (nb) nb.click(); }
     } else if (ph === 'shop' && e.key === 'Enter') {
       const ls = $('leaveShop'); if (ls) ls.click();
@@ -1526,7 +1626,7 @@
   // P2-1：注入成就系统
   if (window.ACHS) window.ACHS.init({ side: 'tw', get: () => P, persist: save, toast: toast });
   // 冒烟测试钩子（tools/smoke.js 专用；无运行时副作用，生产环境不会被调用）
-  window.TOWERTEST = { buildRun: buildRun, TOWERS: TOWERS, buildDaily: buildDaily, hashDate: hashDate, todayStr: todayStr, startDaily: startDaily, checkCode: checkCode, towerLocked: towerLocked, unlockPaid: unlockPaid, loadPaidCaches: loadPaidCaches, P: P, items: D.items };
+  window.TOWERTEST = { buildRun: buildRun, TOWERS: TOWERS, buildDaily: buildDaily, hashDate: hashDate, todayStr: todayStr, startDaily: startDaily, checkCode: checkCode, towerLocked: towerLocked, unlockPaid: unlockPaid, loadPaidCaches: loadPaidCaches, P: P, items: D.items, renderBattle: renderBattle, startRunNow: startRunNow };
   // URL 预选塔：?mod=<塔id 或 模块id> 打开即自动进入对应塔；无参数时行为不变
   (function () {
     const q = new URLSearchParams(location.search).get('quest');
