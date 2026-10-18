@@ -1517,7 +1517,7 @@
       '<div style="font-family:var(--mono);font-size:11px;color:var(--dim);margin-bottom:6px">档案号 ' + (window.LEADERBOARD ? window.LEADERBOARD.pid() : '—') + ' · 存档在本地，跨设备请到 RPG 系统菜单导出存档码</div>' +
       '<div style="display:flex;gap:8px">' +
       '<button class="retrybtn" id="bgmBtn" style="flex:1">' + bgmLabel() + '</button>' +
-      '<button class="retrybtn" id="bgmNext" style="flex:0 0 118px" title="曲库共 5 首，每首播 2 遍自动轮换">⏭ 换一首</button></div>' +
+      '<button class="retrybtn" id="bgmNext" style="flex:0 0 118px" title="曲库共 6 首 · 舒缓向，每首播 2 遍自动轮换">⏭ 换一首</button></div>' +
       '<button class="retrybtn" id="sndBtn">音效：' + (soundOn ? '开 ✓' : '关') + '</button>' +
       '<button class="retrybtn" id="rstBtn">重置全部进度</button>' +
       '<button class="retrybtn" id="fbBtn">📖 年鉴 · 留言</button>' +

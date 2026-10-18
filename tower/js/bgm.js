@@ -1,21 +1,20 @@
-/* SHUAMONE 概念试炼塔 — BGM v4 · 多曲轮播引擎
-   v3 单曲循环 → v4 曲库轮播：5 首风格各异的曲子，每首播 2 遍自动换下一首，
-   顺序每轮洗牌；设置面板可看曲名、手动切歌。
+/* SHUAMONE 概念试炼塔 — BGM v5 · 多曲轮播 · 舒缓版
+   v4 轮播引擎 → v5 全面柔化：锯齿/方波换成三角波与正弦、鼓组减力、
+   高频整体衰减（warmth EQ），新增无鼓纯氛围曲「微光」。
+   定位：刷题舒缓陪伴，不抢注意力。
    引擎：Web Audio 全合成（无音频文件）
-   声部：sub bass / saw pad / pluck·bell arp / lead / percussion
-   效果：convolution reverb / filter automation / swing / per-song gain
    ============================================================ */
 (function () {
   'use strict';
   const KEY = 'novaTower.bgm';
-  const LOOP_BARS = 16;               // 每曲一个循环 16 小节
+  const LOOP_BARS = 16;
   const LOOP_BEATS = LOOP_BARS * 4;
-  const LOOPS_PER_SONG = 2;           // 每曲播 2 遍再换
+  const LOOPS_PER_SONG = 2;
   const LOOKAHEAD = 1.2;
   const TICK = 180;
 
   let ctx = null, master = null, reverb = null, revSend = null, revGain = null;
-  let comp = null;
+  let comp = null, warmth = null;
   let timer = null, nextBeat = 0, beatIdx = 0;
   let running = false;
   let lastSongId = null;
@@ -23,18 +22,17 @@
 
   const hz = (m) => 440 * Math.pow(2, (m - 69) / 12);
 
-  /* ══════════ 曲库（数据驱动，引擎统一渲染）══════════
-     和弦对象：{ root, pad:[…], arp:[…], bass }
-     drums: drive(四踩推进) / snap(紧凑) / half(半拍慵懒) / sparse(氛围稀疏)
-     arp:   pluck(锯齿拨弦) / bell(正弦钟琴)
-     swing: 0-1（8 分音符摇摆量，0.5≈三连音摇摆）            */
+  /* ══════════ 曲库（v5：全部调软）══════════
+     pluckWave: triangle(默认，柔) | sawtooth(保留一点原味)
+     drums: drive(轻推进) / snap(轻快) / half(慵懒) / sparse(稀疏) / none(无鼓)
+     lead 一律三角波、低音量、大混响                                  */
   const SONGS = [
     {
-      id: 'voyage', name: '启程', tag: 'Synthwave', bpm: 100,
-      form: 'AABA', drums: 'drive', arp: 'pluck', arpDiv: 0.5, arpOct: 12, swing: 0,
-      bassDiv: 0.5, gain: 0.28, rev: 0.35, drops: [1, 3], builds: [2],
+      id: 'voyage', name: '启程', tag: 'Soft Synth', bpm: 92,
+      form: 'AABA', drums: 'drive', arp: 'pluck', pluckWave: 'sawtooth', arpDiv: 0.5, arpOct: 12, swing: 0,
+      bassDiv: 0.5, gain: 0.24, rev: 0.45, drops: [3], builds: [2],
       bassPat: [0, 0, 7, 0, 0, 5, 0, 3],
-      leadMel: [0, 4, 2, 5, 0, 3, 1, 4], leadVel: 0.07,
+      leadMel: [0, 4, 2, 5, 0, 3, 1, 4], leadVel: 0.042,
       A: [
         { root: 45, pad: [45, 52, 57, 61, 64], arp: [57, 61, 64, 69], bass: 33 },   // Am9
         { root: 41, pad: [41, 48, 53, 57, 60], arp: [53, 57, 60, 65], bass: 29 },   // Fmaj9
@@ -49,9 +47,9 @@
       ]
     },
     {
-      id: 'cloudride', name: '云端', tag: 'Dream Lo-fi', bpm: 84,
-      form: 'AABA', drums: 'half', arp: 'pluck', arpDiv: 0.5, arpOct: 12, swing: 0.45,
-      bassDiv: 1, gain: 0.26, rev: 0.45, drops: [3], builds: [],
+      id: 'cloudride', name: '云端', tag: 'Dream Lo-fi', bpm: 82,
+      form: 'AABA', drums: 'half', arp: 'pluck', pluckWave: 'triangle', arpDiv: 0.5, arpOct: 12, swing: 0.45,
+      bassDiv: 1, gain: 0.23, rev: 0.5, drops: [3], builds: [],
       bassPat: [0, 0, 0, 7, 0, 0, 5, 0],
       leadMel: null, leadVel: 0,
       A: [
@@ -68,9 +66,9 @@
       ]
     },
     {
-      id: 'stardrift', name: '星流', tag: 'Ambient', bpm: 68,
+      id: 'stardrift', name: '星流', tag: 'Ambient', bpm: 66,
       form: 'ABAB', drums: 'sparse', arp: 'bell', arpDiv: 1, arpOct: 24, swing: 0,
-      bassDiv: 1, gain: 0.22, rev: 0.6, drops: [], builds: [],
+      bassDiv: 1, gain: 0.2, rev: 0.62, drops: [], builds: [],
       bassPat: [0, 0, 0, 0, 7, 0, 0, 0],
       leadMel: null, leadVel: 0,
       A: [
@@ -87,11 +85,11 @@
       ]
     },
     {
-      id: 'nightwalk', name: '夜行', tag: 'Chillwave', bpm: 94,
-      form: 'AABA', drums: 'snap', arp: 'pluck', arpDiv: 0.5, arpOct: 12, swing: 0.18,
-      bassDiv: 0.5, gain: 0.27, rev: 0.4, drops: [1, 3], builds: [2],
+      id: 'nightwalk', name: '夜行', tag: 'Chillwave', bpm: 86,
+      form: 'AABA', drums: 'snap', arp: 'pluck', pluckWave: 'triangle', arpDiv: 0.5, arpOct: 12, swing: 0.18,
+      bassDiv: 0.5, gain: 0.23, rev: 0.48, drops: [3], builds: [2],
       bassPat: [0, 7, 0, 0, 10, 0, 7, 0],
-      leadMel: [2, 0, 4, 3, 5, 2, 0, 4], leadVel: 0.055,
+      leadMel: [2, 0, 4, 3, 5, 2, 0, 4], leadVel: 0.036,
       A: [
         { root: 38, pad: [38, 50, 53, 57, 60], arp: [50, 57, 60, 65], bass: 26 },   // Dm9
         { root: 34, pad: [34, 46, 50, 53, 57], arp: [46, 53, 57, 62], bass: 22 },   // Bbmaj9
@@ -106,11 +104,11 @@
       ]
     },
     {
-      id: 'summit', name: '登顶', tag: 'Uplift', bpm: 110,
-      form: 'AABA', drums: 'drive', arp: 'pluck', arpDiv: 0.25, arpOct: 12, swing: 0,
-      bassDiv: 0.5, gain: 0.29, rev: 0.32, drops: [1, 3], builds: [2],
+      id: 'summit', name: '暖阳', tag: 'Warm Lift', bpm: 96,
+      form: 'AABA', drums: 'half', arp: 'pluck', pluckWave: 'triangle', arpDiv: 0.5, arpOct: 12, swing: 0,
+      bassDiv: 0.5, gain: 0.24, rev: 0.45, drops: [3], builds: [],
       bassPat: [0, 0, 7, 0, 0, 5, 3, 0],
-      leadMel: [0, 2, 4, 5, 4, 2, 3, 5], leadVel: 0.075,
+      leadMel: [0, 2, 4, 5, 4, 2, 3, 5], leadVel: 0.04,
       A: [
         { root: 48, pad: [48, 55, 59, 62, 65], arp: [60, 64, 67, 72], bass: 36 },   // Cmaj9
         { root: 43, pad: [43, 50, 55, 59, 64], arp: [55, 59, 62, 67], bass: 31 },   // Gadd9
@@ -122,6 +120,25 @@
         { root: 43, pad: [43, 50, 55, 59, 64], arp: [55, 59, 62, 67], bass: 31 },
         { root: 40, pad: [40, 52, 55, 59, 62], arp: [55, 59, 64, 67], bass: 28 },   // Em7
         { root: 48, pad: [48, 55, 59, 62, 65], arp: [60, 64, 67, 72], bass: 36 }
+      ]
+    },
+    {
+      id: 'lumen', name: '微光', tag: 'Drift · 无鼓', bpm: 60,
+      form: 'AABA', drums: 'none', arp: 'bell', arpDiv: 1, arpOct: 24, swing: 0,
+      bassDiv: 2, gain: 0.19, rev: 0.7, drops: [], builds: [],
+      bassPat: [0, 0, 0, 0, 0, 0, 0, 0],
+      leadMel: null, leadVel: 0,
+      A: [
+        { root: 41, pad: [41, 53, 57, 60, 64], arp: [65, 69, 72, 77], bass: 29 },   // Fmaj9
+        { root: 45, pad: [45, 52, 57, 59, 64], arp: [64, 67, 69, 72], bass: 33 },   // Am9
+        { root: 38, pad: [38, 50, 53, 57, 60], arp: [62, 65, 69, 72], bass: 26 },   // Dm9
+        { root: 34, pad: [34, 46, 50, 53, 57], arp: [58, 62, 65, 69], bass: 34 }    // Bbmaj9
+      ],
+      B: [
+        { root: 43, pad: [43, 55, 58, 62, 65], arp: [62, 65, 67, 70], bass: 31 },   // Gm9
+        { root: 48, pad: [48, 55, 59, 62, 65], arp: [64, 67, 71, 74], bass: 24 },   // Cmaj9
+        { root: 41, pad: [41, 53, 57, 60, 64], arp: [65, 69, 72, 77], bass: 29 },
+        { root: 45, pad: [45, 52, 57, 59, 64], arp: [64, 67, 69, 72], bass: 33 }
       ]
     }
   ];
@@ -142,7 +159,6 @@
   }
   reshuffle();
 
-  /* 由绝对拍号推导：当前曲 / 小节 / 拍 / 段落 */
   function songAt(absBeat) {
     const loopIdx = Math.floor(absBeat / LOOP_BEATS);
     const song = SONGS[order[Math.floor(loopIdx / LOOPS_PER_SONG) % order.length]];
@@ -165,22 +181,29 @@
     ctx = new AC();
 
     comp = ctx.createDynamicsCompressor();
-    comp.threshold.value = -18;
-    comp.knee.value = 12;
-    comp.ratio.value = 4;
-    comp.attack.value = 0.003;
-    comp.release.value = 0.25;
+    comp.threshold.value = -20;
+    comp.knee.value = 14;
+    comp.ratio.value = 3;
+    comp.attack.value = 0.006;
+    comp.release.value = 0.3;
+
+    /* 柔化 EQ：高频整体 -5dB，去掉电子「嘶」感 */
+    warmth = ctx.createBiquadFilter();
+    warmth.type = 'highshelf';
+    warmth.frequency.value = 6200;
+    warmth.gain.value = -5;
 
     master = ctx.createGain();
-    master.gain.value = 0.28;
+    master.gain.value = 0.22;
 
-    comp.connect(master);
+    comp.connect(warmth);
+    warmth.connect(master);
     master.connect(ctx.destination);
 
     reverb = ctx.createConvolver();
-    reverb.buffer = makeIR(2.8, 2.2);
+    reverb.buffer = makeIR(3.2, 2.0);
     revGain = ctx.createGain();
-    revGain.gain.value = 0.35;
+    revGain.gain.value = 0.4;
     reverb.connect(revGain);
     revGain.connect(comp);
 
@@ -203,7 +226,6 @@
     return buf;
   }
 
-  /* 曲目切换时渐变到该曲的音量/混响 */
   function applySongMix(song) {
     if (!ctx || song.id === lastSongId) return;
     const wasFirst = lastSongId === null;
@@ -217,7 +239,7 @@
     revGain.gain.linearRampToValueAtTime(song.rev, now + 1.2);
   }
 
-  /* ---------- 音色 ---------- */
+  /* ---------- 音色（v5 柔化）---------- */
   function subBass(note, t, dur) {
     const osc = ctx.createOscillator();
     osc.type = 'sine';
@@ -227,14 +249,14 @@
     osc2.frequency.value = hz(note) * 2;
     const g = ctx.createGain();
     const g2 = ctx.createGain();
-    g2.gain.value = 0.15;
+    g2.gain.value = 0.1;
     const lp = ctx.createBiquadFilter();
     lp.type = 'lowpass';
-    lp.frequency.value = 200;
+    lp.frequency.value = 160;
     lp.Q.value = 0.5;
 
     g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(0.5, t + 0.02);
+    g.gain.linearRampToValueAtTime(0.42, t + 0.03);
     g.gain.exponentialRampToValueAtTime(0.001, t + dur);
 
     osc.connect(g); osc2.connect(g2); g2.connect(g);
@@ -248,18 +270,19 @@
       const osc = ctx.createOscillator();
       osc.type = soft ? 'triangle' : 'sawtooth';
       osc.frequency.value = hz(n);
-      osc.detune.value = (i - notes.length / 2) * (soft ? 6 : 4);
+      osc.detune.value = (i - notes.length / 2) * (soft ? 5 : 3);
       const lp = ctx.createBiquadFilter();
       lp.type = 'lowpass';
-      lp.frequency.setValueAtTime(soft ? 300 : 400, t);
-      lp.frequency.linearRampToValueAtTime(soft ? 1200 : 1800, t + dur * 0.4);
-      lp.frequency.linearRampToValueAtTime(soft ? 350 : 500, t + dur);
-      lp.Q.value = 1.5;
+      const base = soft ? 260 : 320, peak = soft ? 1000 : 1400, end = soft ? 300 : 420;
+      lp.frequency.setValueAtTime(base, t);
+      lp.frequency.linearRampToValueAtTime(peak, t + dur * 0.4);
+      lp.frequency.linearRampToValueAtTime(end, t + dur);
+      lp.Q.value = 0.8;
       const g = ctx.createGain();
-      const peak = soft ? 0.085 : 0.06;
+      const pk = soft ? 0.08 : 0.05;
       g.gain.setValueAtTime(0, t);
-      g.gain.linearRampToValueAtTime(peak, t + dur * 0.2);
-      g.gain.setValueAtTime(peak, t + dur * 0.7);
+      g.gain.linearRampToValueAtTime(pk, t + dur * 0.25);
+      g.gain.setValueAtTime(pk, t + dur * 0.7);
       g.gain.linearRampToValueAtTime(0, t + dur);
 
       osc.connect(lp); lp.connect(g);
@@ -268,67 +291,68 @@
     });
   }
 
-  function pluck(note, t, vel, beatSec) {
+  function pluck(note, t, vel, beatSec, wave) {
     const osc = ctx.createOscillator();
-    osc.type = 'sawtooth';
+    osc.type = wave || 'triangle';
     osc.frequency.value = hz(note);
     const lp = ctx.createBiquadFilter();
     lp.type = 'lowpass';
-    lp.frequency.setValueAtTime(4000, t);
-    lp.frequency.exponentialRampToValueAtTime(400, t + 0.15);
-    lp.Q.value = 3;
+    lp.frequency.setValueAtTime(wave === 'sawtooth' ? 2400 : 1800, t);
+    lp.frequency.exponentialRampToValueAtTime(380, t + 0.16);
+    lp.Q.value = 2;
     const g = ctx.createGain();
     g.gain.setValueAtTime(vel, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
 
     const dl = ctx.createDelay(1.0);
     dl.delayTime.value = beatSec * 0.75;
     const dg = ctx.createGain();
-    dg.gain.value = 0.3;
+    dg.gain.value = 0.26;
 
     osc.connect(lp); lp.connect(g);
     g.connect(comp); g.connect(revSend);
     g.connect(dl); dl.connect(dg); dg.connect(comp); dg.connect(revSend);
 
-    osc.start(t); osc.stop(t + 0.25);
+    osc.start(t); osc.stop(t + 0.26);
   }
 
-  /* 钟琴：正弦+泛音，长衰减，大混响（氛围曲用） */
+  /* 钟琴：正弦+泛音，长衰减，大混响 */
   function bell(note, t, vel) {
     const g = ctx.createGain();
     g.gain.setValueAtTime(0, t);
     g.gain.linearRampToValueAtTime(vel, t + 0.012);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 1.4);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 1.6);
     [1, 2.76, 5.4].forEach((mul, i) => {
       const osc = ctx.createOscillator();
       osc.type = 'sine';
       osc.frequency.value = hz(note) * mul;
       const og = ctx.createGain();
-      og.gain.value = [0.6, 0.22, 0.08][i];
+      og.gain.value = [0.55, 0.18, 0.06][i];
       osc.connect(og); og.connect(g);
-      osc.start(t); osc.stop(t + 1.5);
+      osc.start(t); osc.stop(t + 1.7);
     });
     g.connect(comp); g.connect(revSend);
   }
 
+  /* Lead：v5 一律三角波（原方波太 buzzy） */
   function lead(note, t, dur, vel) {
     const osc = ctx.createOscillator();
-    osc.type = 'square';
+    osc.type = 'triangle';
     osc.frequency.value = hz(note);
     const vib = ctx.createOscillator();
     vib.type = 'sine';
-    vib.frequency.value = 5.5;
+    vib.frequency.value = 4.2;
     const vibG = ctx.createGain();
-    vibG.gain.value = hz(note) * 0.006;
+    vibG.gain.value = hz(note) * 0.004;
     vib.connect(vibG); vibG.connect(osc.frequency);
 
     const lp = ctx.createBiquadFilter();
     lp.type = 'lowpass';
-    lp.frequency.setValueAtTime(2500, t);
-    lp.frequency.linearRampToValueAtTime(1200, t + dur);
+    lp.frequency.setValueAtTime(1400, t);
+    lp.frequency.linearRampToValueAtTime(700, t + dur);
     const g = ctx.createGain();
     g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(vel, t + 0.03);
+    g.gain.linearRampToValueAtTime(vel, t + 0.04);
     g.gain.setValueAtTime(vel, t + dur * 0.6);
     g.gain.linearRampToValueAtTime(0, t + dur);
 
@@ -338,17 +362,17 @@
     osc.stop(t + dur + 0.05); vib.stop(t + dur + 0.05);
   }
 
-  /* ---------- 鼓组 ---------- */
+  /* ---------- 鼓组（v5 减力）---------- */
   function kick(t, vel) {
     const osc = ctx.createOscillator();
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(120, t);
-    osc.frequency.exponentialRampToValueAtTime(35, t + 0.08);
+    osc.frequency.setValueAtTime(92, t);
+    osc.frequency.exponentialRampToValueAtTime(30, t + 0.09);
     const g = ctx.createGain();
-    g.gain.setValueAtTime(vel == null ? 0.7 : vel, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+    g.gain.setValueAtTime(vel == null ? 0.5 : vel, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.32);
     osc.connect(g); g.connect(comp);
-    osc.start(t); osc.stop(t + 0.4);
+    osc.start(t); osc.stop(t + 0.38);
   }
 
   function snare(t, vel) {
@@ -359,18 +383,18 @@
     noise.buffer = noiseBuf;
     const bp = ctx.createBiquadFilter();
     bp.type = 'bandpass';
-    bp.frequency.value = 2000;
-    bp.Q.value = 0.8;
+    bp.frequency.value = 1400;
+    bp.Q.value = 0.7;
     const ng = ctx.createGain();
-    ng.gain.setValueAtTime(vel * 0.4, t);
-    ng.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+    ng.gain.setValueAtTime(vel * 0.26, t);
+    ng.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
 
     const tone = ctx.createOscillator();
     tone.type = 'triangle';
-    tone.frequency.value = 180;
+    tone.frequency.value = 165;
     const tg = ctx.createGain();
-    tg.gain.setValueAtTime(vel * 0.2, t);
-    tg.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+    tg.gain.setValueAtTime(vel * 0.1, t);
+    tg.gain.exponentialRampToValueAtTime(0.001, t + 0.07);
 
     noise.connect(bp); bp.connect(ng); ng.connect(comp); ng.connect(revSend);
     tone.connect(tg); tg.connect(comp);
@@ -379,17 +403,17 @@
   }
 
   function hat(t, open, vel) {
-    const noiseBuf = ctx.createBuffer(1, ctx.sampleRate * (open ? 0.3 : 0.05), ctx.sampleRate);
+    const noiseBuf = ctx.createBuffer(1, ctx.sampleRate * (open ? 0.28 : 0.05), ctx.sampleRate);
     const nd = noiseBuf.getChannelData(0);
     for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
     const src = ctx.createBufferSource();
     src.buffer = noiseBuf;
     const hp = ctx.createBiquadFilter();
     hp.type = 'highpass';
-    hp.frequency.value = 8000;
+    hp.frequency.value = 6800;
     const g = ctx.createGain();
-    const dur = open ? 0.25 : 0.04;
-    g.gain.setValueAtTime(vel == null ? 0.12 : vel, t);
+    const dur = open ? 0.22 : 0.04;
+    g.gain.setValueAtTime(vel == null ? 0.07 : vel, t);
     g.gain.exponentialRampToValueAtTime(0.001, t + dur);
     src.connect(hp); hp.connect(g); g.connect(comp);
     src.start(t); src.stop(t + dur + 0.01);
@@ -404,67 +428,60 @@
     const isDrop = song.drops.indexOf(pos.section) >= 0;
     const isBuild = song.builds.indexOf(pos.section) >= 0;
 
-    /* 摇摆：把 8 分反拍往后推 */
     let t = nextBeat;
     if (song.swing && beat % 1 === 0.5) t += song.swing * beatSec / 3;
 
-    /* 鼓组按曲风分派 */
     if (song.drums === 'drive') {
-      if (beat === 0 || beat === 2) kick(t);
-      if (beat === 1 || beat === 3) snare(t, isDrop ? 0.8 : 0.5);
-      if (beat % 0.5 === 0.5) hat(t, false);
-      if (beat === 3.5 && bar % 2 === 1) hat(t, true);
+      if (beat === 0 || beat === 2) kick(t, 0.5);
+      if (beat === 1 || beat === 3) snare(t, isDrop ? 0.55 : 0.38);
+      if (beat % 0.5 === 0.5) hat(t, false, 0.055);
+      if (beat === 3.5 && isDrop) hat(t, true, 0.05);
     } else if (song.drums === 'snap') {
-      if (beat === 0 || beat === 2) kick(t);
-      if (beat === 1 || beat === 3) snare(t, isDrop ? 0.62 : 0.42);
-      if (beat % 0.5 === 0.5) hat(t, false, 0.09);
-      if (beat === 3.5 && isDrop) hat(t, true);
+      if (beat === 0 || beat === 2) kick(t, 0.48);
+      if (beat === 1 || beat === 3) snare(t, isDrop ? 0.45 : 0.3);
+      if (beat % 0.5 === 0.5) hat(t, false, 0.05);
+      if (beat === 3.5 && isDrop) hat(t, true, 0.045);
     } else if (song.drums === 'half') {
-      if (beat === 0) kick(t, 0.55);
-      if (beat === 2.5 && bar % 2 === 1) kick(t, 0.4);
-      if (beat === 2) snare(t, isDrop ? 0.55 : 0.4);
-      if (beat % 0.5 === 0.5) hat(t, false, 0.07);
+      if (beat === 0) kick(t, 0.44);
+      if (beat === 2.5 && bar % 2 === 1) kick(t, 0.32);
+      if (beat === 2) snare(t, isDrop ? 0.45 : 0.32);
+      if (beat % 0.5 === 0.5) hat(t, false, 0.045);
     } else if (song.drums === 'sparse') {
-      if (beat === 0 && bar % 2 === 0) kick(t, 0.32);
-      if (beat === 2.5 && bar % 4 === 3) kick(t, 0.24);
-      if (beat === 1.5 || beat === 3.5) hat(t, false, 0.05);
-      if (pos.loopIdx % 2 === 1 && bar === LOOP_BARS - 1 && beat === 3.5) hat(t, true, 0.06);
+      if (beat === 0 && bar % 2 === 0) kick(t, 0.2);
+      if (beat === 2.5 && bar % 4 === 3) kick(t, 0.15);
+      if (beat === 1.5 || beat === 3.5) hat(t, false, 0.035);
     }
+    /* drums 'none'：无鼓，只留和声 */
 
-    /* Sub Bass */
     if (beat % song.bassDiv === 0) {
       const step = Math.round((beat % 4) / song.bassDiv) % song.bassPat.length;
       subBass(pos.chord.bass + (song.bassPat[step] || 0), t, beatSec * song.bassDiv * 0.9);
     }
 
-    /* Pad */
     if (beat === 0) {
-      sawPad(pos.chord.pad, t, beatSec * 4 * 0.95, song.arp === 'bell');
+      sawPad(pos.chord.pad, t, beatSec * 4 * 0.95, song.arp === 'bell' || song.pluckWave !== 'sawtooth');
     }
 
-    /* Arp（drop 段自动加密一档） */
     const div = isDrop ? song.arpDiv / 2 : song.arpDiv;
     if (div > 0 && beat % div === 0) {
       const arpIdx = Math.floor(absBeat / div) % pos.chord.arp.length;
       if (song.arp === 'bell') {
-        if (beat % Math.max(div, 0.5) === 0)   /* 钟琴保持稀疏 */
-          bell(pos.chord.arp[arpIdx] + song.arpOct, t, isDrop ? 0.09 : 0.07);
+        if (beat % Math.max(div, 1) === 0)
+          bell(pos.chord.arp[arpIdx] + song.arpOct, t, isDrop ? 0.06 : 0.05);
       } else {
-        pluck(pos.chord.arp[arpIdx] + song.arpOct, t, isDrop ? 0.10 : 0.06, beatSec);
+        pluck(pos.chord.arp[arpIdx] + song.arpOct, t, isDrop ? 0.075 : 0.05, beatSec, song.pluckWave);
       }
     }
 
-    /* Lead（仅 drop 段） */
     if (song.leadMel && isDrop && beat % 2 === 0) {
       const melNote = pos.chord.arp[song.leadMel[bar % 8] % pos.chord.arp.length];
       lead(melNote + 12, t, beatSec * 1.8, song.leadVel);
     }
 
-    /* Build 段军鼓滚奏 */
     if (isBuild && beat === 3) {
-      snare(t, 0.3);
-      snare(t + beatSec * 0.33, 0.4);
-      snare(t + beatSec * 0.66, 0.5);
+      snare(t, 0.22);
+      snare(t + beatSec * 0.33, 0.28);
+      snare(t + beatSec * 0.66, 0.34);
     }
   }
 
@@ -495,7 +512,6 @@
     running = false;
   }
 
-  /* 手动切歌：跳到下一曲开头，主音量短促下潜再回升 */
   function next() {
     if (!running || !ctx) {
       reshuffle(order.length ? (order[0] + 1) % SONGS.length : 0);
@@ -507,7 +523,7 @@
     const target = songAt(beatIdx).song.gain;
     master.gain.cancelScheduledValues(now);
     master.gain.setValueAtTime(master.gain.value, now);
-    master.gain.linearRampToValueAtTime(0.06, now + 0.12);
+    master.gain.linearRampToValueAtTime(0.05, now + 0.12);
     master.gain.linearRampToValueAtTime(target, now + 0.9);
   }
 
@@ -516,7 +532,6 @@
     return { id: s.id, name: s.name, tag: s.tag, bpm: s.bpm, n: SONGS.length };
   }
 
-  /* 自动播放策略兼容：首次用户交互时自动开播 */
   function gestureBoot() {
     document.removeEventListener('pointerdown', gestureBoot);
     document.removeEventListener('keydown', gestureBoot);
