@@ -342,12 +342,12 @@ async function main() {
       const deck2 = PC2.decryptDeck(PC2.unwrapKey(c2, pd2.salt, pd2.w[i2]), pd2.d);
       deck2.items.forEach((q2) => D.items.push(q2)); /* push 保引用：TOWERTEST.items / poolOf 同步可见 */
     });
-    ok('七座付费塔全部可解密注入', D.items.length === 245 + 107, D.items.length + '');
+    ok('八座付费塔全部可解密注入', D.items.length === 245 + 122, D.items.length + '');
     gT.window.DECK = D;
     gT.window.PAID_DECK = PD2;
     gT.window.PAIDCRYPTO = PC2;
   }
-  ['tencent', 'didi', 'meituan', 'kuaishou'].forEach((tid) => {
+  ['tencent', 'didi', 'meituan', 'kuaishou', 'migu'].forEach((tid) => {
     const tw = TT.TOWERS.find((t) => t.id === tid);
     const built = TT.buildRun(tw);
     const last = built.slots[built.slots.length - 1];
@@ -532,7 +532,7 @@ async function main() {
     const gPD = { window: {} };
     new Function('window', fs.readFileSync(path.join(ROOT, 'tower/js/deck-paid.js'), 'utf8'))(gPD.window);
     const PD = gPD.window.PAID_DECK;
-    ok('PAID_DECK 七塔齐备', ['meituan', 'didi', 'xiaohongshu', 'tencent', 'alibaba', 'bytedance', 'kuaishou'].every((k) => PD[k] && PD[k].n === 101));
+    ok('PAID_DECK 八塔齐备', ['meituan', 'didi', 'xiaohongshu', 'tencent', 'alibaba', 'bytedance', 'kuaishou', 'migu'].every((k) => PD[k] && PD[k].n === 101));
     ok('密文块不含明文题目（题目字段不出现在文件中）', !fs.readFileSync(path.join(ROOT, 'tower/js/deck-paid.js'), 'utf8').includes('"q"'.replace('"q"','"opts"')));
     const code = fs.readFileSync(path.join(ROOT, 'codes/tencent.txt'), 'utf8').split('\n')[0].trim();
     const tw = T11.TOWERS.find(t => t.id === 'tencent');
@@ -555,10 +555,10 @@ async function main() {
     ok('解锁后放行', T11.towerLocked(ttx) === false);
     T11.P.paid.tencent = 0;
     const paidTowers = T11.TOWERS.filter(t => t.price);
-    ok('付费塔共 7 座（全部锁定）', paidTowers.length === 7, String(paidTowers.length));
+    ok('付费塔共 8 座（全部锁定）', paidTowers.length === 8, String(paidTowers.length));
     const p888 = paidTowers.filter(t => t.price === 12.9).map(t => t.id).sort().join(',');
     const p188 = paidTowers.filter(t => t.price === 19.9).map(t => t.id).sort().join(',');
-    ok('12.9 档 = 美团/滴滴/小红书', p888 === 'didi,meituan,xiaohongshu', p888);
+    ok('12.9 档 = 美团/滴滴/小红书/咪咕', p888 === 'didi,meituan,migu,xiaohongshu', p888);
     ok('19.9 档 = 腾讯/阿里/字节/快手', p188 === 'alibaba,bytedance,kuaishou,tencent', p188);
     const its = (gT.TOWERTEST && gT.TOWERTEST.items) || items || [];
     const bd = its.find(x => x.mod === 'bytedance' && x.boss);

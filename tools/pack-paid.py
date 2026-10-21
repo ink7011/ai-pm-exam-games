@@ -20,7 +20,7 @@ import io, json, os, hashlib, struct, base64
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 PAID = os.path.join(ROOT, 'paid-deck')
-TOWERS = ['meituan', 'didi', 'xiaohongshu', 'tencent', 'alibaba', 'bytedance', 'kuaishou']
+TOWERS = ['meituan', 'didi', 'xiaohongshu', 'tencent', 'alibaba', 'bytedance', 'kuaishou', 'migu']
 
 
 def fnv1a(s):

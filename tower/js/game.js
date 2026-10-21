@@ -33,7 +33,8 @@
     { id: 'tencent', name: '鹅厂模式塔', desc: '素质测评风格 · 社交AI生态实战', mods: ['tencent'], group: 'company', price: 19.9 },
     { id: 'alibaba', name: '猫厂模式塔', desc: '电商 AI · 导购/搜索 · 价值观情景', mods: ['alibaba'], group: 'company', price: 19.9 },
     { id: 'bytedance', name: '宇宙厂模式塔', desc: '数据驱动 · 对话AI/低代码/实验文化', mods: ['bytedance'], group: 'company', price: 19.9 },
-    { id: 'kuaishou', name: '老铁模式塔', desc: '快手风 · 视频生成AI/可灵 · 增长实战', mods: ['kuaishou'], group: 'company', price: 19.9 }
+    { id: 'kuaishou', name: '老铁模式塔', desc: '快手风 · 视频生成AI/可灵 · 增长实战', mods: ['kuaishou'], group: 'company', price: 19.9 },
+    { id: 'migu', name: '咪咕模式塔', desc: '移动系 · 体育版权运营 · 产品序列笔试风', mods: ['migu'], group: 'company', price: 12.9 }
   ];
   const RANKS = [[0, '见习生'], [1000, 'Product Associate'], [3000, 'AI Product Manager'], [7000, 'Senior AI PM'], [15000, 'Head of AI Product']];
 
@@ -219,7 +220,8 @@
     tencent: { k: '社交 · 关系链内容化', q: '微信"看一看"增长乏力，最根本的解释是？', opts: ['产品入口埋得太深', '强关系链里用户偏好维护关系而非消费关系内容', '推荐算法精度不足', '缺少创作者补贴'], ans: 1, expl: '看一看的瓶颈是动机不是触达：熟人内容消费存在社交压力与兴趣错配。这是"社交资本 vs 内容消费"经典考点——关系链强度与内容消费意愿天然存在张力。' },
     alibaba: { k: '电商 · 货匹配效率', q: '大促前 PM 想提升整体转化率，优先级最高的是？', opts: ['首页视觉改版', '搜索与推荐的货品匹配效率', '扩充客服人力', '升级会员积分体系'], ans: 1, expl: '电商转化的主战场在"人找货/货找人"的匹配链路：搜索推荐的相关性直接决定成交效率；改版是体验层，客服与会员是留存层——供给侧匹配优先。' },
     bytedance: { k: '推荐增长 · A/B 实验', q: '信息流改版实验：人均时长 +2%、次日留存 -0.5%，正确决策是？', optAlias: 0, opts: ['时长是北极星指标，直接全量', '先迭代观察长期留存与生态指标再定', '效果矛盾说明实验失败，放弃', '无视留存，分城市灰度上线'], ans: 1, expl: '单指标上涨 + 留存下跌是典型的"指标挤压"信号：时长可能靠刺激性强内容 borrowed 未来的留存。正确姿势是看长期与生态指标（创作者供给、内容多样性）再决策——单一北极星也会骗人。' },
-    kuaishou: { k: '视频生成 · 指标判断', q: '可灵AI上线一年：全球用户 6000 万、累计生成 6 亿条视频。哪个指标最接近「用户真实获得价值」？', opts: ['累计生成视频总数', '每周「生成后下载/发布」的视频数', '注册用户数', 'API 调用总量'], ans: 1, expl: '生成了不等于用上了——只有生成后被下载、发布、剪进作品的视频，才代表 AI 真帮创作者完成了事。累计数只涨不跌（典型虚荣指标），注册更不代表使用。' }
+    kuaishou: { k: '视频生成 · 指标判断', q: '可灵AI上线一年：全球用户 6000 万、累计生成 6 亿条视频。哪个指标最接近「用户真实获得价值」？', opts: ['累计生成视频总数', '每周「生成后下载/发布」的视频数', '注册用户数', 'API 调用总量'], ans: 1, expl: '生成了不等于用上了——只有生成后被下载、发布、剪进作品的视频，才代表 AI 真帮创作者完成了事。累计数只涨不跌（典型虚荣指标），注册更不代表使用。' },
+    migu: { k: '新技术 · 5G 场景', q: '以下哪项不属于 ITU 定义的 5G 三大应用场景？', opts: ['增强移动宽带 eMBB（看高清直播）', '超高可靠低时延 URLLC（远程控制）', '海量机器类通信 mMTC（物联网设备）', '全球漫游永久免流量'], ans: 3, expl: '三大场景是 eMBB（大带宽）、URLLC（低时延）、mMTC（海量连接）。「免流量」是资费策略不是技术场景——概念题最爱在「技术特征」和「营销话术」之间挖坑。' }
   };
   function trialModal(t) {
     const s = SAMPLER[t.id];
@@ -262,9 +264,9 @@
           '<div class="pw-qr-note">购买页支持微信 / 支付宝付款，完成后把收到的兑换码（NOVA-XXXXXX）填到下面即可</div>'
         : '') +
       '<button class="pw-btn" id="trialBtn" style="background:linear-gradient(90deg,var(--violet),var(--cyan))">🎬 先试玩一道样题（免费）</button>' +
-      '<input id="codeInput" placeholder="输入兑换码（如 NOVA-XXXXXX）" autocomplete="off">' +
+      '<input id="codeInput" placeholder="输入兑换码（NOVA- 后 6 或 12 位）" autocomplete="off">' +
       '<button class="pw-btn" id="applyCode">🔓 验证并解锁</button>' +
-      '<div class="pw-tip">兑换码一次解锁永久有效，跟随存档码跨设备<br>本塔为原创模拟题：考点整理自公开渠道（面经/官方JD/报道），无内部资料；「鹅厂/猫厂/宇宙厂/开水团/桔厂/薯厂/老铁」为社区外号，仅示考点风格，与对应公司无关联</div>' +
+      '<div class="pw-tip">兑换码一次解锁永久有效，跟随存档码跨设备<br>本塔为原创模拟题：考点整理自公开渠道（面经/官方JD/报道），无内部资料；「鹅厂/猫厂/宇宙厂/开水团/桔厂/薯厂/老铁/咪咕」为社区外号或代称，仅示考点风格，与对应公司无关联</div>' +
       '</div>';
     openModal('大厂实战塔 · 解锁', html, '兑换码与本地存档绑定；更换设备请用存档码迁移。');
     const btn = $('applyCode');
