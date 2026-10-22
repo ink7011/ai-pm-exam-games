@@ -157,7 +157,7 @@ async function main() {
   new Function('window', fs.readFileSync(path.join(ROOT, 'tower/js/deck-data.js'), 'utf8'))(gDeck.window);
   const D = gDeck.window.DECK;
   const items = D.items;
-  ok('免费题数 = 255（meta.count 同步，含 10 题补弱包）', items.length === 255 && D.meta.count === 255, items.length + '/' + D.meta.count);
+  ok('免费题数 = 270（meta.count 同步，含 25 题补弱包两轮）', items.length === 270 && D.meta.count === 270, items.length + '/' + D.meta.count);
   ok('公开题库不含付费塔内容', items.every((q) => ['meituan', 'didi', 'xiaohongshu', 'tencent', 'alibaba', 'bytedance'].indexOf(q.mod) === -1));
   const ids = items.map((x) => x.id);
   ok('id 全局唯一', new Set(ids).size === ids.length);
@@ -342,7 +342,7 @@ async function main() {
       const deck2 = PC2.decryptDeck(PC2.unwrapKey(c2, pd2.salt, pd2.w[i2]), pd2.d);
       deck2.items.forEach((q2) => D.items.push(q2)); /* push 保引用：TOWERTEST.items / poolOf 同步可见 */
     });
-    ok('九座付费塔全部可解密注入（255 免费 + 137 付费）', D.items.length === 255 + 137, D.items.length + '');
+    ok('九座付费塔全部可解密注入（270 免费 + 137 付费）', D.items.length === 270 + 137, D.items.length + '');
     gT.window.DECK = D;
     gT.window.PAID_DECK = PD2;
     gT.window.PAIDCRYPTO = PC2;
