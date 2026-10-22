@@ -173,7 +173,10 @@
     xiaohongshu: 'https://afdian.com/item/407155a8ab6b11f1b1b952540025c377',
     tencent: 'https://afdian.com/item/4e0fee4aab6b11f19ba852540025c377',
     alibaba: 'https://afdian.com/item/5b50b5daab6b11f1944f52540025c377',
-    bytedance: 'https://afdian.com/item/6846b3caab6b11f184555254001e7c00'
+    bytedance: 'https://afdian.com/item/6846b3caab6b11f184555254001e7c00',
+    kuaishou: 'https://afdian.com/item/2d52e296cdf011f18dbd5254001e7c00',
+    migu: 'https://afdian.com/item/49fd25f0cdf011f1bd4452540025c377',
+    glodon: 'https://afdian.com/item/73fd4f56cdf011f1a7ee52540025c377'
   };
 
   /* ---------------- 付费解锁（兑换码制 · 零后端） ---------------- */
