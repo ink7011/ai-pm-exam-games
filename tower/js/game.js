@@ -30,6 +30,8 @@
     { id: 'booster', name: '补弱强化塔', desc: 'Python/测试/Agent 安全混合 · 考前冲刺 · 免费', mods: ['pybase', 'testsys', 'agentsec'], group: 'basic' },
     { id: 'pytower', name: 'Python 基础塔', desc: 'range / 推导式 / 切片 / 引用 · 读代码特训', mods: ['pybase'], group: 'basic' },
     { id: 'testtower', name: '测试工程塔', desc: '单元 / 集成 / 系统 / 验收 · 用例设计', mods: ['testsys'], group: 'basic' },
+    { id: 'sqltower', name: 'SQL 数据库塔', desc: '查询 / 聚合 / JOIN / 事务 / 注入防御', mods: ['sqldb'], group: 'basic' },
+    { id: 'b2btower', name: 'B 端产品塔', desc: '需求工程 / 决策链 / 实施 / 客户成功', mods: ['b2b'], group: 'basic' },
     { id: 'meituan', name: '开水团模式塔', desc: '外卖/到店业务实战 A1-A20', mods: ['meituan'], group: 'company', price: 12.9 },
     { id: 'didi', name: '桔厂模式塔', desc: '出行供需 / 安全 / 客服案例', mods: ['didi'], group: 'company', price: 12.9 },
     { id: 'xiaohongshu', name: '薯厂模式塔', desc: '社区 AI · 真实经验 · 独立思考', mods: ['xiaohongshu'], group: 'company', price: 12.9 },
@@ -1530,7 +1532,7 @@
       '<button class="retrybtn" id="sndBtn">音效：' + (soundOn ? '开 ✓' : '关') + '</button>' +
       '<button class="retrybtn" id="rstBtn">重置全部进度</button>' +
       '<button class="retrybtn" id="fbBtn">📖 年鉴 · 留言</button>' +
-      '<div style="color:var(--dim);font-size:12px;line-height:1.8">NOVA 概念试炼塔 · Concept Tower<br>基础题库 292 题（含 Python/测试/Agent 安全专项）· 进阶 9 塔按需解锁<br>与《AI PRODUCT RPG》同世界观：RPG 练判断，试炼塔练记忆。</div></div>';
+      '<div style="color:var(--dim);font-size:12px;line-height:1.8">NOVA 概念试炼塔 · Concept Tower<br>基础题库 322 题（含 Python/测试/SQL/B端 专项）· 进阶 9 塔按需解锁<br>与《AI PRODUCT RPG》同世界观：RPG 练判断，试炼塔练记忆。</div></div>';
     openModal('系统 · SYSTEM', html);
     $('sndBtn').onclick = () => { soundOn = !soundOn; P.sound = soundOn; save(); modalSettings(); };
     const bgmB = $('bgmBtn');
