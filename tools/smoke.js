@@ -157,7 +157,7 @@ async function main() {
   new Function('window', fs.readFileSync(path.join(ROOT, 'tower/js/deck-data.js'), 'utf8'))(gDeck.window);
   const D = gDeck.window.DECK;
   const items = D.items;
-  ok('免费题数 = 270（meta.count 同步，含 25 题补弱包两轮）', items.length === 270 && D.meta.count === 270, items.length + '/' + D.meta.count);
+  ok('免费题数 = 292（meta.count 同步，含基础专项扩容）', items.length === 292 && D.meta.count === 292, items.length + '/' + D.meta.count);
   ok('公开题库不含付费塔内容', items.every((q) => ['meituan', 'didi', 'xiaohongshu', 'tencent', 'alibaba', 'bytedance'].indexOf(q.mod) === -1));
   const ids = items.map((x) => x.id);
   ok('id 全局唯一', new Set(ids).size === ids.length);
@@ -166,7 +166,7 @@ async function main() {
   ok('exp 解析非空', items.every((q) => typeof q.exp === 'string' && q.exp.trim().length > 0));
   ok('k 考点非空', items.every((q) => typeof q.k === 'string' && q.k.trim().length > 0));
   const bosses = items.filter((q) => q.boss);
-  ok('boss 题总数 14（免费库，含强化包 Boss）', bosses.length === 14, bosses.length);
+  ok('boss 题总数 16（免费库，含基础专项 Boss）', bosses.length === 16, bosses.length);
   ok('付费塔 boss/题目均不在公开库（qtxboss/qddboss/qmtboss 缺席）',
     ['qtxboss', 'qddboss', 'qmtboss'].every((bid) => !items.find((x) => x.id === bid)));
   ['tencent', 'didi', 'meituan'].forEach((m) => {
@@ -342,7 +342,7 @@ async function main() {
       const deck2 = PC2.decryptDeck(PC2.unwrapKey(c2, pd2.salt, pd2.w[i2]), pd2.d);
       deck2.items.forEach((q2) => D.items.push(q2)); /* push 保引用：TOWERTEST.items / poolOf 同步可见 */
     });
-    ok('九座付费塔全部可解密注入（270 免费 + 137 付费）', D.items.length === 270 + 137, D.items.length + '');
+    ok('九座付费塔全部可解密注入（292 免费 + 137 付费）', D.items.length === 292 + 137, D.items.length + '');
     gT.window.DECK = D;
     gT.window.PAID_DECK = PD2;
     gT.window.PAIDCRYPTO = PC2;

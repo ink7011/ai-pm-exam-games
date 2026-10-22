@@ -20,14 +20,16 @@
     { id: 'llm', name: 'LLM 训练塔', desc: '预训练 / SFT / RLHF / DPO / CoT', mods: ['llm'], group: 'basic' },
     { id: 'infer', name: '推理与成本塔', desc: 'KV Cache / 量化 / TTFT / 降本', mods: ['infer'], group: 'basic' },
     { id: 'rag', name: 'RAG 高塔', desc: '检索 / 重排 / 幻觉 / Hybrid', mods: ['rag'], group: 'basic' },
-    { id: 'agent', name: 'Agent 堡垒', desc: '工具 / 规划 / 记忆 / MCP', mods: ['agent'], group: 'basic' },
+    { id: 'agent', name: 'Agent 堡垒', desc: '工具 / 规划 / 记忆 / MCP / 安全', mods: ['agent', 'agentsec'], group: 'basic' },
     { id: 'base', name: '地基塔', desc: 'ML / DL / NLP / CV 基础', mods: ['ml', 'dl', 'nlp', 'cv'], group: 'basic' },
     { id: 'rec', name: '推荐广告塔', desc: 'CTR / CVR / MMoE / ESMM', mods: ['rec'], group: 'basic' },
     { id: 'infra', name: 'Infra 塔', desc: 'DP / TP / PP / ZeRO / 显存', mods: ['infra'], group: 'basic' },
     { id: 'evalx', name: '评估塔', desc: '指标 / LLM-as-Judge / Badcase', mods: ['eval'], group: 'basic' },
     { id: 'pob', name: '产品商业塔', desc: '产品 / 运营 / 商业 / 多模态', mods: ['prod', 'ops', 'biz', 'mm'], group: 'basic' },
     { id: 'terms', name: '术语深化塔', desc: 'RPG 术语表 94 词 · 正反双向刷题', mods: ['terms'], group: 'basic' },
-    { id: 'booster', name: '补弱强化塔', desc: 'Python/测试/Agent 安全 · 25 题精进 · 免费', mods: ['pybase', 'testsys', 'agentsec'], group: 'basic' },
+    { id: 'booster', name: '补弱强化塔', desc: 'Python/测试/Agent 安全混合 · 考前冲刺 · 免费', mods: ['pybase', 'testsys', 'agentsec'], group: 'basic' },
+    { id: 'pytower', name: 'Python 基础塔', desc: 'range / 推导式 / 切片 / 引用 · 读代码特训', mods: ['pybase'], group: 'basic' },
+    { id: 'testtower', name: '测试工程塔', desc: '单元 / 集成 / 系统 / 验收 · 用例设计', mods: ['testsys'], group: 'basic' },
     { id: 'meituan', name: '开水团模式塔', desc: '外卖/到店业务实战 A1-A20', mods: ['meituan'], group: 'company', price: 12.9 },
     { id: 'didi', name: '桔厂模式塔', desc: '出行供需 / 安全 / 客服案例', mods: ['didi'], group: 'company', price: 12.9 },
     { id: 'xiaohongshu', name: '薯厂模式塔', desc: '社区 AI · 真实经验 · 独立思考', mods: ['xiaohongshu'], group: 'company', price: 12.9 },
@@ -1528,7 +1530,7 @@
       '<button class="retrybtn" id="sndBtn">音效：' + (soundOn ? '开 ✓' : '关') + '</button>' +
       '<button class="retrybtn" id="rstBtn">重置全部进度</button>' +
       '<button class="retrybtn" id="fbBtn">📖 年鉴 · 留言</button>' +
-      '<div style="color:var(--dim);font-size:12px;line-height:1.8">NOVA 概念试炼塔 · Concept Tower<br>基础题库 270 题（含补弱强化包×2）· 进阶 9 塔按需解锁<br>与《AI PRODUCT RPG》同世界观：RPG 练判断，试炼塔练记忆。</div></div>';
+      '<div style="color:var(--dim);font-size:12px;line-height:1.8">NOVA 概念试炼塔 · Concept Tower<br>基础题库 292 题（含 Python/测试/Agent 安全专项）· 进阶 9 塔按需解锁<br>与《AI PRODUCT RPG》同世界观：RPG 练判断，试炼塔练记忆。</div></div>';
     openModal('系统 · SYSTEM', html);
     $('sndBtn').onclick = () => { soundOn = !soundOn; P.sound = soundOn; save(); modalSettings(); };
     const bgmB = $('bgmBtn');
