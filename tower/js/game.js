@@ -1153,14 +1153,31 @@
       ['首答正确率', acc + '%'], ['最高连击', String(R.maxCombo)],
       ['段位', r.cur[1]], ['生涯积分', String(P.lifetime)]
     ];
+    /* 数值自适应：先缩字号，放不下再按空格拆两行（长英文段位如 AI Product Manager） */
+    function drawStatVal(text, cx, cy) {
+      const maxW = 340;
+      let size = 64;
+      c.font = '900 ' + size + 'px ' + MONO;
+      while (c.measureText(text).width > maxW && size > 40) { size -= 2; c.font = '900 ' + size + 'px ' + MONO; }
+      if (c.measureText(text).width <= maxW) { c.fillText(text, cx, cy); return; }
+      const words = text.split(' ');
+      if (words.length < 2) { c.fillText(text, cx, cy); return; }
+      const mid = Math.ceil(words.length / 2);
+      const l1 = words.slice(0, mid).join(' '), l2 = words.slice(mid).join(' ');
+      let s2 = 42;
+      c.font = '900 ' + s2 + 'px ' + MONO;
+      while ((c.measureText(l1).width > maxW || c.measureText(l2).width > maxW) && s2 > 24) { s2 -= 2; c.font = '900 ' + s2 + 'px ' + MONO; }
+      c.fillText(l1, cx, cy - s2 * 0.28);
+      c.fillText(l2, cx, cy + s2 * 0.62);
+    }
     stats.forEach((s2, i) => {
       const bx = 120 + (i % 2) * 440, by = 800 + Math.floor(i / 2) * 240;
       c.fillStyle = 'rgba(255,255,255,.78)';
       c.beginPath(); c.roundRect(bx, by, 400, 200, 26); c.fill();
       c.strokeStyle = 'rgba(151,178,205,.6)'; c.lineWidth = 2;
       c.beginPath(); c.roundRect(bx, by, 400, 200, 26); c.stroke();
-      c.fillStyle = '#8F6A1E'; c.font = '900 64px ' + MONO; c.textAlign = 'center';
-      c.fillText(s2[1], bx + 200, by + 108);
+      c.fillStyle = '#8F6A1E'; c.textAlign = 'center';
+      drawStatVal(s2[1], bx + 200, by + 108);
       c.fillStyle = '#5C6B86'; c.font = '24px ' + SANS;
       c.fillText(s2[0], bx + 200, by + 160);
     });

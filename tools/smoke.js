@@ -428,7 +428,18 @@ async function main() {
     const schemaOk = fuItems.every(i => i.skel && i.fu.every(q => Array.isArray(q.opts) && q.opts.length === 4 && q.ans >= 0 && q.ans <= 3 && !!q.q && !!q.e));
     ok('塔：追问试炼 ≥6 题且 schema 合法（q/opts4/ans/e/skel）', fuItems.length >= 6 && schemaOk, fuItems.length + ' items');
     ok('塔：追问引擎在场（startFu/answerFu/finishFu + 骨架卡）', twG.includes('function startFu') && twG.includes('function answerFu') && twG.includes('function finishFu') && twG.includes('fu-skel'));
-    ok('塔：追问样式在场（.fu-card/.fu-opt）', fs.readFileSync(path.join(ROOT, 'tower/index.html'), 'utf8').includes('.fu-card{') && fs.readFileSync(path.join(ROOT, 'tower/index.html'), 'utf8').includes('.fu-opt{'));
+    /* 选项长度均衡：正确项不得显著长于最长干扰项（防"谁都知道选长的"） */
+  {
+    const NEW_MODS = ['pybase', 'testsys', 'agentsec', 'sqldb', 'b2b'];
+    const viol = [];
+    D.items.filter(i => NEW_MODS.includes(i.mod)).forEach(it => {
+      const lens = it.opts.map(o => (o || '').length);
+      const mx = Math.max(...lens.filter((_, i) => i !== it.ans));
+      if (lens[it.ans] / mx >= 1.6) viol.push(it.id + ':' + (lens[it.ans] / mx).toFixed(2));
+    });
+    ok('塔：新塔选项长度均衡（正确项 < 1.6×最长干扰项）', viol.length === 0, viol.slice(0, 4).join(' '));
+  }
+  ok('塔：追问样式在场（.fu-card/.fu-opt）', fs.readFileSync(path.join(ROOT, 'tower/index.html'), 'utf8').includes('.fu-card{') && fs.readFileSync(path.join(ROOT, 'tower/index.html'), 'utf8').includes('.fu-opt{'));
   }
   const dd = fs.readFileSync(path.join(ROOT, 'tower/js/deck-data.js'), 'utf8');
   const bgN = (dd.match(/"bg-pilot-check"/g) || []).length; // 占位不计数
