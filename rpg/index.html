@@ -259,6 +259,9 @@ svg.av-svg{flex:0 0 34px;width:34px;height:34px;border-radius:8px}
 .diff-chip{display:inline-block;font:700 10.5px var(--mono);letter-spacing:1px;border-radius:999px;padding:2px 9px;margin-left:8px;vertical-align:2px}
 .diff-chip.ok{color:#2E7D62;border:1px solid #2E7D62;background:rgba(46,125,98,.07)}
 .diff-chip.warn{color:#8F6A1E;border:1px solid #8F6A1E;background:rgba(143,106,30,.07)}
+.diff-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:6px 0 8px}
+.diff-swap-mini{font:700 11px var(--mono,monospace);letter-spacing:1px;color:var(--violet);background:transparent;border:1px dashed var(--violet);border-radius:999px;padding:3px 10px;cursor:pointer;transition:.15s}
+.diff-swap-mini:hover{background:rgba(118,99,170,.1);border-style:solid}
 @media (max-width:640px){.diff-cards{flex-direction:column}.diff-card.on::before{margin:-2px 0}}
 .startbox input{
   width:70%;background:#FDFCFA;border:1px solid var(--line);border-radius:8px;color:var(--ink);
@@ -516,7 +519,7 @@ body::after{animation:shDriftB 110s ease-in-out infinite alternate}
 <script src="../shared/feedback.js?v=8"></script>
 <script src="../shared/dock.js?v=7"></script>
 <script src="../shared/tip.js?v=10"></script>
-<script src="js/engine.js?v=29"></script>
+<script src="js/engine.js?v=30"></script>
 <script>
 /* PWA：仅 https / localhost 下注册 Service Worker（file:// 与 http 内网不注册） */
 if ('serviceWorker' in navigator &&

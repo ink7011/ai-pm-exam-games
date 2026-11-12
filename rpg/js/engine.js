@@ -183,11 +183,25 @@
       '<h3>角色档案</h3>' +
       '<div class="char-name">' + esc(S.name) + ' <span class="diff-chip ' + (DIFF_META[S.diff] || DIFF_META.easy).cls + '">' + (DIFF_META[S.diff] || DIFF_META.easy).label + ' · ' + (DIFF_META[S.diff] || DIFF_META.easy).tag + '</span></div>' +
       '<div class="char-role">' + esc(displayRole) + '</div>' +
+      '<div class="diff-row"><span class="diff-chip ' + (DIFF_META[S.diff] || DIFF_META.easy).cls + '">' + (DIFF_META[S.diff] || DIFF_META.easy).label + ' · ' + (DIFF_META[S.diff] || DIFF_META.easy).tag + '</span><button class="diff-swap-mini" id="diffSwapMini" title="切换难度（开新档）">⇄ 换难度</button></div>' +
       '<div class="xp-row"><span>XP ' + S.xp + '</span><span>' + pct + '% → 晋升线</span></div>' +
       '<div class="xpbar"><i style="width:' + pct + '%"></i></div>' +
       '<div class="stat-line"><span>技能</span><b>' + S.skills.length + ' / ' + Object.keys(C.SKILLS).length + '</b></div>' +
       '<div class="stat-line"><span>首答正确率</span><b class="' + (acc >= 70 ? 'good' : (acc > 0 && acc < 50 ? 'bad' : '')) + '">' + acc + '%</b></div>' +
       '<div class="stat-line"><span>错题(未掌握)</span><b class="' + (unresolvedErrors().length ? 'bad' : 'good') + '">' + unresolvedErrors().length + '</b></div>';
+    const mini = document.getElementById('diffSwapMini');
+    if (mini) mini.onclick = swapDifficulty;
+  }
+  /* 档案卡一键切换难度：确认后以同名开另一难度的新档 */
+  function swapDifficulty() {
+    const target = (S.diff === 'mid') ? 'easy' : 'mid';
+    const meta = DIFF_META[target] || DIFF_META.easy;
+    if (!confirm('切换到「' + meta.label + ' · ' + meta.tag + '」将开启新档，当前进度会被覆盖。继续？')) return;
+    const keepName = S.name;
+    S = newState(keepName, target);
+    save(); renderAll();
+    addSys('难度已切换 → ' + meta.label + ' · ' + meta.tag + '。新的战役，从今天开始。', 'SYSTEM // NEW RUN');
+    startCase(0);
   }
   function unresolvedErrors() { return S.errors.filter(e => !e.resolved); }
   function renderCompany() {
