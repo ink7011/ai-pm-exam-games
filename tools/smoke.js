@@ -449,6 +449,21 @@ async function main() {
   ok('塔：门内视角（世界观层）≥83 且渲染器在场', wrCount >= 83 && twG.includes('function worldviewHtml') && twG.includes('wr-card'));
   const rc = fs.readFileSync(path.join(ROOT, 'rpg/js/content.js'), 'utf8');
   const re = fs.readFileSync(path.join(ROOT, 'rpg/js/engine.js'), 'utf8');
+  /* S1.5 难度体系：中等战役 + 开局选择器 */
+  {
+    const MC = (() => { const g2 = { window: {} }; new Function('window', fs.readFileSync(path.join(ROOT, 'rpg/js/content.js'), 'utf8'))(g2.window); return g2.window.CONTENT.MID_CASES; })();
+    const midRounds = (MC || []).reduce((a, c) => a + (c.rounds || []).length, 0);
+    const midPlain = (MC || []).reduce((a, c) => a + (c.rounds || []).filter(r => r.plain).length, 0);
+    ok('RPG：中等战役 ≥6 案（含 Boss）且全 round 带人话层', Array.isArray(MC) && MC.length >= 6 && !!MC[MC.length - 1].kind !== false && midRounds >= 12 && midPlain === midRounds, MC && (MC.length + '案/' + midRounds + 'round/' + midPlain + 'plain'));
+    const midBad = [];
+    (MC || []).forEach(c => (c.rounds || []).forEach((r, ri) => {
+      const oi = r.options.findIndex(o => o.ok);
+      const lens = r.options.map(o => o.t.length);
+      if (r.options.filter(o => o.ok).length !== 1 || lens[oi] / Math.max(...lens.filter((_, i) => i !== oi)) >= 1.6) midBad.push(c.id + '_' + ri);
+    }));
+    ok('RPG：中等战役选项长度配平 + 单正确项', midBad.length === 0, midBad.slice(0, 3).join(' '));
+    ok('RPG：开局难度选择器（简单/中等/困难锁定）', re.indexOf('diff-cards') !== -1 && re.indexOf('pickedDiff') !== -1 && re.indexOf('diffSwap') !== -1 && re.includes('data-diff="hard"'));
+  }
   ok('RPG：全 round 人话层（≥19）+ 复盘渲染', (rc.match(/_\d": "/g) || []).length >= 19 || (rc.match(/": "/g)||[]).length > 50);
   ok('塔：复用 RPG 词典（单一数据源）', twH.includes('rpg/js/glossary.js'));
   const gl = fs.readFileSync(path.join(ROOT, 'rpg/js/glossary.js'), 'utf8');

@@ -14,9 +14,9 @@
   let S = null;
   let soundOn = true;
 
-  function newState(name) {
+  function newState(name, diff) {
     return {
-      v: 2, started: true, name: name || 'Founder',
+      v: 2, started: true, name: name || 'Founder', diff: diff || 'easy',
       role: 'Product Associate', xp: 0,
       company: Object.assign({}, (window.CONTENT && window.CONTENT.SIM && window.CONTENT.SIM.init) || { revenue: 58, users: 52, trust: 68, quality: 72, cost: 45, morale: 64 }),
       caseIdx: 0, phase: 'intro', roundIdx: 0,
@@ -43,6 +43,7 @@
     if (!s.marks) s.marks = {};                     // V0.6：选择印记（世界记忆）
     if (!s.echoDone) s.echoDone = {};               // V0.6：回响已触发记录
     if (!s.bossVariants) s.bossVariants = [];
+    if (!s.diff) s.diff = 'easy';               // S1.5：旧档默认简单难度
     if (typeof s.clock !== 'number') s.clock = 9 * 60;
     return s;
   }
@@ -180,7 +181,7 @@
     const acc = S.stats.total ? Math.round((S.stats.firstTry / S.stats.total) * 100) : 0;
     $('charPanel').innerHTML =
       '<h3>角色档案</h3>' +
-      '<div class="char-name">' + esc(S.name) + '</div>' +
+      '<div class="char-name">' + esc(S.name) + ' <span class="diff-chip ' + (DIFF_META[S.diff] || DIFF_META.easy).cls + '">' + (DIFF_META[S.diff] || DIFF_META.easy).label + ' · ' + (DIFF_META[S.diff] || DIFF_META.easy).tag + '</span></div>' +
       '<div class="char-role">' + esc(displayRole) + '</div>' +
       '<div class="xp-row"><span>XP ' + S.xp + '</span><span>' + pct + '% → 晋升线</span></div>' +
       '<div class="xpbar"><i style="width:' + pct + '%"></i></div>' +
@@ -230,7 +231,7 @@
     if (why) toast('+' + n + ' XP · ' + why, 'ok');
   }
   function renderCasePanel() {
-    const cs = C.CASES[Math.min(S.caseIdx, C.CASES.length - 1)];
+    const cs = campaign()[Math.min(S.caseIdx, campaign().length - 1)];
     $('caseInfo').innerHTML =
       '<div style="font-weight:700;font-size:13.5px">' + (cs.kind === 'boss' ? '⚔ ' : '') + esc(cs.title) + '</div>' +
       '<div class="tags">' + cs.tags.map(t => '<span class="tag">' + esc(t) + '</span>').join('') + '</div>' +
@@ -240,7 +241,7 @@
       investigate: '点击调查项收集线索（有限次数）。看得准，就能少走弯路。',
       decide: '综合线索做出决策。选错会有真实后果，但林博士会给提示。',
       outro: '事件收尾。点击继续推进剧情。',
-      done: 'Season 1 已通关。'
+      done: S.diff === 'mid' ? '新纪元篇已通关。' : 'Season 1 已通关。'
     }[S.phase] || '—';
   }
   function renderBadge() {
@@ -344,14 +345,14 @@
     S.roundIdx = 0; S.roundPicked = []; S.roundWrong = 0; S.revealed = false; S.roundAttempted = false; S.roundsFirstTryThisCase = 0;
     save();
     const begin = () => startCaseNow(idx);
-    if (idx > 0 && window.CINEMA) window.CINEMA.play(cinWeek(idx, C.CASES[idx].title)).then(begin);
+    if (idx > 0 && window.CINEMA) window.CINEMA.play(cinWeek(idx, campaign()[idx].title)).then(begin);
     else begin();
   }
   function startCaseNow(idx) {
     S.caseIdx = idx; S.phase = 'intro'; S.clues = [];
     S.roundIdx = 0; S.roundPicked = []; S.roundWrong = 0; S.revealed = false; S.roundAttempted = false; S.roundsFirstTryThisCase = 0;
     renderCasePanel();
-    const cs = C.CASES[idx];
+    const cs = campaign()[idx];
     addTitleCard(cs);
     // V0.6：世界记忆——若本 Case 声明了 echoes 且印记在场，注入回响剧情（一次性）
     (cs.echoes || []).forEach(ez => {
@@ -386,7 +387,7 @@
   }
   function enterInvestigate() {
     S.phase = 'investigate'; renderCasePanel();
-    const cs = C.CASES[S.caseIdx];
+    const cs = campaign()[S.caseIdx];
     const bar = $('actionBar');
     bar.innerHTML = '<div class="ab-label">// INVESTIGATE · 剩余调查机会 <span class="cnt" id="invCnt">' + (cs.investigate.budget - S.clues.length) + '</span></div><div class="ab-btns"></div>';
     const btns = bar.querySelector('.ab-btns');
@@ -438,8 +439,8 @@
     renderDecisionCard(currentRound(), false);
     save();
   }
-  function isBoss() { const cs = C.CASES[S.caseIdx]; return cs && cs.kind === 'boss'; }
-  function currentRound() { return C.CASES[S.caseIdx].rounds[S.roundIdx]; }
+  function isBoss() { const cs = campaign()[S.caseIdx]; return cs && cs.kind === 'boss'; }
+  function currentRound() { return campaign()[S.caseIdx].rounds[S.roundIdx]; }
 
   function renderDecisionCard(round, restored) {
     const wrap = h('div', 'card');
@@ -525,7 +526,7 @@
   function roundDoneContinue() {
     const bar = $('actionBar');
     bar.innerHTML = '<div class="ab-label">// CONTINUE</div><div class="ab-btns"></div>';
-    const cs = C.CASES[S.caseIdx];
+    const cs = campaign()[S.caseIdx];
     const lastRound = S.roundIdx >= cs.rounds.length - 1;
     const b = h('button', 'ab-btn primary', lastRound ? '收尾 →' : '下一问 ▸');
     b.onclick = () => {
@@ -581,7 +582,7 @@
   /* ---------------- case end / chapter end ---------------- */
   function finishCase() {
     S.phase = 'outro'; renderCasePanel();
-    const cs = C.CASES[S.caseIdx];
+    const cs = campaign()[S.caseIdx];
     if ((S.roundsFirstTryThisCase || 0) >= cs.rounds.length && cs.rounds.length > 0) {
       S.potions = (S.potions || 0) + 1;
       toast('获得 🧪 加速药剂 ×1（本章零失误）· 点击左下角盆栽使用', 'gold');
@@ -692,7 +693,7 @@
       (unresolvedErrors().length
         ? '<div class="verdict bad" style="margin-top:10px"><span class="v-tag">未掌握知识点</span>' + unresolvedErrors().map(e => esc(e.kp)).join('、') + ' —— 复盘后再战，Boss 会记得它们。</div>'
         : '<div class="verdict good" style="margin-top:10px"><span class="v-tag">全部错题已回炉</span>漂亮，没有欠账。</div>') +
-      '<div class="season2"><b>SEASON 2 · 模型战争（预告）</b><br>公司发布下一代 Foundation Model：benchmark 拿了第一，用户却开始流失。<br>你将深入 Benchmark 迷思、SFT/RLHF/DPO、Reasoning 模型与 Multimodal——以及"分数第一为什么救不了产品"。<br><span style="font-family:var(--mono);font-size:11px">[ LOCKED · 开发中 ]</span></div>';
+      '<div class="season2"><b>SEASON 2 · 模型战争（困难难度 · 预告）</b><br>公司发布下一代 Foundation Model：benchmark 拿了第一，用户却开始流失。<br>你将深入 Benchmark 迷思、SFT/RLHF/DPO、Reasoning 模型与 Multimodal——以及"分数第一为什么救不了产品"。<br><span style="font-family:var(--mono);font-size:11px">[ LOCKED · 开发中 ]</span></div>';
     el.appendChild(rep);
     $('feed').appendChild(el); scrollFeed();
     if (tier.cls === 'tier-legend') spawnConfetti();
@@ -835,6 +836,7 @@
       '<div style="display:flex;gap:8px;margin-top:8px"><button class="ab-btn" id="copySave">复制</button><button class="ab-btn primary" id="applySave">应用导入</button></div>' +
       '<div style="color:var(--dim);font-size:11px;margin-top:6px">存档码打包两个游戏进度 + 文竹时长，复制保存好，在任何设备浏览器导入即可继续。</div>' +
       '</div></div>' +
+      '<div style="border:1px dashed var(--line);border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center"><div><div style="font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:1px">当前难度</div><b>' + (DIFF_META[S.diff] || DIFF_META.easy).label + ' · ' + (DIFF_META[S.diff] || DIFF_META.easy).tag + '</b></div><button class="ab-btn" id="diffSwap">换难度 · 重开</button></div>' +
       '<button class="ab-btn" id="rstBtn">重置全部进度</button>' +
       '<button class="ab-btn" id="fbBtnR">📖 年鉴 · 留言</button>' +
       '<div style="color:var(--dim);font-size:12px;line-height:1.8">AI PRODUCT RPG · Build. Break. Fix. Ship.<br>Learn AI by running an AI company.<br>进度自动保存在本地浏览器（localStorage）。</div></div>';
@@ -892,7 +894,14 @@
       } catch (err) { toast('存档码无效，请检查是否复制完整', 'err'); }
     };
     $('rstBtn').onclick = () => { if (confirm('确定重置全部进度？此操作不可恢复。')) resetGame(); };
-  }
+
+    const dsw = $('diffSwap');
+    if (dsw) dsw.onclick = () => {
+      if (confirm('换难度会开启新档，当前进度将被覆盖。继续？')) {
+        try { localStorage.removeItem('aiProductRpg.v1'); } catch (e) {}
+        location.reload();
+      }
+    };  }
   function modalGlossary() {
     const es = window.GLOSSARY ? window.GLOSSARY.entries : [];
     const list = es.map(e =>
@@ -929,6 +938,16 @@
     };
   });
 
+  /* ---------------- 难度体系 ---------------- */
+  /* S1.5：难度分流——简单=经典 Season1，中等=新纪元篇（Agent安全/测试/SQL/B端/治理） */
+  const DIFF_META = {
+    easy: { label: '简单', tag: '经典十周', cls: 'ok' },
+    mid:  { label: '中等', tag: '新纪元篇', cls: 'warn' }
+  };
+  function campaign() {
+    return (S && S.diff === 'mid' && C.MID_CASES && C.MID_CASES.length) ? C.MID_CASES : C.CASES;
+  }
+
   /* ---------------- boot ---------------- */
   // P2-1：注入成就系统（懒取 S —— boot 时才赋值）
   if (window.ACHS) window.ACHS.init({ side: 'rpg', get: () => S, persist: save, toast: toast });
@@ -939,6 +958,12 @@
       '<div style="font-family:var(--mono);font-size:11px;letter-spacing:3px;color:var(--dim)">NOVA·AI // 09:00 MON / 你的工位 / 第 1 天</div>' +
       '<div class="biglogo">AI PRODUCT <b>RPG</b></div>' +
       '<div class="tagline">BUILD. BREAK. FIX. SHIP. — LEARN AI BY RUNNING AN AI COMPANY.</div>' +
+      '<div class="diff-kicker">▸ 选择你的试用难度 · CHOOSE YOUR RUN</div>' +
+      '<div class="diff-cards" id="diffCards">' +
+        '<button class="diff-card on" data-diff="easy"><span class="dc-lv">简单</span><span class="dc-name">经典十周 · Season 1</span><span class="dc-desc">虚伪指标 · 99% 谎言 · 幻觉 · 复盘会<br>原版十章 · 通关 40-60 分钟</span></button>' +
+        '<button class="diff-card" data-diff="mid"><span class="dc-lv">中等</span><span class="dc-name">新纪元篇 · Season 1.5</span><span class="dc-desc">Agent 安全 · 测试工程 · 代码与SQL · B端 · 增长治理<br>转正后的六周 · 题更硬 · 线索更少</span></button>' +
+        '<button class="diff-card locked" data-diff="hard" disabled><span class="dc-lv">困难</span><span class="dc-name">模型战争 · Season 2</span><span class="dc-desc">Benchmark 迷思 · SFT/RLHF/DPO · Reasoning<br>[ 待开发 · 敬请期待 ]</span></button>' +
+      '</div>' +
       '<div style="color:var(--dim);font-size:13px;line-height:1.9;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:0 0 18px">' +
       '每一个想成为 AI 产品经理的人，都值得一次真实的"试用期"。<br>' +
       '无论你是什么背景——今天起，你是 NOVA·AI 的 Product Associate。<br>' +
@@ -950,10 +975,19 @@
       '<div class="bg-note">进度自动保存 · 纯本地运行 · 预计通关 40-60 分钟</div>';
     $('feed').appendChild(box);
     $('actionBar').innerHTML = '<div class="ab-label">// STANDBY</div><div class="ab-btns"><span style="color:var(--dim);font-size:12px">点击「入职」开始 Season 1</span></div>';
+    let pickedDiff = 'easy';
+    document.querySelectorAll('.diff-card:not(.locked)').forEach(card => {
+      card.onclick = () => {
+        document.querySelectorAll('.diff-card').forEach(x => x.classList.remove('on'));
+        card.classList.add('on');
+        pickedDiff = card.dataset.diff;
+        beep(660, 0.05);
+      };
+    });
     $('startBtn').onclick = () => {
       const name = ($('nameInput').value || '').trim() || 'Nova';
       const go = () => {
-        S = newState(name);
+        S = newState(name, pickedDiff);
         save(); renderAll();
         ach('rpg_join');                                      // P2-1：入职成就
         addSys('欢迎加入 NOVA·AI。你的第一个十周，从一条 Slack 消息开始……', 'SYSTEM');
@@ -967,7 +1001,7 @@
   }
   function resumeGame() {
     renderAll();
-    const cs = C.CASES[S.caseIdx];
+    const cs = campaign()[S.caseIdx];
     addSys('检测到本地存档，已恢复进度：' + (cs.kind === 'boss' ? 'BOSS 战' : 'Case ' + (S.caseIdx + 1)) + ' · ' + cs.title, 'SYSTEM // RESUME');
     // 重放本 case 的剧情与已获线索
     addTitleCard(cs);
