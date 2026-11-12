@@ -183,7 +183,7 @@
       '<h3>角色档案</h3>' +
       '<div class="char-name">' + esc(S.name) + ' <span class="diff-chip ' + (DIFF_META[S.diff] || DIFF_META.easy).cls + '">' + (DIFF_META[S.diff] || DIFF_META.easy).label + ' · ' + (DIFF_META[S.diff] || DIFF_META.easy).tag + '</span></div>' +
       '<div class="char-role">' + esc(displayRole) + '</div>' +
-      '<div class="diff-row"><span class="diff-chip ' + (DIFF_META[S.diff] || DIFF_META.easy).cls + '">' + (DIFF_META[S.diff] || DIFF_META.easy).label + ' · ' + (DIFF_META[S.diff] || DIFF_META.easy).tag + '</span><button class="diff-swap-mini" id="diffSwapMini" title="切换难度（开新档）">⇄ 换难度</button></div>' +
+      '<div class="diff-row"><span class="diff-chip ' + (DIFF_META[S.diff] || DIFF_META.easy).cls + '">' + (DIFF_META[S.diff] || DIFF_META.easy).label + ' · ' + (DIFF_META[S.diff] || DIFF_META.easy).tag + '</span><button class="diff-swap-mini" id="diffSwapMini" title="切换难度 · 双难度进度各自保留">⇄ 换难度</button></div>' +
       '<div class="xp-row"><span>XP ' + S.xp + '</span><span>' + pct + '% → 晋升线</span></div>' +
       '<div class="xpbar"><i style="width:' + pct + '%"></i></div>' +
       '<div class="stat-line"><span>技能</span><b>' + S.skills.length + ' / ' + Object.keys(C.SKILLS).length + '</b></div>' +
@@ -192,16 +192,27 @@
     const mini = document.getElementById('diffSwapMini');
     if (mini) mini.onclick = swapDifficulty;
   }
-  /* 档案卡一键切换难度：确认后以同名开另一难度的新档 */
+  /* 档案卡一键切换难度 · 双档位：两个难度的进度各自保留，切换=换活动档 */
   function swapDifficulty() {
     const target = (S.diff === 'mid') ? 'easy' : 'mid';
     const meta = DIFF_META[target] || DIFF_META.easy;
-    if (!confirm('切换到「' + meta.label + ' · ' + meta.tag + '」将开启新档，当前进度会被覆盖。继续？')) return;
-    const keepName = S.name;
-    S = newState(keepName, target);
-    save(); renderAll();
-    addSys('难度已切换 → ' + meta.label + ' · ' + meta.tag + '。新的战役，从今天开始。', 'SYSTEM // NEW RUN');
-    startCase(0);
+    let alt = null;
+    try { alt = JSON.parse(localStorage.getItem('aiProductRpg.alt') || 'null'); } catch (e) {}
+    // 当前进度原样存入备用槽
+    try { localStorage.setItem('aiProductRpg.alt', JSON.stringify(S)); } catch (e) {}
+    $('feed').innerHTML = '';
+    if (alt && alt.started && (alt.diff || 'easy') === target) {
+      S = migrateRpg(alt);                      // 目标难度有档：无缝恢复
+      save(); renderAll();
+      addSys('难度已切换 → ' + meta.label + ' · ' + meta.tag + '（该难度的进度已恢复，两边进度各自保留）。', 'SYSTEM // SWAP RUN');
+      resumeGame();
+    } else {
+      const keepName = S.name;
+      S = newState(keepName, target);
+      save(); renderAll();
+      addSys('难度已切换 → ' + meta.label + ' · ' + meta.tag + '。该难度首次开档（另一难度的进度已保留，随时切回）。', 'SYSTEM // NEW RUN');
+      startCase(0);
+    }
   }
   function unresolvedErrors() { return S.errors.filter(e => !e.resolved); }
   function renderCompany() {
@@ -831,7 +842,7 @@
     if (!d || (d.v !== 1 && d.v !== 2) || !d.rpg) throw new Error('bad');
     return {
       v: 2, ts: d.ts || Date.now(),
-      rpg: d.rpg, time: d.time || '0', vineBorn: d.vineBorn || '', tower: d.tower || ''
+      rpg: d.rpg, time: d.time || '0', vineBorn: d.vineBorn || '', tower: d.tower || '', alt: d.alt || ''
     };
   }
   window.RPGSAVE = { normalizeSaveData: normalizeSaveData, migrateRpg: migrateRpg };
@@ -850,7 +861,7 @@
       '<div style="display:flex;gap:8px;margin-top:8px"><button class="ab-btn" id="copySave">复制</button><button class="ab-btn primary" id="applySave">应用导入</button></div>' +
       '<div style="color:var(--dim);font-size:11px;margin-top:6px">存档码打包两个游戏进度 + 文竹时长，复制保存好，在任何设备浏览器导入即可继续。</div>' +
       '</div></div>' +
-      '<div style="border:1px dashed var(--line);border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center"><div><div style="font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:1px">当前难度</div><b>' + (DIFF_META[S.diff] || DIFF_META.easy).label + ' · ' + (DIFF_META[S.diff] || DIFF_META.easy).tag + '</b></div><button class="ab-btn" id="diffSwap">换难度 · 重开</button></div>' +
+      '<div style="border:1px dashed var(--line);border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center"><div><div style="font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:1px">当前难度</div><b>' + (DIFF_META[S.diff] || DIFF_META.easy).label + ' · ' + (DIFF_META[S.diff] || DIFF_META.easy).tag + '</b></div><button class="ab-btn" id="diffSwap">⇄ 换难度（双难度进度各自保留）</button></div>' +
       '<button class="ab-btn" id="rstBtn">重置全部进度</button>' +
       '<button class="ab-btn" id="fbBtnR">📖 年鉴 · 留言</button>' +
       '<div style="color:var(--dim);font-size:12px;line-height:1.8">AI PRODUCT RPG · Build. Break. Fix. Ship.<br>Learn AI by running an AI company.<br>进度自动保存在本地浏览器（localStorage）。</div></div>';
@@ -871,7 +882,8 @@
         rpg: localStorage.getItem('aiProductRpg.v1') || '',
         time: localStorage.getItem('aiProductRpg.time') || '0',
         vineBorn: localStorage.getItem('aiProductRpg.vineBorn') || '',
-        tower: localStorage.getItem('conceptTower.v1') || '' };
+        tower: localStorage.getItem('conceptTower.v1') || '',
+        alt: localStorage.getItem('aiProductRpg.alt') || '' };
       $('saveBox').style.display = '';
       $('saveCode').readOnly = true;
       $('saveCode').value = b64e(JSON.stringify(data));
@@ -903,6 +915,7 @@
         if (d.time) localStorage.setItem('aiProductRpg.time', d.time);
         if (d.vineBorn) localStorage.setItem('aiProductRpg.vineBorn', d.vineBorn);
         if (d.tower) localStorage.setItem('conceptTower.v1', d.tower);
+        if (d.alt) localStorage.setItem('aiProductRpg.alt', d.alt);
         toast('导入成功，即将刷新…', 'ok');
         setTimeout(() => location.reload(), 900);
       } catch (err) { toast('存档码无效，请检查是否复制完整', 'err'); }
@@ -910,12 +923,7 @@
     $('rstBtn').onclick = () => { if (confirm('确定重置全部进度？此操作不可恢复。')) resetGame(); };
 
     const dsw = $('diffSwap');
-    if (dsw) dsw.onclick = () => {
-      if (confirm('换难度会开启新档，当前进度将被覆盖。继续？')) {
-        try { localStorage.removeItem('aiProductRpg.v1'); } catch (e) {}
-        location.reload();
-      }
-    };  }
+    if (dsw) dsw.onclick = () => { $('modalRoot').innerHTML = ''; swapDifficulty(); };  }
   function modalGlossary() {
     const es = window.GLOSSARY ? window.GLOSSARY.entries : [];
     const list = es.map(e =>

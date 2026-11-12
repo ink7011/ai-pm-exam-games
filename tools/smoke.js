@@ -462,7 +462,7 @@ async function main() {
       if (r.options.filter(o => o.ok).length !== 1 || lens[oi] / Math.max(...lens.filter((_, i) => i !== oi)) >= 1.6) midBad.push(c.id + '_' + ri);
     }));
     ok('RPG：中等战役选项长度配平 + 单正确项', midBad.length === 0, midBad.slice(0, 3).join(' '));
-    ok('RPG：档案卡一键换难度（diffSwapMini + swapDifficulty）', re.indexOf('diffSwapMini') !== -1 && re.indexOf('swapDifficulty') !== -1),
+    ok('RPG：双难度独立存档（alt 槽 + 无损切换 + 存档码携带）', re.indexOf('aiProductRpg.alt') !== -1 && re.indexOf('swapDifficulty') !== -1 && re.indexOf("localStorage.getItem('aiProductRpg.alt')") !== -1),
     ok('RPG：开局难度选择器（简单/中等/困难锁定）', re.indexOf('diff-cards') !== -1 && re.indexOf('pickedDiff') !== -1 && re.indexOf('diffSwap') !== -1 && re.includes('data-diff="hard"'));
   }
   ok('RPG：全 round 人话层（≥19）+ 复盘渲染', (rc.match(/_\d": "/g) || []).length >= 19 || (rc.match(/": "/g)||[]).length > 50);
